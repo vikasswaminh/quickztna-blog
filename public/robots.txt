@@ -1,0 +1,5 @@
+# Blogs are meant to be found — allow everyone, including answer engines.
+User-agent: *
+Allow: /
+
+Sitemap: https://blog.quickztna.com/sitemap-index.xml
