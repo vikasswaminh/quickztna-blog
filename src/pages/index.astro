@@ -138,9 +138,9 @@ const blogBreadcrumbSchema = {
         
 
 
-        <!-- 3. Engineering Essentials (Founder Special Card - Borderless) -->
+        <!-- 3. Engineering Essentials (Founder Special Card - Completely Borderless) -->
         <div class="p-1 sm:p-2">
-          <div class="flex items-center justify-between border-b border-border/60 pb-3 mb-3">
+          <div class="flex items-center justify-between pb-1 mb-2">
             <span class="rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider">
               FOUNDER SPECIAL
             </span>
@@ -149,15 +149,15 @@ const blogBreadcrumbSchema = {
             </span>
           </div>
 
-          <p class="mb-3 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          <p class="mb-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
             Core Architectures
           </p>
 
-          <div class="space-y-3">
+          <div class="space-y-2">
             {founderSpecials.map((post) => {
               const slug = post.id.replace(/\.md$/, "");
               return (
-                <div class="border-b border-border/50 pb-2.5 last:border-0 last:pb-0">
+                <div class="py-1">
                   <a href={`/blog/${slug}/`} class="group block">
                     <h4 class="text-xs font-bold leading-[1.35] line-clamp-2 text-foreground group-hover:text-primary transition-colors">
                       {post.data.title}
@@ -363,9 +363,9 @@ const blogBreadcrumbSchema = {
       <!-- ── RIGHT SIDEBAR (STICKY ON SCROLL - NEWEST ARTICLES LIST) ─ -->
       <aside class="w-full xl:w-[17rem] space-y-5 order-3 xl:sticky xl:top-20 self-start hidden xl:block">
         
-        <!-- Newest Articles / AI Special Card - Borderless -->
+        <!-- Newest Articles / AI Special Card - Completely Borderless -->
         <div class="p-1 sm:p-2">
-          <div class="flex items-center justify-between border-b border-border/60 pb-3 mb-3">
+          <div class="flex items-center justify-between pb-1 mb-2">
             <span class="rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-white shadow-2xs">
               NEWEST ARTICLES
             </span>
@@ -374,15 +374,15 @@ const blogBreadcrumbSchema = {
             </span>
           </div>
 
-          <p class="mb-3 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          <p class="mb-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
             Recent updates
           </p>
 
-          <div class="space-y-3">
+          <div class="space-y-2">
             {recentUpdates.map((p) => {
               const pSlug = p.id.replace(/\.md$/, "");
               return (
-                <div class="border-b border-border/50 pb-2.5 last:border-0 last:pb-0">
+                <div class="py-1">
                   <a href={`/blog/${pSlug}/`} class="group block">
                     <h4 class="text-xs font-bold leading-[1.35] line-clamp-2 text-foreground group-hover:text-primary transition-colors">
                       {p.data.title}
