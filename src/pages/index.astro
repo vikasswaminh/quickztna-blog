@@ -200,13 +200,13 @@ const blogBreadcrumbSchema = {
 
       <!-- ── CENTER SCROLLING BLOG FEED ────────────────────────────── -->
       <main class="min-w-0 space-y-6 order-1 lg:order-2">
-        <!-- Top Toolbar: Sticky Filter Pills & Counter -->
-        <div class="sticky top-16 z-30 -mx-2 px-2 py-3 bg-background/90 backdrop-blur-md border-b border-border/60 flex flex-wrap items-center justify-between gap-2">
-          <!-- Category filter pills -->
-          <div class="flex flex-wrap gap-1.5" id="pill-filters">
+        <!-- Top Toolbar: Sticky Filter Pills Spread to Full Width -->
+        <div class="sticky top-16 z-30 -mx-2 px-2 py-3 bg-background/90 backdrop-blur-md border-b border-border/60">
+          <!-- Category filter pills spread evenly to the right side -->
+          <div class="w-full flex flex-wrap sm:flex-nowrap items-center justify-between gap-2" id="pill-filters">
             <button
               data-pill="all"
-              class="pill-btn active rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white border border-transparent px-3.5 py-1 font-bold text-xs shadow-sm transition-all duration-150 hover:brightness-105"
+              class="pill-btn active flex-1 text-center justify-center rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white border border-transparent px-3 py-1.5 font-bold text-xs shadow-sm transition-all duration-150 hover:brightness-105 whitespace-nowrap"
             >
               All ({allPosts.length})
             </button>
@@ -215,15 +215,13 @@ const blogBreadcrumbSchema = {
               return counts[c] > 0 && (
                 <button
                   data-pill={c}
-                  class={`pill-btn rounded-full border ${catColor.border} ${catColor.bg} px-3 py-1 font-semibold text-xs ${catColor.text} hover:opacity-90 transition-all duration-150 shadow-2xs`}
+                  class={`pill-btn flex-1 text-center justify-center rounded-full border ${catColor.border} ${catColor.bg} px-3 py-1.5 font-semibold text-xs ${catColor.text} hover:opacity-90 transition-all duration-150 shadow-2xs whitespace-nowrap`}
                 >
                   {categoryLabel[c]} ({counts[c]})
                 </button>
               );
             })}
           </div>
-
-
         </div>
 
         <!-- ── LATEST POSTS SECTION (ABOVE FIRST BLOG CARD) ──────────── -->
@@ -481,9 +479,9 @@ const blogBreadcrumbSchema = {
         const pillCat = btn.dataset.pill;
         const isActive = (type === "category" && pillCat === val) || (type === "all" && pillCat === "all");
         if (isActive) {
-          btn.className = "pill-btn active rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white border border-transparent px-3.5 py-1 font-bold text-xs shadow-sm transition-all duration-150 hover:brightness-105";
+          btn.className = "pill-btn active flex-1 text-center justify-center rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white border border-transparent px-3 py-1.5 font-bold text-xs shadow-sm transition-all duration-150 hover:brightness-105 whitespace-nowrap";
         } else {
-          btn.className = "pill-btn rounded-full border border-border bg-card px-3 py-1 font-semibold text-xs text-foreground/80 hover:border-primary/40 hover:bg-primary/5 hover:text-primary transition-all duration-150";
+          btn.className = "pill-btn flex-1 text-center justify-center rounded-full border border-border bg-card px-3 py-1.5 font-semibold text-xs text-foreground/80 hover:border-primary/40 hover:bg-primary/5 hover:text-primary transition-all duration-150 shadow-2xs whitespace-nowrap";
         }
       });
 
