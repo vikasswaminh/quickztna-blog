@@ -236,12 +236,14 @@ const blogBreadcrumbSchema = {
 
         <!-- ── LATEST POSTS SECTION (ABOVE FIRST BLOG CARD) ──────────── -->
         <div class="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-xs transition-all duration-200">
-          <div class="flex items-center justify-between border-b border-border/60 pb-2.5 mb-3">
-            <div class="flex items-center gap-2">
-              <span class="h-2 w-2 rounded-full bg-[#00a3c4] animate-pulse"></span>
-              <h2 class="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">
-                LATEST POSTS
-              </h2>
+          <div class="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
+            <div class="flex items-center gap-2.5">
+              <span class="rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-3.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-white shadow-2xs">
+                NEWEST ARTICLES
+              </span>
+              <span class="font-mono text-xs text-muted-foreground">
+                {allPosts.length} articles
+              </span>
             </div>
             <span class="font-mono text-xs text-muted-foreground">
               Recent updates
