@@ -1,23 +1,315 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPublishedPosts } from '../../utils/posts';
+import SiteLayout from "@/layouts/SiteLayout.astro";
+import { getCollection } from "astro:content";
 
-const posts = await getPublishedPosts();
-const counts = new Map<string, number>();
-for (const p of posts) for (const t of p.data.tags) counts.set(t, (counts.get(t) ?? 0) + 1);
-const tags = [...counts.entries()].sort((a, b) => b[1] - a[1]);
+const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => {
+    const dateA = a.data.publishedAt || (a.data as any).pubDate || new Date();
+    const dateB = b.data.publishedAt || (b.data as any).pubDate || new Date();
+    return new Date(dateB).valueOf() - new Date(dateA).valueOf();
+  }
+);
+
+const categoryLabel: Record<string, string> = {
+  "post-quantum": "Architecture",
+  compliance: "Compliance",
+  comparison: "Comparison",
+  fundamentals: "Fundamentals",
+  technical: "Technical",
+  industry: "Industry",
+};
+
+const categoryBadgeColors: Record<string, { bg: string; text: string; border: string; pillBg: string }> = {
+  "post-quantum": {
+    bg: "bg-blue-50",
+    text: "text-blue-700",
+    border: "border-blue-200",
+    pillBg: "bg-blue-50/60 hover:bg-blue-100/70 hover:border-blue-300 hover:text-blue-800",
+  },
+  comparison: {
+    bg: "bg-purple-50",
+    text: "text-purple-700",
+    border: "border-purple-200",
+    pillBg: "bg-purple-50/60 hover:bg-purple-100/70 hover:border-purple-300 hover:text-purple-800",
+  },
+  compliance: {
+    bg: "bg-emerald-50",
+    text: "text-emerald-700",
+    border: "border-emerald-200",
+    pillBg: "bg-emerald-50/60 hover:bg-emerald-100/70 hover:border-emerald-300 hover:text-emerald-800",
+  },
+  technical: {
+    bg: "bg-cyan-50",
+    text: "text-cyan-700",
+    border: "border-cyan-200",
+    pillBg: "bg-cyan-50/60 hover:bg-cyan-100/70 hover:border-cyan-300 hover:text-cyan-800",
+  },
+  fundamentals: {
+    bg: "bg-amber-50",
+    text: "text-amber-700",
+    border: "border-amber-200",
+    pillBg: "bg-amber-50/60 hover:bg-amber-100/70 hover:border-amber-300 hover:text-amber-800",
+  },
+  industry: {
+    bg: "bg-rose-50",
+    text: "text-rose-700",
+    border: "border-rose-200",
+    pillBg: "bg-rose-50/60 hover:bg-rose-100/70 hover:border-rose-300 hover:text-rose-800",
+  },
+};
+
+const getCatColor = (cat: string) =>
+  categoryBadgeColors[cat] ?? {
+    bg: "bg-primary/10",
+    text: "text-primary",
+    border: "border-primary/20",
+    pillBg: "bg-muted/60 hover:bg-primary/5 hover:border-primary/40 hover:text-primary",
+  };
+
+const categories = ["post-quantum", "comparison", "compliance", "technical", "fundamentals", "industry"] as const;
+
+// Aggregate tags with counts across all posts
+const tagCounts: Record<string, number> = {};
+const tagsByCategory: Record<string, Record<string, number>> = {};
+
+categories.forEach((cat) => {
+  tagsByCategory[cat] = {};
+});
+
+allPosts.forEach((post) => {
+  const cat = post.data.category;
+  post.data.tags.forEach((rawTag: string) => {
+    const tag = rawTag.toLowerCase().trim();
+    if (!tag) return;
+    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+
+    if (tagsByCategory[cat]) {
+      tagsByCategory[cat][tag] = (tagsByCategory[cat][tag] || 0) + 1;
+    }
+  });
+});
+
+const totalTopics = Object.keys(tagCounts).length;
+
+const sortedTags = Object.entries(tagCounts).sort((a, b) => {
+  if (b[1] !== a[1]) return b[1] - a[1];
+  return a[0].localeCompare(b[0]);
+});
 ---
 
-<BaseLayout title="Tags" description="Browse posts by topic.">
-  <h1 class="page-title">Tags</h1>
-  {tags.length === 0 && <p class="empty">No tags yet.</p>}
-  <div class="tag-cloud">
-    {
-      tags.map(([t, n]) => (
-        <a class="tag tag-lg" href={`/tags/${t}/`}>
-          #{t} <span class="tag-count">{n}</span>
-        </a>
-      ))
-    }
+<SiteLayout
+  title="Tags & Topics Hub — QuickZTNA Blog"
+  description="Explore all Zero Trust Network Access topics, WireGuard architecture, compliance frameworks, comparisons, and security guides organized by tag."
+>
+  <!-- ── HERO SECTION (LEFT ALIGNED) ─────────────────────────────────── -->
+  <section class="border-b border-border bg-hero relative overflow-hidden">
+    <div class="absolute inset-0 bg-grid opacity-80 pointer-events-none" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-[1700px] px-4 py-12 sm:px-6 lg:px-8 text-left flex flex-col items-start justify-center">
+      <!-- Heading -->
+      <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-[#0f172a] leading-[1.16]">
+        Explore Every <span class="text-gradient">Topic & Tag</span>
+      </h1>
+
+      <p class="mt-3 max-w-3xl text-base sm:text-lg text-[#475467] leading-[1.6]">
+        Browse {allPosts.length} engineering articles, architecture deep-dives, compliance frameworks, and tutorials organized by topic.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── CATEGORY FILTER TOOLBAR (TABS ON LEFT, STATS ON RIGHT) ─────── -->
+  <div class="sticky top-16 z-30 border-b border-border bg-white/95 backdrop-blur-md py-3 shadow-sm">
+    <div class="mx-auto max-w-[1700px] px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Left: Category Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" id="category-tabs">
+        <button
+          data-cat-tab="all"
+          class="cat-tab-btn active rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white border border-transparent px-4 py-1.5 text-xs font-bold shadow-sm transition-all flex-shrink-0 hover:brightness-105"
+        >
+          All Topics
+        </button>
+        {categories.map((c) => {
+          const catColor = getCatColor(c);
+          return (
+            <button
+              data-cat-tab={c}
+              class={`cat-tab-btn rounded-full border ${catColor.border} ${catColor.bg} px-4 py-1.5 text-xs font-semibold ${catColor.text} hover:opacity-90 transition-all flex-shrink-0 shadow-2xs`}
+            >
+              {categoryLabel[c]}
+            </button>
+          );
+        })}
+      </div>
+
+      <!-- Right: Stats Bar -->
+      <div class="hidden sm:flex items-center gap-2.5 font-mono text-xs flex-shrink-0">
+        <div class="flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1 shadow-2xs">
+          <span class="font-bold text-primary">{totalTopics}</span>
+          <span class="text-muted-foreground">Topics</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1 shadow-2xs">
+          <span class="font-bold text-primary">{allPosts.length}</span>
+          <span class="text-muted-foreground">Articles</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1 shadow-2xs">
+          <span class="font-bold text-primary">{categories.length}</span>
+          <span class="text-muted-foreground">Categories</span>
+        </div>
+      </div>
+
+    </div>
   </div>
-</BaseLayout>
+
+  <!-- ── MAIN CONTENT CONTAINER (FULL WIDTH 1700px) ────────────────── -->
+  <div class="mx-auto max-w-[1700px] px-4 py-10 sm:px-6 lg:px-8 space-y-12">
+
+    <!-- ── 1. CATEGORY TOPIC CLUSTERS (2-COLUMN FULL-WIDTH GRID) ────── -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="category-clusters">
+      {categories.map((c) => {
+        const catTags = Object.entries(tagsByCategory[c] || {});
+        if (catTags.length === 0) return null;
+        const catColor = getCatColor(c);
+
+        return (
+          <div
+            data-cat-block={c}
+            class="category-card-block flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-md transition-all duration-200"
+          >
+            <div>
+              <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-border/60">
+                <div class="flex items-center gap-2.5">
+                  <span class={`rounded-full border ${catColor.border} ${catColor.bg} px-3 py-0.5 font-mono text-xs font-bold uppercase tracking-wider ${catColor.text}`}>
+                    {categoryLabel[c]}
+                  </span>
+                  <span class="font-mono text-xs text-muted-foreground">
+                    {catTags.length} {catTags.length === 1 ? "topic" : "topics"}
+                  </span>
+                </div>
+                <a
+                  href={`/blog/?category=${c}`}
+                  class="text-xs font-bold text-primary hover:underline flex items-center gap-1 font-mono"
+                >
+                  <span>View articles</span>
+                  <span>→</span>
+                </a>
+              </div>
+
+              <!-- Tags in this Category with Pastel Tint -->
+              <div class="flex flex-wrap gap-2">
+                {catTags.map(([tag, count]) => (
+                  <a
+                    href={`/tags/${encodeURIComponent(tag)}/`}
+                    data-tag-name={tag}
+                    class={`tag-pill-item group inline-flex items-center gap-2 rounded-xl border ${catColor.border} ${catColor.pillBg} px-3 py-1.5 text-xs font-medium text-foreground/85 transition-all duration-150 shadow-2xs`}
+                  >
+                    <span class={`font-mono font-bold ${catColor.text}`}>#</span>
+                    <span class="font-semibold">{tag}</span>
+                    <span class={`rounded-full bg-card border ${catColor.border} px-1.5 py-0.2 font-mono text-[10.5px] ${catColor.text}`}>
+                      {count}
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- ── 2. ALL TAGS DIRECTORY (WIDE 6-COLUMN GRID) ───────────────── -->
+    <div class="pt-4" id="all-tags-section">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl font-bold tracking-tight text-foreground">
+            All Tags Directory
+          </h2>
+          <p class="text-xs text-muted-foreground mt-0.5">
+            Complete list of all topics across the QuickZTNA blog
+          </p>
+        </div>
+        <span class="rounded-full border border-border bg-card px-3.5 py-1 font-mono text-xs font-semibold text-muted-foreground shadow-xs">
+          {sortedTags.length} Total Tags
+        </span>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5" id="all-tags-grid">
+        {sortedTags.map(([tag, count]) => (
+          <a
+            href={`/tags/${encodeURIComponent(tag)}/`}
+            data-tag-card={tag}
+            class="all-tag-card group flex items-center justify-between rounded-xl border border-border/80 bg-card p-3.5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/5 hover:shadow-sm"
+          >
+            <div class="flex items-center gap-1.5 truncate">
+              <span class="text-primary font-mono text-xs font-bold flex-shrink-0">#</span>
+              <span class="text-xs font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                {tag}
+              </span>
+            </div>
+            <span class="ml-2 rounded-full bg-muted border border-border/60 px-2 py-0.5 font-mono text-[10.5px] font-semibold text-muted-foreground group-hover:bg-card group-hover:text-primary flex-shrink-0">
+              {count}
+            </span>
+          </a>
+        ))}
+      </div>
+    </div>
+
+    <!-- ── NO RESULTS EMPTY STATE ──────────────────────────────────── -->
+    <div id="no-results-box" class="hidden rounded-2xl border border-dashed border-border bg-card p-12 text-center">
+      <p class="text-base font-bold text-foreground">No matching topics found</p>
+      <p class="mt-1 text-xs text-muted-foreground">Select another category filter tab.</p>
+    </div>
+
+  </div>
+</SiteLayout>
+
+<script>
+  function setupTagsFiltering() {
+    const catTabs = document.querySelectorAll<HTMLButtonElement>(".cat-tab-btn");
+    const catBlocks = document.querySelectorAll<HTMLElement>(".category-card-block");
+    const noResultsBox = document.getElementById("no-results-box");
+    const allTagsSection = document.getElementById("all-tags-section");
+
+    let activeCategory = "all";
+
+    function filterTagsHub() {
+      let totalVisibleBlocks = 0;
+
+      // Filter Category Blocks
+      catBlocks.forEach((block) => {
+        const blockCat = block.getAttribute("data-cat-block") || "";
+        const isCatMatch = activeCategory === "all" || blockCat === activeCategory;
+
+        if (isCatMatch) {
+          block.style.display = "flex";
+          totalVisibleBlocks++;
+        } else {
+          block.style.display = "none";
+        }
+      });
+
+      if (allTagsSection) {
+        allTagsSection.style.display = activeCategory === "all" ? "block" : "none";
+      }
+
+      if (noResultsBox) {
+        noResultsBox.classList.toggle("hidden", totalVisibleBlocks > 0);
+      }
+    }
+
+    // Category Tabs click handler
+    catTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        catTabs.forEach((t) => {
+          t.className = "cat-tab-btn rounded-full border border-border bg-card px-4 py-1.5 text-xs font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all flex-shrink-0";
+        });
+
+        tab.className = "cat-tab-btn active rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white border border-transparent px-4 py-1.5 text-xs font-bold shadow-sm transition-all flex-shrink-0 hover:brightness-105";
+        activeCategory = tab.getAttribute("data-cat-tab") || "all";
+        filterTagsHub();
+      });
+    });
+  }
+
+  setupTagsFiltering();
+  document.addEventListener("astro:after-swap", setupTagsFiltering);
+</script>

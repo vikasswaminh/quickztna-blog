@@ -1,0 +1,62 @@
+---
+export interface Props {
+  title: string;
+  description: string;
+  category: string;
+  readTime: string;
+  tags: string[];
+  date: string;
+  author: string;
+  url: string;
+}
+
+const { title, description, category, readTime, tags, date, author, url } = Astro.props;
+---
+<a
+  href={url}
+  data-post-cat={category.toLowerCase()}
+  class="featured-card group relative mb-8 flex flex-col justify-between overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-card to-card/60 p-6 sm:p-7 shadow-sm transition-all duration-200 hover:border-primary/50 hover:shadow-xl"
+>
+  <div>
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-4">
+      <div class="flex items-center gap-2">
+        <span class="rounded-full border border-primary/30 bg-primary/10 px-3 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-wider text-primary">
+          {category}
+        </span>
+        <span class="font-mono text-xs text-muted-foreground">
+          quickztna.com
+        </span>
+      </div>
+      <span class="rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-amber-400">
+        NEW
+      </span>
+    </div>
+
+    <h2 class="text-xl sm:text-2xl font-extrabold leading-snug tracking-tight text-foreground group-hover:text-primary transition-colors">
+      {title}
+    </h2>
+
+    <p class="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-3">
+      {description}
+    </p>
+
+    <div class="mt-4 flex flex-wrap gap-1.5">
+      {tags.map((tag) => (
+        <span class="rounded-md border border-border bg-muted/40 px-2.5 py-0.5 font-mono text-[10px] text-muted-foreground">
+          #{tag}
+        </span>
+      ))}
+    </div>
+  </div>
+
+  <div class="mt-6 pt-4 border-t border-border/50 flex items-center justify-between text-xs font-mono text-muted-foreground">
+    <div class="flex items-center gap-2">
+      <span>{readTime}</span>
+      <span>·</span>
+      <span>{date}</span>
+    </div>
+    <span class="font-sans font-semibold text-primary group-hover:underline flex items-center gap-1">
+      Read article <span>→</span>
+    </span>
+  </div>
+</a>

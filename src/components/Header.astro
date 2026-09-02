@@ -1,25 +1,58 @@
 ---
-import { SITE, NAV } from '../config';
-const path = Astro.url.pathname;
-const isActive = (href: string) => (href === '/' ? path === '/' : path.startsWith(href));
 ---
-
-<header class="site-header">
-  <div class="container header-inner">
-    <a class="brand" href="/">
-      <span class="brand-mark" aria-hidden="true"></span>
-      <span class="brand-name">{SITE.brand}</span>
-      <span class="brand-sub">Blog</span>
+<header class="sticky top-0 z-40 w-full border-b border-border/60 bg-background/80 backdrop-blur-md">
+  <div class="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
+    <a href="/" class="flex items-center">
+      <div class="flex items-center gap-2">
+        <div class="relative h-7 w-7">
+          <div class="absolute inset-0 rounded-md bg-gradient-to-br from-primary to-chart-2"></div>
+          <div class="absolute inset-[3px] rounded-[5px] bg-background"></div>
+          <div class="absolute inset-[6px] rounded-[3px] bg-gradient-to-br from-primary to-chart-2"></div>
+        </div>
+        <span class="font-mono text-base font-semibold tracking-tight">Quick<span class="text-primary">ZTNA</span></span>
+      </div>
     </a>
-    <nav class="nav" aria-label="Primary">
-      {
-        NAV.map((item) => (
-          <a href={item.href} class:list={['nav-link', { active: isActive(item.href) }]}>
-            {item.label}
-          </a>
-        ))
-      }
-      <a class="nav-cta" href={SITE.marketingUrl}>{SITE.marketingLabel} ↗</a>
+    
+    <!-- Desktop nav -->
+    <nav class="hidden items-center gap-1 md:flex">
+      <a href="/blog" class="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground text-foreground bg-muted">Blog</a>
+      <a href="/tags" class="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground text-muted-foreground">Tags</a>
+      <a href="/about" class="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-muted hover:text-foreground text-muted-foreground">About</a>
+    </nav>
+    
+    <div class="flex items-center gap-2">
+      <a href="https://quickztna.com" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground shadow hover:bg-primary/90 h-8 rounded-md px-3 text-xs font-medium">
+        quickztna.com ↗
+      </a>
+      
+      <!-- Mobile hamburger -->
+      <button id="mobile-nav-toggle" type="button" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobile-nav" class="inline-flex items-center justify-center rounded-md p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground md:hidden">
+        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path></svg>
+      </button>
+    </div>
+  </div>
+  
+  <!-- Mobile drawer -->
+  <div id="mobile-nav" class="hidden border-t border-border/60 bg-background md:hidden">
+    <nav class="mx-auto max-w-7xl space-y-1 px-4 py-3 text-sm sm:px-6">
+      <a href="/blog" class="block rounded-md px-3 py-2 font-medium text-foreground bg-muted">Blog</a>
+      <a href="/tags" class="block rounded-md px-3 py-2 font-medium text-muted-foreground hover:bg-muted hover:text-foreground">Tags</a>
+      <a href="/about" class="block rounded-md px-3 py-2 font-medium text-muted-foreground hover:bg-muted hover:text-foreground">About</a>
     </nav>
   </div>
 </header>
+
+<script>
+  function setupNav() {
+    const toggle = document.getElementById("mobile-nav-toggle");
+    const nav = document.getElementById("mobile-nav");
+    if (toggle && nav) {
+      toggle.addEventListener("click", () => {
+        const isHidden = nav.classList.toggle("hidden") === false;
+        toggle.setAttribute("aria-expanded", String(isHidden));
+      });
+    }
+  }
+  setupNav();
+  document.addEventListener("astro:after-swap", setupNav);
+</script>

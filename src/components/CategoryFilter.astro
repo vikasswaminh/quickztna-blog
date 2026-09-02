@@ -1,0 +1,179 @@
+---
+export interface Category {
+  name: string;
+  slug: string;
+  count: number;
+}
+
+const categories: Category[] = [
+  { name: 'All', slug: 'all', count: 37 },
+  { name: 'Architecture', slug: 'architecture', count: 5 },
+  { name: 'Comparison', slug: 'comparison', count: 8 },
+  { name: 'Compliance', slug: 'compliance', count: 9 },
+  { name: 'Technical', slug: 'technical', count: 9 },
+  { name: 'Fundamentals', slug: 'fundamentals', count: 3 },
+  { name: 'Industry', slug: 'industry', count: 3 },
+];
+---
+
+<div class="mb-8 space-y-4" id="blog-filter-section">
+  <!-- Instant Search Bar (Like Networkers Home) -->
+  <div class="relative w-full">
+    <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-foreground">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+      </svg>
+    </div>
+    <input
+      type="text"
+      id="blog-search-input"
+      placeholder="Search 37+ engineering articles, guides & comparisons..."
+      class="w-full rounded-xl border border-border bg-card/80 py-2.5 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary shadow-sm transition-all"
+    />
+  </div>
+
+  <!-- Category Filter Pills -->
+  <div class="flex flex-wrap items-center gap-2" role="tablist" aria-label="Filter by category" id="cat-filters">
+    {categories.map((cat) => (
+      <button
+        data-cat={cat.slug}
+        class={`cat-btn rounded-full border px-3.5 py-1.5 font-mono text-xs transition-all ${
+          cat.slug === 'all'
+            ? 'active border-primary bg-primary font-semibold text-primary-foreground shadow-sm'
+            : 'border-border font-medium text-muted-foreground hover:border-primary/40 hover:text-foreground'
+        }`}
+      >
+        {cat.name} <span class="opacity-70">({cat.count})</span>
+      </button>
+    ))}
+  </div>
+
+  <!-- Search Results Count / Status -->
+  <div id="filter-status" class="hidden text-xs font-mono text-muted-foreground pt-1">
+    Showing <span id="matching-count" class="font-bold text-foreground">0</span> articles
+  </div>
+</div>
+
+<script>
+  function setupUnifiedFiltering() {
+    const searchInput = document.getElementById('blog-search-input') as HTMLInputElement | null;
+    const catBtns = document.querySelectorAll('.cat-btn');
+    const sidebarBtns = document.querySelectorAll('.sidebar-cat-btn');
+    const featuredCard = document.querySelector('.featured-card') as HTMLElement | null;
+    const postItems = document.querySelectorAll('#post-grid > li') as NodeListOf<HTMLElement>;
+    const filterStatus = document.getElementById('filter-status');
+    const matchingCount = document.getElementById('matching-count');
+    const noResultsMsg = document.getElementById('no-results-msg');
+
+    let currentCategory = 'all';
+    let searchQuery = '';
+
+    function applyFilter() {
+      let visibleCount = 0;
+      const query = searchQuery.trim().toLowerCase();
+
+      // Filter featured card
+      if (featuredCard) {
+        const featCat = (featuredCard.getAttribute('data-post-cat') || '').toLowerCase();
+        const featText = (featuredCard.innerText || '').toLowerCase();
+        const matchesCat = currentCategory === 'all' || featCat.includes(currentCategory);
+        const matchesSearch = query === '' || featText.includes(query);
+
+        if (matchesCat && matchesSearch) {
+          featuredCard.style.display = '';
+          visibleCount++;
+        } else {
+          featuredCard.style.display = 'none';
+        }
+      }
+
+      // Filter post items
+      postItems.forEach((item) => {
+        const itemCat = (item.getAttribute('data-post-cat') || '').toLowerCase();
+        const itemText = (item.innerText || '').toLowerCase();
+        const matchesCat = currentCategory === 'all' || itemCat.includes(currentCategory);
+        const matchesSearch = query === '' || itemText.includes(query);
+
+        if (matchesCat && matchesSearch) {
+          item.style.display = '';
+          visibleCount++;
+        } else {
+          item.style.display = 'none';
+        }
+      });
+
+      // Update status indicators
+      if (filterStatus && matchingCount) {
+        if (query !== '' || currentCategory !== 'all') {
+          filterStatus.classList.remove('hidden');
+          matchingCount.textContent = String(visibleCount);
+        } else {
+          filterStatus.classList.add('hidden');
+        }
+      }
+
+      if (noResultsMsg) {
+        noResultsMsg.style.display = visibleCount === 0 ? 'block' : 'none';
+      }
+    }
+
+    function setCategory(cat: string) {
+      currentCategory = cat.toLowerCase();
+
+      // Sync top pill buttons
+      catBtns.forEach((btn) => {
+        const btnCat = (btn.getAttribute('data-cat') || '').toLowerCase();
+        const isMatch = btnCat === currentCategory;
+        if (isMatch) {
+          btn.className = 'cat-btn rounded-full border border-primary bg-primary font-semibold text-primary-foreground shadow-sm px-3.5 py-1.5 font-mono text-xs transition-all active';
+        } else {
+          btn.className = 'cat-btn rounded-full border border-border font-medium text-muted-foreground hover:border-primary/40 hover:text-foreground px-3.5 py-1.5 font-mono text-xs transition-all';
+        }
+      });
+
+      // Sync sidebar buttons
+      sidebarBtns.forEach((btn) => {
+        const btnCat = (btn.getAttribute('data-cat') || '').toLowerCase();
+        const isMatch = btnCat === currentCategory;
+        if (isMatch) {
+          btn.className = 'sidebar-cat-btn flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors text-left bg-primary text-primary-foreground font-semibold';
+          const countSpan = btn.querySelector('span:last-child');
+          if (countSpan) countSpan.className = 'font-mono text-xs opacity-80';
+        } else {
+          btn.className = 'sidebar-cat-btn flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors text-left text-muted-foreground hover:bg-muted hover:text-foreground';
+          const countSpan = btn.querySelector('span:last-child');
+          if (countSpan) countSpan.className = 'font-mono text-xs text-muted-foreground';
+        }
+      });
+
+      applyFilter();
+    }
+
+    // Attach listeners to search input
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        searchQuery = (e.target as HTMLInputElement).value;
+        applyFilter();
+      });
+    }
+
+    // Attach listeners to top pill buttons
+    catBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const cat = btn.getAttribute('data-cat') || 'all';
+        setCategory(cat);
+      });
+    });
+
+    // Attach listeners to sidebar buttons
+    sidebarBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const cat = btn.getAttribute('data-cat') || 'all';
+        setCategory(cat);
+      });
+    });
+  }
+
+  setupUnifiedFiltering();
+  document.addEventListener('astro:after-swap', setupUnifiedFiltering);
+</script>

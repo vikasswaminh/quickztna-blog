@@ -20,13 +20,13 @@ const { title = SITE.title, description, image, article } = Astro.props;
 ---
 
 <!doctype html>
-<html lang={SITE.locale} style={`--accent:${SITE.accent}`}>
+<html lang={SITE.locale} class="dark">
   <head>
     <BaseHead title={title} description={description} image={image} article={article} />
   </head>
-  <body>
+  <body class="flex min-h-screen flex-col bg-background text-foreground">
     <Header />
-    <main class="container">
+    <main class="flex-1">
       <slot />
     </main>
     <Footer />

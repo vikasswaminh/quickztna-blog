@@ -1,0 +1,143 @@
+---
+export interface Topic {
+  name: string;
+  slug: string;
+  count: number;
+}
+
+const topics: Topic[] = [
+  { name: 'All posts', slug: 'all', count: 37 },
+  { name: 'Architecture', slug: 'architecture', count: 5 },
+  { name: 'Comparison', slug: 'comparison', count: 8 },
+  { name: 'Compliance', slug: 'compliance', count: 9 },
+  { name: 'Technical', slug: 'technical', count: 9 },
+  { name: 'Fundamentals', slug: 'fundamentals', count: 3 },
+  { name: 'Industry', slug: 'industry', count: 3 },
+];
+---
+
+<aside class="hidden lg:block">
+  <div class="sticky top-24 space-y-6">
+    <!-- Free Forever CTA Card -->
+    <div class="rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <p class="font-mono text-xs font-bold uppercase tracking-widest text-primary">
+        Free forever
+      </p>
+      <h3 class="mt-2 text-base font-bold text-foreground">
+        ZTNA mesh for your whole team
+      </h3>
+      <p class="mt-2 text-xs leading-relaxed text-muted-foreground">
+        WireGuard mesh + ABAC policy + DNS threat filtering. One install command. No card.
+      </p>
+      <a
+        href="https://quickztna.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mt-5 inline-flex w-full items-center justify-center rounded-xl bg-primary py-2.5 text-center text-xs font-semibold text-primary-foreground shadow hover:bg-primary/90 transition-all"
+      >
+        Start free →
+      </a>
+    </div>
+
+    <!-- Browse By Topic Card -->
+    <div class="rounded-2xl border border-border bg-card p-6 shadow-sm">
+      <p class="mb-4 font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+        Browse by topic
+      </p>
+      <ul class="space-y-1" id="sidebar-topic-list">
+        {topics.map((topic) => (
+          <li>
+            <button
+              data-cat={topic.slug}
+              class={`sidebar-cat-btn flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors text-left ${
+                topic.slug === 'all'
+                  ? 'bg-primary text-primary-foreground font-semibold'
+                  : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+              }`}
+            >
+              <span>{topic.name}</span>
+              <span class={`font-mono text-xs ${topic.slug === 'all' ? 'opacity-80' : 'text-muted-foreground'}`}>
+                {topic.count}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</aside>
+
+<script>
+  function setupSidebarFilters() {
+    const sidebarBtns = document.querySelectorAll('.sidebar-cat-btn');
+    const topCatBtns = document.querySelectorAll('.cat-btn');
+    const featuredCard = document.querySelector('.featured-card');
+    const postItems = document.querySelectorAll('#post-grid > li');
+
+    function setActiveCategory(cat: string) {
+      // Update sidebar buttons
+      sidebarBtns.forEach((btn) => {
+        const btnCat = btn.getAttribute('data-cat');
+        const isMatch = btnCat === cat;
+        if (isMatch) {
+          btn.className = 'sidebar-cat-btn flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors text-left bg-primary text-primary-foreground font-semibold';
+          const countSpan = btn.querySelector('span:last-child');
+          if (countSpan) countSpan.className = 'font-mono text-xs opacity-80';
+        } else {
+          btn.className = 'sidebar-cat-btn flex w-full items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors text-left text-muted-foreground hover:bg-muted hover:text-foreground';
+          const countSpan = btn.querySelector('span:last-child');
+          if (countSpan) countSpan.className = 'font-mono text-xs text-muted-foreground';
+        }
+      });
+
+      // Update top pill buttons
+      topCatBtns.forEach((btn) => {
+        const btnCat = btn.getAttribute('data-cat');
+        const isMatch = btnCat === cat;
+        if (isMatch) {
+          btn.classList.add('active', 'border-primary', 'bg-primary', 'text-primary-foreground', 'font-semibold');
+          btn.classList.remove('border-border', 'text-muted-foreground', 'font-medium');
+        } else {
+          btn.classList.remove('active', 'border-primary', 'bg-primary', 'text-primary-foreground', 'font-semibold');
+          btn.classList.add('border-border', 'text-muted-foreground', 'font-medium');
+        }
+      });
+
+      // Filter post cards
+      if (featuredCard) {
+        const featCat = (featuredCard.getAttribute('data-post-cat') || '').toLowerCase();
+        if (cat === 'all' || featCat.includes(cat)) {
+          (featuredCard as HTMLElement).style.display = '';
+        } else {
+          (featuredCard as HTMLElement).style.display = 'none';
+        }
+      }
+
+      postItems.forEach((item) => {
+        const itemCat = (item.getAttribute('data-post-cat') || '').toLowerCase();
+        if (cat === 'all' || itemCat.includes(cat)) {
+          (item as HTMLElement).style.display = '';
+        } else {
+          (item as HTMLElement).style.display = 'none';
+        }
+      });
+    }
+
+    sidebarBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const cat = btn.getAttribute('data-cat') || 'all';
+        setActiveCategory(cat);
+      });
+    });
+
+    topCatBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const cat = btn.getAttribute('data-cat') || 'all';
+        setActiveCategory(cat);
+      });
+    });
+  }
+
+  setupSidebarFilters();
+  document.addEventListener('astro:after-swap', setupSidebarFilters);
+</script>

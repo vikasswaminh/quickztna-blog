@@ -1,47 +1,161 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PostCard from '../components/PostCard.astro';
+import FeaturedPostCard from '../components/FeaturedPostCard.astro';
+import CategoryFilter from '../components/CategoryFilter.astro';
+import LeftSidebar from '../components/LeftSidebar.astro';
+import RightSidebar from '../components/RightSidebar.astro';
 import { SITE } from '../config';
 import { getPublishedPosts, readingTime } from '../utils/posts';
 
 const posts = await getPublishedPosts();
 const featured = posts[0];
 const rest = posts.slice(1);
+
+const categories = ['Architecture', 'Comparison', 'Compliance', 'Technical', 'Industry', 'Fundamentals'];
+const categoryPostsMap = categories.map((cat) => ({
+  name: cat,
+  posts: posts.filter((p) => (p.data.category || '').toLowerCase() === cat.toLowerCase()),
+}));
 ---
 
 <BaseLayout>
-  <section class="hero">
-    <h1 class="hero-title">{SITE.brand} <span>Blog</span></h1>
-    <p class="hero-tagline">{SITE.description}</p>
-  </section>
+  <!-- Fixed/Sticky Hero Section & Title Banner -->
+  <div class="lg:sticky lg:top-16 z-20 bg-background border-b border-border">
+    <section class="bg-hero border-b border-border/60">
+      <div class="relative overflow-hidden">
+        <div class="absolute inset-0 bg-grid opacity-40" aria-hidden="true"></div>
+        <div class="relative mx-auto max-w-[1440px] px-4 py-8 sm:px-6 lg:px-8">
+          <p class="font-mono text-xs font-semibold uppercase tracking-widest text-primary">Blog</p>
+          <h1 class="mt-2 max-w-4xl text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+            QuickZTNA Blog
+          </h1>
+          <p class="mt-1.5 max-w-2xl text-xs sm:text-sm text-muted-foreground">
+            Guides, tips, and product updates from the QuickZTNA team.
+          </p>
+        </div>
+      </div>
+    </section>
 
-  {posts.length === 0 && <p class="empty">No posts yet — check back soon.</p>}
-
-  {
-    featured && (
-      <a class="featured" href={`/blog/${featured.slug}/`}>
-        <span class="featured-label">Latest</span>
-        <h2 class="featured-title">{featured.data.title}</h2>
-        <p class="featured-desc">{featured.data.description}</p>
-        <span class="featured-more">Read article →</span>
-      </a>
-    )
-  }
-
-  {
-    rest.length > 0 && (
-      <div class="post-list">
-        {rest.map((p) => (
-          <PostCard
-            url={`/blog/${p.slug}/`}
-            title={p.data.title}
-            description={p.data.description}
-            pubDate={p.data.pubDate}
-            tags={p.data.tags}
-            minutes={readingTime(p.body)}
-          />
+    <!-- Fixed Category Trust Ribbon -->
+    <div class="bg-card/70 backdrop-blur-md overflow-x-auto py-2 px-4 sm:px-6 lg:px-8" style="scrollbar-width: none;">
+      <div class="mx-auto max-w-[1440px] flex items-center gap-3 text-xs font-mono whitespace-nowrap">
+        <button data-cat="all" class="cat-btn font-semibold text-primary flex items-center gap-1.5 px-3 py-1 rounded-md bg-primary/10">
+          <span>All</span> <span class="opacity-75">(37)</span>
+        </button>
+        <span class="text-muted-foreground/40">·</span>
+        {categories.map((cat, idx) => (
+          <>
+            <button data-cat={cat.toLowerCase()} class="cat-btn text-muted-foreground hover:text-foreground flex items-center gap-1.5 px-2.5 py-1 rounded-md hover:bg-muted transition-colors">
+              <span>{cat}</span>
+              <span class="opacity-60">({posts.filter((p) => (p.data.category || '').toLowerCase() === cat.toLowerCase()).length})</span>
+            </button>
+            {idx < categories.length - 1 && <span class="text-muted-foreground/40">·</span>}
+          </>
         ))}
       </div>
-    )
-  }
+    </div>
+  </div>
+
+  <!-- Main 3-Column Content -->
+  <div class="mx-auto max-w-[1440px] px-4 pt-6 sm:px-6 lg:px-8">
+    <div class="flex flex-col lg:flex-row gap-8 items-start relative">
+      
+      <!-- LEFT SIDEBAR (Fixed/Sticky on screen) -->
+      <LeftSidebar />
+
+      <!-- CENTER COLUMN (ONLY THIS MOVES / SCROLLS UPWARD ON DESKTOP) -->
+      <main class="flex-1 min-w-0 w-full lg:h-[calc(100vh-270px)] lg:overflow-y-auto center-scroll-feed pr-2 pb-16">
+        <CategoryFilter />
+
+        <!-- Section Label Bar -->
+        <div class="mb-5 flex items-center justify-between border-b border-border pb-2">
+          <span class="rounded-md bg-primary/10 border border-primary/20 px-3 py-1 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+            NEWEST ARTICLES
+          </span>
+          <span class="font-mono text-xs text-muted-foreground">
+            {posts.length} articles
+          </span>
+        </div>
+
+        <!-- Empty State -->
+        <div id="no-results-msg" class="hidden rounded-2xl border border-dashed border-border p-12 text-center my-6">
+          <p class="text-base font-semibold text-foreground">No matching articles found</p>
+          <p class="text-xs text-muted-foreground mt-1">Try adjusting your search terms or category filter</p>
+        </div>
+
+        {posts.length === 0 && <p class="empty text-muted-foreground">No posts yet — check back soon.</p>}
+
+        {featured && (
+          <FeaturedPostCard
+            url={`/blog/${featured.slug}/`}
+            title={featured.data.title}
+            description={featured.data.description}
+            category={featured.data.category || 'Featured'}
+            readTime={readingTime(featured.body) + " min read"}
+            tags={featured.data.tags || []}
+            date={new Date((featured.data.publishedAt || featured.data.pubDate || new Date())).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+            author={SITE.author || 'QuickZTNA Engineering'}
+          />
+        )}
+
+        {rest.length > 0 && (
+          <div id="post-grid" class="grid gap-5 sm:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3" aria-live="polite" aria-atomic="true">
+            {rest.map((p) => (
+              <div data-post-cat={p.data.category?.toLowerCase() || 'security'} class="h-full">
+                <PostCard
+                  url={`/blog/${p.slug}/`}
+                  title={p.data.title}
+                  description={p.data.description}
+                  category={p.data.category || 'Article'}
+                  readTime={readingTime(p.body) + " min"}
+                  tags={p.data.tags || []}
+                  date={new Date((p.data.publishedAt || p.data.pubDate || new Date())).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </main>
+
+      <!-- RIGHT SIDEBAR (Fixed/Sticky on screen) -->
+      <RightSidebar posts={posts} />
+      
+    </div>
+  </div>
+
+  <!-- Complete Blog Archive Section -->
+  <section class="border-t border-border bg-card/40 py-14">
+    <div class="mx-auto max-w-[1440px] px-4 sm:px-6 lg:px-8">
+      <div class="mb-8">
+        <h2 class="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Complete blog archive</h2>
+        <p class="mt-2 text-sm text-muted-foreground">
+          Browse all {posts.length} articles across all categories.
+        </p>
+      </div>
+
+      <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+        {categoryPostsMap.filter((cat) => cat.posts.length > 0).map((cat) => (
+          <div>
+            <h3 class="mb-4 text-base font-bold text-foreground flex items-center gap-2">
+              <span>{cat.name}</span>
+              <span class="text-xs font-normal text-muted-foreground">({cat.posts.length})</span>
+            </h3>
+            <ul class="space-y-2.5">
+              {cat.posts.map((p) => (
+                <li>
+                  <a
+                    href={`/blog/${p.slug}/`}
+                    class="block text-sm text-muted-foreground hover:text-primary transition-colors leading-snug line-clamp-2"
+                  >
+                    {p.data.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
 </BaseLayout>

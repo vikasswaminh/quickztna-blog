@@ -1,34 +1,83 @@
 ---
-import FormattedDate from './FormattedDate.astro';
-
-interface Props {
-  url: string;
+export interface Props {
   title: string;
-  description: string;
-  pubDate: Date;
+  description?: string;
+  category?: string;
+  readTime?: string;
+  minutes?: number | string;
   tags?: string[];
-  minutes?: number;
+  date?: string;
+  pubDate?: Date | string;
+  url: string;
 }
-const { url, title, description, pubDate, tags = [], minutes } = Astro.props;
----
 
-<article class="post-card">
-  <h2 class="post-card-title"><a href={url}>{title}</a></h2>
-  <p class="post-card-meta">
-    <FormattedDate date={pubDate} />
-    {minutes ? <span aria-hidden="true">·</span> : null}
-    {minutes ? <span>{minutes} min read</span> : null}
-  </p>
-  <p class="post-card-desc">{description}</p>
-  {
-    tags.length > 0 && (
-      <p class="post-card-tags">
-        {tags.map((t) => (
-          <a class="tag" href={`/tags/${t}/`}>
-            #{t}
-          </a>
-        ))}
+const {
+  title,
+  description = '',
+  category,
+  readTime,
+  minutes,
+  tags = [],
+  date,
+  pubDate,
+  url
+} = Astro.props;
+
+const displayCategory = category || (tags && tags[0]) || 'Security';
+const displayReadTime = readTime || (minutes ? `${minutes} min` : '5 min');
+const formattedDate = date || (pubDate ? new Date(pubDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '');
+
+// Category badge color assignment
+const getCategoryColor = (cat: string = '') => {
+  const c = (cat || '').toLowerCase();
+  if (c.includes('architecture') || c.includes('post-quantum')) return 'border-cyan-500/30 bg-cyan-500/10 text-cyan-400';
+  if (c.includes('comparison')) return 'border-purple-500/30 bg-purple-500/10 text-purple-400';
+  if (c.includes('compliance')) return 'border-emerald-500/30 bg-emerald-500/10 text-emerald-400';
+  if (c.includes('technical')) return 'border-blue-500/30 bg-blue-500/10 text-blue-400';
+  if (c.includes('industry')) return 'border-amber-500/30 bg-amber-500/10 text-amber-400';
+  if (c.includes('fundamentals')) return 'border-rose-500/30 bg-rose-500/10 text-rose-400';
+  return 'border-primary/30 bg-primary/10 text-primary';
+};
+
+const badgeClass = getCategoryColor(displayCategory);
+---
+<a
+  href={url}
+  class="clean-post-card group flex h-full flex-col justify-between rounded-xl border border-border bg-card p-5 hover:border-primary/50 hover:shadow-lg transition-all duration-200"
+>
+  <div>
+    <div class="mb-3 flex items-center justify-between gap-2">
+      <span class={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-wider ${badgeClass}`}>
+        {displayCategory}
+      </span>
+      <span class="font-mono text-[10px] text-muted-foreground/80">
+        quickztna.com
+      </span>
+    </div>
+    
+    <h3 class="text-sm font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
+      {title}
+    </h3>
+    
+    {description && (
+      <p class="mt-2 text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+        {description}
       </p>
-    )
-  }
-</article>
+    )}
+  </div>
+
+  <div class="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-xs">
+    <div class="flex items-center gap-2">
+      <span class="font-mono text-[10px] text-muted-foreground/70">{displayReadTime}</span>
+      {formattedDate && (
+        <>
+          <span class="text-muted-foreground/40">·</span>
+          <span class="font-mono text-[10px] text-muted-foreground/70">{formattedDate}</span>
+        </>
+      )}
+    </div>
+    <span class="text-xs font-semibold text-primary flex items-center gap-1 group-hover:underline">
+      Read article <span>→</span>
+    </span>
+  </div>
+</a>
