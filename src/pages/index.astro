@@ -76,7 +76,7 @@ const restPosts = allPosts.slice(1);
 // Recent updates for the right sidebar (top 6 newest)
 const recentUpdates = allPosts.slice(0, 7);
 
-// Curated highlights for the left sidebar
+// Curated highlights for the left sidebar (7 core articles)
 const founderSpecials = [
   allPosts.find((p) => p.id.includes("ztna-vs-vpn")) || allPosts[0],
   allPosts.find((p) => p.id.includes("wireguard-mesh-network")) || allPosts[1],
@@ -84,6 +84,7 @@ const founderSpecials = [
   allPosts.find((p) => p.id.includes("identity-first-networking")) || allPosts[3],
   allPosts.find((p) => p.id.includes("device-posture-checks")) || allPosts[4],
   allPosts.find((p) => p.id.includes("kubernetes-zero-trust")) || allPosts[5],
+  allPosts.find((p) => p.id.includes("sase-vs-ztna-vs-sse")) || allPosts[6],
 ];
 
 const blogIndexSchema = {
@@ -137,29 +138,41 @@ const blogBreadcrumbSchema = {
         
 
 
-        <!-- 3. Engineering Essentials (Matching NetworkersHome Left Special List) -->
+        <!-- 3. Engineering Essentials (Founder Special Card matching Right Card Size) -->
         <div class="rounded-xl border border-border/80 bg-card p-5 shadow-xs transition-all duration-300 hover:shadow-md hover:border-primary/40">
-          <div class="mb-3">
+          <div class="flex items-center justify-between border-b border-border/60 pb-3 mb-3">
             <span class="rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider">
               FOUNDER SPECIAL
             </span>
+            <span class="font-mono text-xs text-muted-foreground">
+              {founderSpecials.length} articles
+            </span>
           </div>
+
+          <p class="mb-3 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            Core Architectures
+          </p>
+
           <div class="space-y-3">
             {founderSpecials.map((post) => {
               const slug = post.id.replace(/\.md$/, "");
               return (
                 <div class="border-b border-border/50 pb-2.5 last:border-0 last:pb-0">
                   <a href={`/blog/${slug}/`} class="group block">
-                    <h4 class="text-xs font-semibold leading-snug text-foreground/90 group-hover:text-primary transition-colors line-clamp-2">
+                    <h4 class="text-xs font-bold leading-[1.35] line-clamp-2 text-foreground group-hover:text-primary transition-colors">
                       {post.data.title}
                     </h4>
+                    <div class="mt-1 flex items-center justify-between font-sans text-[11px] text-muted-foreground">
+                      <span>{post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+                      <span class="font-semibold text-primary group-hover:underline">Read →</span>
+                    </div>
                   </a>
                 </div>
               );
             })}
           </div>
           <a href="#posts-grid" class="mt-3 inline-block font-mono text-xs font-bold text-primary hover:underline">
-            View All →
+            View All Specials →
           </a>
         </div>
       </aside>
