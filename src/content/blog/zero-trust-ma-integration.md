@@ -1,7 +1,7 @@
 ---
 title: "Zero Trust for M&A Integration: Connecting Networks in Days"
 description: "Post-merger network integration takes 12-18 months. Learn how zero trust access lets acquired companies share systems safely within days, not months."
-publishedAt: 2026-08-21
+publishedAt: 2026-09-01
 author:
   name: QuickZTNA Engineering Group
   role: Enterprise & M&A Architecture
