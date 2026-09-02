@@ -8,10 +8,10 @@ const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
 
 const categoryLabel: Record<string, string> = {
   "post-quantum": "Architecture",
-  compliance: "Compliance",
   comparison: "Comparison",
-  fundamentals: "Fundamentals",
+  compliance: "Compliance",
   technical: "Technical",
+  fundamentals: "Fundamentals",
   industry: "Industry",
 };
 
@@ -69,12 +69,22 @@ const counts = Object.fromEntries(
   categories.map((c) => [c, allPosts.filter((p) => p.data.category === c).length])
 );
 
-// Featured post (latest/first) and rest of the posts
+// Featured post (latest/first) and remaining posts
 const featured = allPosts[0];
 const restPosts = allPosts.slice(1);
 
-// Latest posts for top highlight section
-const latestPosts = allPosts.slice(0, 8);
+// Recent updates for the right sidebar (top 6 newest)
+const recentUpdates = allPosts.slice(0, 7);
+
+// Curated highlights for the left sidebar
+const founderSpecials = [
+  allPosts.find((p) => p.id.includes("ztna-vs-vpn")) || allPosts[0],
+  allPosts.find((p) => p.id.includes("wireguard-mesh-network")) || allPosts[1],
+  allPosts.find((p) => p.id.includes("outbound-only-zero-trust")) || allPosts[2],
+  allPosts.find((p) => p.id.includes("identity-first-networking")) || allPosts[3],
+  allPosts.find((p) => p.id.includes("device-posture-checks")) || allPosts[4],
+  allPosts.find((p) => p.id.includes("kubernetes-zero-trust")) || allPosts[5],
+];
 
 const blogIndexSchema = {
   "@context": "https://schema.org",
@@ -82,7 +92,7 @@ const blogIndexSchema = {
   "@id": "https://www.quickztna.com/blog/",
   url: "https://www.quickztna.com/blog/",
   name: "QuickZTNA Blog",
-  description: "Guides, tips, and product updates from the QuickZTNA team.",
+  description: "Guides, architectural teardowns, benchmarks, and product updates from the QuickZTNA team.",
   publisher: { "@id": "https://www.quickztna.com/#organization" },
   inLanguage: "en",
   blogPost: allPosts.slice(0, 20).map((p) => {
@@ -110,41 +120,22 @@ const blogBreadcrumbSchema = {
 ---
 
 <SiteLayout
-  title="QuickZTNA Blog — Guides, Tips, and Product Updates"
-  description="Guides, tips, and product updates from the QuickZTNA team on Zero Trust Network Access, WireGuard mesh, and cybersecurity."
+  title="QuickZTNA Blog — Zero Trust, WireGuard Mesh & Cloud Security"
+  description="Guides, architectural teardowns, benchmarks, and product updates from the QuickZTNA team on Zero Trust Network Access, WireGuard mesh, and cloud security."
 >
   <Fragment slot="head">
     <script type="application/ld+json" set:html={JSON.stringify(blogIndexSchema)} is:inline />
     <script type="application/ld+json" set:html={JSON.stringify(blogBreadcrumbSchema)} is:inline />
   </Fragment>
 
-  <!-- ── HERO BANNER ────────────────────────────────────────────────── -->
-  <section class="border-b border-border/70 bg-hero relative overflow-hidden">
-    <div class="absolute inset-0 bg-grid opacity-85 pointer-events-none" aria-hidden="true"></div>
-    <div class="relative mx-auto max-w-[1700px] px-4 py-10 sm:py-12 lg:py-14 text-center flex flex-col items-center justify-center">
-      <!-- Badge -->
-      <span class="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/90 px-3.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider mb-3 shadow-xs">
-        <span class="text-[#334155]">ENGINEERING &</span>
-        <span class="text-gradient">RESEARCH</span>
-      </span>
+  <!-- Main 3-Column Page Layout Container -->
+  <div class="mx-auto max-w-[1750px] px-3 sm:px-5 lg:px-6 py-6 sm:py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[16rem_1fr] xl:grid-cols-[16.5rem_1fr_17rem] gap-6 items-start">
 
-      <!-- Main Title -->
-      <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-foreground leading-[1.15]">
-        Quick<span class="text-gradient">ZTNA</span> <span class="text-gradient">Blog</span>
-      </h1>
-      <p class="mt-2.5 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
-        Guides, architectural teardowns, benchmarks, and product updates from the QuickZTNA team.
-      </p>
-    </div>
-  </section>
-
-  <!-- Layout Container -->
-  <div class="mx-auto max-w-[1550px] px-3 sm:px-5 lg:px-8 py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-[17rem_1fr] gap-6 xl:gap-8 items-start">
-
-      <!-- ── LEFT SIDEBAR (STICKY FIXED ON SCROLL - 17rem width) ───── -->
-      <aside class="w-full lg:w-[17rem] space-y-5 order-2 lg:order-1 lg:sticky lg:top-20 self-start">
-        <!-- Free Forever Card -->
+      <!-- ── LEFT SIDEBAR (STICKY ON SCROLL) ───────────────────────── -->
+      <aside class="w-full lg:w-[16rem] xl:w-[16.5rem] space-y-5 order-2 lg:order-1 lg:sticky lg:top-20 self-start">
+        
+        <!-- 1. Free Forever Card -->
         <div class="rounded-xl border border-border/80 bg-card p-5 shadow-xs transition-all duration-300 hover:shadow-md hover:border-primary/40">
           <p class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
             FREE FOREVER
@@ -166,7 +157,7 @@ const blogBreadcrumbSchema = {
           </a>
         </div>
 
-        <!-- Browse By Topic Card -->
+        <!-- 2. Browse By Topic Card -->
         <div class="rounded-xl border border-border/80 bg-card p-5 shadow-xs transition-all duration-300 hover:shadow-md hover:border-primary/40">
           <p class="mb-3 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
             BROWSE BY TOPIC
@@ -196,13 +187,134 @@ const blogBreadcrumbSchema = {
             })}
           </div>
         </div>
+
+        <!-- 3. Engineering Essentials (Matching NetworkersHome Left Special List) -->
+        <div class="rounded-xl border border-border/80 bg-card p-5 shadow-xs transition-all duration-300 hover:shadow-md hover:border-primary/40">
+          <div class="mb-3">
+            <span class="rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider">
+              FOUNDER SPECIAL
+            </span>
+          </div>
+          <div class="space-y-3">
+            {founderSpecials.map((post) => {
+              const slug = post.id.replace(/\.md$/, "");
+              return (
+                <div class="border-b border-border/50 pb-2.5 last:border-0 last:pb-0">
+                  <a href={`/blog/${slug}/`} class="group block">
+                    <h4 class="text-xs font-semibold leading-snug text-foreground/90 group-hover:text-primary transition-colors line-clamp-2">
+                      {post.data.title}
+                    </h4>
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+          <a href="#posts-grid" class="mt-3 inline-block font-mono text-xs font-bold text-primary hover:underline">
+            View All →
+          </a>
+        </div>
       </aside>
 
-      <!-- ── CENTER SCROLLING BLOG FEED ────────────────────────────── -->
+      <!-- ── CENTER SCROLLING BLOG FEED (NETWORKERSHOME TOPOLOGY) ───── -->
       <main class="min-w-0 space-y-6 order-1 lg:order-2">
-        <!-- Top Toolbar: Sticky Filter Pills Spread to Full Width -->
+        
+        <!-- Center Title Header (Clean inline header without large hero) -->
+        <div class="border-b border-border/60 pb-4">
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            Networking, Cloud Security & Cybersecurity Blog
+          </h1>
+          <p class="mt-1 text-xs sm:text-sm text-muted-foreground">
+            Expert articles on cloud security, AI/ML, zero trust networking & architecture teardowns
+          </p>
+          
+          <div class="mt-3.5 flex items-center gap-2">
+            <span class="rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-3.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-white shadow-2xs">
+              🔥 NEWEST ARTICLES
+            </span>
+            <span class="text-xs text-muted-foreground font-medium">
+              Latest from our experts
+            </span>
+          </div>
+        </div>
+
+        <!-- ── FEATURED TOP HERO CARD (HORIZONTAL 2-COL NETWORKERSHOME STYLE) ── -->
+        {featured && (() => {
+          const fSlug = featured.id.replace(/\.md$/, "");
+          const fColor = getCatColor(featured.data.category);
+          return (
+            <article class="group rounded-2xl border border-border/80 bg-card overflow-hidden shadow-xs hover:shadow-md hover:border-primary/50 transition-all duration-300">
+              <div class="grid grid-cols-1 md:grid-cols-12 gap-0 items-stretch">
+                <!-- Left Visual Graphic Box -->
+                <div class="md:col-span-5 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px]">
+                  <div class="absolute inset-0 bg-grid opacity-30 pointer-events-none" aria-hidden="true"></div>
+                  
+                  <!-- Top Status Pill -->
+                  <div class="relative z-10 flex items-center justify-between">
+                    <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/20 border border-emerald-500/30 px-2.5 py-0.5 font-mono text-[10px] font-bold text-emerald-300">
+                      <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                      ACTIVE MESH
+                    </span>
+                    <span class="font-mono text-[10px] text-slate-400">P2P v2.4</span>
+                  </div>
+
+                  <!-- Center Graphic Icon / Topology Display -->
+                  <div class="relative z-10 my-4 flex items-center justify-center">
+                    <div class="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-[#00a3c4] p-0.5 shadow-lg group-hover:scale-105 transition-transform duration-300">
+                      <div class="h-full w-full rounded-[14px] bg-slate-900/90 flex items-center justify-center">
+                        <svg class="h-8 w-8 text-[#00a3c4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                          <rect x="2" y="2" width="20" height="8" rx="2" stroke-linecap="round"/>
+                          <rect x="2" y="14" width="20" height="8" rx="2" stroke-linecap="round"/>
+                          <path d="M6 6h.01M6 18h.01" stroke-linecap="round"/>
+                          <path d="M12 10v4" stroke-linecap="round" stroke-dasharray="2 2"/>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Bottom Tagline -->
+                  <div class="relative z-10 flex items-center justify-between text-[11px] font-mono text-slate-300">
+                    <span>WireGuard ABAC</span>
+                    <span class="text-primary font-bold">100% Zero-Trust</span>
+                  </div>
+                </div>
+
+                <!-- Right Content Box -->
+                <div class="md:col-span-7 p-5 sm:p-6 flex flex-col justify-between bg-card">
+                  <div>
+                    <div class="flex items-center justify-between gap-2 mb-2.5">
+                      <span class={`rounded-md border ${fColor.border} ${fColor.bg} px-2.5 py-0.5 font-semibold text-xs ${fColor.text}`}>
+                        {categoryLabel[featured.data.category]}
+                      </span>
+                      <span class="rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase">
+                        ⚡ NEW
+                      </span>
+                    </div>
+
+                    <a href={`/blog/${fSlug}/`} class="block group">
+                      <h2 class="text-lg sm:text-xl font-bold leading-snug text-foreground group-hover:text-primary transition-colors">
+                        {featured.data.title}
+                      </h2>
+                    </a>
+
+                    <p class="mt-2 text-xs sm:text-sm text-muted-foreground line-clamp-3 leading-relaxed">
+                      {featured.data.description}
+                    </p>
+                  </div>
+
+                  <div class="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{featured.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                    <a href={`/blog/${fSlug}/`} class="font-bold text-primary group-hover:underline inline-flex items-center gap-1">
+                      Read article <span>→</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </article>
+          );
+        })()}
+
+        <!-- ── STICKY FULL-WIDTH CATEGORY FILTER TOOLBAR ─────────────── -->
         <div class="sticky top-16 z-30 -mx-2 px-2 py-3 bg-background/90 backdrop-blur-md border-b border-border/60">
-          <!-- Category filter pills spread evenly to the right side -->
           <div class="w-full flex flex-wrap sm:flex-nowrap items-center justify-between gap-2" id="pill-filters">
             <button
               data-pill="all"
@@ -224,176 +336,124 @@ const blogBreadcrumbSchema = {
           </div>
         </div>
 
-        <!-- ── LATEST POSTS SECTION (ABOVE FIRST BLOG CARD) ──────────── -->
-        <div class="rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-xs transition-all duration-200">
-          <div class="flex items-center justify-between border-b border-border/60 pb-3 mb-4">
-            <div class="flex items-center gap-2.5">
-              <span class="rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-3.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-white shadow-2xs">
-                NEWEST ARTICLES
-              </span>
-              <span class="font-mono text-xs text-muted-foreground">
-                {allPosts.length} articles
-              </span>
-            </div>
-            <span class="font-mono text-xs text-muted-foreground">
-              Recent updates
-            </span>
-          </div>
-
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {latestPosts.slice(0, 4).map((post) => {
-              const slug = post.id.replace(/\.md$/, "");
-              return (
-                <a
-                  href={`/blog/${slug}/`}
-                  class="group flex flex-col justify-between rounded-xl border border-border/70 bg-surface/80 hover:bg-card p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-xs"
-                >
-                  <h3 class="text-xs sm:text-sm font-bold leading-snug line-clamp-2 text-foreground group-hover:text-primary transition-colors">
-                    {post.data.title}
-                  </h3>
-                  <div class="mt-2.5 flex items-center justify-between font-mono text-[11px] text-muted-foreground">
-                    <time datetime={post.data.publishedAt.toISOString()}>
-                      {post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </time>
-                    <span class="text-primary font-bold opacity-0 group-hover:opacity-100 transition-opacity">Read →</span>
-                  </div>
-                </a>
-              );
-            })}
-          </div>
-        </div>
-
-        <!-- ── 1. FIRST BLOG CARD (FEATURED) ────────────────────────── -->
-        {featured && (() => {
-          const catColor = getCatColor(featured.data.category);
-          return (
-            <article
-              data-post-cat={featured.data.category}
-              data-title={featured.data.title.toLowerCase()}
-              data-desc={featured.data.description.toLowerCase()}
-              data-tags={featured.data.tags.join(" ").toLowerCase()}
-              class="post-item blog-card group rounded-2xl border border-border/80 bg-card p-7 shadow-xs transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/40"
-            >
-              <!-- Top Badges & Read Time Row -->
-              <div class="flex items-center gap-2.5 mb-3.5">
-                <span class={`rounded-full border ${catColor.border} ${catColor.bg} px-3 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider ${catColor.text}`}>
-                  {categoryLabel[featured.data.category] ?? featured.data.category}
-                </span>
-                <span class="rounded-full border border-border bg-muted px-3 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider text-foreground">
-                  FEATURED
-                </span>
-                <span class="font-mono text-xs text-muted-foreground ml-1">
-                  {Math.ceil((featured.data.wordCount || 3600) / 200)} min read
-                </span>
-              </div>
-
-              <!-- Large Gradient Heading -->
-              <h2 class="text-2xl sm:text-3xl font-bold tracking-tight leading-snug transition-all duration-150">
-                <a href={`/blog/${featured.id.replace(/\.md$/, "")}/`} class="text-gradient hover:opacity-90">
-                  {featured.data.title}
-                </a>
-              </h2>
-
-              <!-- Excerpt -->
-              <p class="mt-3 text-base text-muted-foreground leading-relaxed max-w-4xl">
-                {featured.data.description}
-              </p>
-
-              <!-- Tags Pills -->
-              <div class="mt-4 flex flex-wrap gap-2 text-xs font-mono">
-                {featured.data.tags.map((t: string) => (
-                  <a
-                    href={`/tags/${encodeURIComponent(t.toLowerCase().trim())}/`}
-                    class={`rounded-md border ${catColor.border} ${catColor.pillBg} px-2.5 py-0.5 text-xs text-foreground/80 transition-colors`}
-                  >
-                    #{t}
-                  </a>
-                ))}
-              </div>
-
-              <!-- Date & Author Metadata -->
-              <div class="mt-4 font-mono text-xs text-muted-foreground">
-                <time datetime={featured.data.publishedAt.toISOString()}>
-                  {featured.data.publishedAt.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-                </time>
-                <span> · </span>
-                <span>QuickZTNA Engineering</span>
-              </div>
-            </article>
-          );
-        })()}
-
-        <!-- ── 2. REST OF BLOG CARDS (2-COLUMN GRID) ────────────────── -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="articles-container">
+        <!-- ── MAIN POSTS GRID (2-3 COLUMN NETWORKERSHOME CARD TOPOLOGY) ─ -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4" id="posts-grid">
           {restPosts.map((post) => {
             const slug = post.id.replace(/\.md$/, "");
-            const readTime = post.data.wordCount ? Math.ceil(post.data.wordCount / 200) : 12;
             const catColor = getCatColor(post.data.category);
-
+            const tagsStr = (post.data.tags ?? []).join(" ");
             return (
               <article
+                class="post-item group relative flex flex-col justify-between rounded-xl border border-border/80 bg-card p-4 sm:p-5 shadow-xs transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
                 data-post-cat={post.data.category}
-                data-title={post.data.title.toLowerCase()}
-                data-desc={post.data.description.toLowerCase()}
-                data-tags={post.data.tags.join(" ").toLowerCase()}
-                class="post-item blog-card group flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:shadow-primary/5 hover:border-primary/40"
+                data-tags={tagsStr}
               >
                 <div>
-                  <!-- Top Row: Category Badge (Left) & Read Time (Right) -->
-                  <div class="flex items-center justify-between gap-2 mb-4">
-                    <span class={`rounded-full border ${catColor.border} ${catColor.bg} px-3 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider ${catColor.text}`}>
-                      {categoryLabel[post.data.category] ?? post.data.category}
+                  <!-- Category tag & Date -->
+                  <div class="flex items-center justify-between gap-2 mb-2.5">
+                    <span class={`rounded-md border ${catColor.border} ${catColor.bg} px-2 py-0.5 font-semibold text-[11px] ${catColor.text}`}>
+                      {categoryLabel[post.data.category]}
                     </span>
-                    <span class="font-mono text-xs text-muted-foreground">
-                      {readTime} min
+                    <span class="font-mono text-[10px] text-muted-foreground">
+                      {post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                     </span>
                   </div>
 
                   <!-- Title -->
-                  <h3 class="text-xl font-bold tracking-tight leading-snug line-clamp-2">
-                    <a href={`/blog/${slug}/`} class="text-gradient hover:opacity-90 transition-opacity">
+                  <a href={`/blog/${slug}/`} class="block group">
+                    <h3 class="text-sm sm:text-base font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
                       {post.data.title}
-                    </a>
-                  </h3>
+                    </h3>
+                  </a>
 
-                  <!-- Description / Excerpt -->
-                  <p class="mt-3 text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                  <!-- Excerpt snippet -->
+                  <p class="mt-2 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                     {post.data.description}
                   </p>
                 </div>
 
-                <div class="mt-5">
-                  <!-- Tags List with Category Color -->
-                  <div class="flex flex-wrap gap-2 text-xs font-mono">
-                    {post.data.tags.slice(0, 4).map((t: string) => (
-                      <a
-                        href={`/tags/${encodeURIComponent(t.toLowerCase().trim())}/`}
-                        class={`rounded-md border ${catColor.border} ${catColor.pillBg} px-2.5 py-0.5 text-xs text-foreground/80 transition-colors`}
-                      >
-                        #{t}
-                      </a>
-                    ))}
-                  </div>
-
-                  <!-- Date -->
-                  <time
-                    datetime={post.data.publishedAt.toISOString()}
-                    class="mt-3 block font-mono text-xs text-muted-foreground"
-                  >
-                    {post.data.publishedAt.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" })}
-                  </time>
+                <!-- Footer with read link -->
+                <div class="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-xs">
+                  <span class="font-mono text-[11px] text-muted-foreground">
+                    {post.data.wordCount ? `${Math.round(post.data.wordCount / 200)} min read` : "8 min read"}
+                  </span>
+                  <a href={`/blog/${slug}/`} class="font-bold text-primary group-hover:underline inline-flex items-center gap-1">
+                    Read article <span>→</span>
+                  </a>
                 </div>
               </article>
             );
           })}
         </div>
 
-        <!-- Empty state -->
-        <div id="no-posts" class="hidden rounded-2xl border border-border bg-card p-10 text-center">
-          <p class="text-sm font-bold text-foreground">No matching articles found</p>
-          <p class="mt-1 text-xs text-muted-foreground">Try selecting a different topic filter.</p>
+        <!-- No posts empty state -->
+        <div id="no-posts" class="hidden rounded-xl border border-dashed border-border py-12 text-center">
+          <p class="text-sm font-semibold text-muted-foreground">No articles found in this category.</p>
+          <button
+            id="reset-filter-btn"
+            class="mt-3 rounded-md bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-xs hover:bg-primary/90"
+          >
+            Show all articles
+          </button>
         </div>
       </main>
+
+      <!-- ── RIGHT SIDEBAR (STICKY ON SCROLL - NEWEST ARTICLES LIST) ─ -->
+      <aside class="w-full xl:w-[17rem] space-y-5 order-3 xl:sticky xl:top-20 self-start hidden xl:block">
+        
+        <!-- Newest Articles / AI Special Card -->
+        <div class="rounded-xl border border-border/80 bg-card p-5 shadow-xs transition-all duration-300 hover:shadow-md hover:border-primary/40">
+          <div class="flex items-center justify-between border-b border-border/60 pb-3 mb-3">
+            <span class="rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-white shadow-2xs">
+              NEWEST ARTICLES
+            </span>
+            <span class="font-mono text-xs text-muted-foreground">
+              {allPosts.length} articles
+            </span>
+          </div>
+
+          <p class="mb-3 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            Recent updates
+          </p>
+
+          <div class="space-y-3">
+            {recentUpdates.map((p) => {
+              const pSlug = p.id.replace(/\.md$/, "");
+              return (
+                <div class="border-b border-border/50 pb-2.5 last:border-0 last:pb-0">
+                  <a href={`/blog/${pSlug}/`} class="group block">
+                    <h4 class="text-xs font-bold leading-[1.35] line-clamp-2 text-foreground group-hover:text-primary transition-colors">
+                      {p.data.title}
+                    </h4>
+                    <div class="mt-1 flex items-center justify-between font-sans text-[11px] text-muted-foreground">
+                      <span>{p.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+                      <span class="font-semibold text-primary group-hover:underline">Read →</span>
+                    </div>
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+
+          <a href="#posts-grid" class="mt-3 inline-block font-mono text-xs font-bold text-primary hover:underline">
+            View All Specials →
+          </a>
+        </div>
+
+        <!-- Cloud Mesh Quick Install Card -->
+        <div class="rounded-xl border border-border/80 bg-gradient-to-br from-primary/5 via-card to-card p-5 shadow-xs">
+          <div class="flex items-center gap-2 mb-2">
+            <span class="h-2 w-2 rounded-full bg-success animate-pulse"></span>
+            <span class="font-mono text-[11px] font-bold uppercase tracking-wider text-foreground">Global Mesh</span>
+          </div>
+          <p class="text-xs text-muted-foreground leading-relaxed">
+            Connect servers, databases, and developers in &lt; 2 minutes.
+          </p>
+          <div class="mt-3 rounded-md bg-muted/80 p-2.5 font-mono text-[11px] text-foreground border border-border/60 select-all overflow-x-auto">
+            curl -fsSL https://login.quickztna.com/install.sh | sh
+          </div>
+        </div>
+      </aside>
 
     </div>
   </div>
@@ -403,7 +463,7 @@ const blogBreadcrumbSchema = {
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(6px);
+      transform: translateY(8px);
     }
     to {
       opacity: 1;
@@ -411,15 +471,15 @@ const blogBreadcrumbSchema = {
     }
   }
 
-  .blog-card {
-    animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  .post-item {
+    animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 </style>
 
 <script>
   function setupBlogFiltering() {
-    const countEl = document.getElementById("articles-count");
     const noPostsEl = document.getElementById("no-posts");
+    const resetBtn = document.getElementById("reset-filter-btn");
 
     const topicButtons = document.querySelectorAll<HTMLButtonElement>("[data-topic]");
     const pillButtons = document.querySelectorAll<HTMLButtonElement>("[data-pill]");
@@ -449,10 +509,6 @@ const blogBreadcrumbSchema = {
           item.style.display = "none";
         }
       });
-
-      if (countEl) {
-        countEl.textContent = `${visibleCount} ${visibleCount === 1 ? "article" : "articles"}`;
-      }
 
       if (noPostsEl) {
         noPostsEl.classList.toggle("hidden", visibleCount > 0);
@@ -510,6 +566,12 @@ const blogBreadcrumbSchema = {
       });
     });
 
+    if (resetBtn) {
+      resetBtn.addEventListener("click", () => {
+        setFilter("all", "all");
+      });
+    }
+
     // Check query param
     const params = new URLSearchParams(window.location.search);
     const initialCat = params.get("category");
@@ -518,8 +580,6 @@ const blogBreadcrumbSchema = {
       setFilter("tag", initialTag);
     } else if (initialCat) {
       setFilter("category", initialCat);
-    } else {
-      setFilter("all", "all");
     }
   }
 
