@@ -1,6 +1,8 @@
 ---
-title: "Top 10 Zero Trust Strategies for MSPs and IT Providers in 2026"
-description: "MSPs managing dozens of client environments need zero trust that scales across tenants. Compare 10 strategies and tools purpose-built for the MSP zero trust model."
+title: Top 10 Zero Trust Strategies for MSPs and IT Providers in 2026
+description: MSPs managing dozens of client environments need zero trust that scales
+  across tenants. Compare 10 strategies and tools purpose-built for the MSP zero trust
+  model.
 publishedAt: 2026-05-16
 author:
   name: QuickZTNA Engineering
@@ -8,28 +10,75 @@ author:
   url: https://github.com/quickztna
 category: industry
 tags:
-  - msp
-  - managed-service-provider
-  - multi-tenant
-  - zero-trust
-  - ztna
+- msp
+- managed-service-provider
+- multi-tenant
+- zero-trust
+- ztna
 primaryKeyword: msp zero trust
 wordCount: 4000
 listicle: true
 faq:
-  - q: "Why do MSPs need a different zero trust approach than enterprises?"
-    a: "Enterprise zero trust protects one organisation with a single identity provider, one set of policies, and one security team owning outcomes. MSPs manage zero trust for dozens or hundreds of clients simultaneously. Each client has different identity providers (or none), different policy requirements, different industries and compliance obligations, and critically — the MSP's own technicians are privileged third parties in every client environment. MSP zero trust must support multi-tenancy, per-client policy isolation, and rigorous controls over MSP technician access that block lateral movement between client environments."
-  - q: "What is the biggest security risk specific to MSPs?"
-    a: "Lateral movement via MSP-to-client infrastructure. The 2021 Kaseya VSA breach and the 2023 MOVEit exploit targeting MSP file transfer tools are canonical examples. Attackers compromised MSP management tools and leveraged the access those tools had to client environments to deploy ransomware at scale — affecting thousands of SMB clients through a single MSP toolchain breach. The key vulnerability: MSP management tools often hold wide-scope persistent credentials to client systems. Zero trust mitigation: per-client access segmentation, JIT access for client operations, and privileged access control for all MSP-to-client connections."
-  - q: "How should an MSP structure their zero trust platform for multi-tenant management?"
-    a: "The model: MSP operates a zero trust gateway per client tenant, or uses a multi-tenant-aware ZTNA platform with per-tenant policy isolation. MSP technicians authenticate centrally with the MSP identity provider (Okta, Azure AD), receive a session scoped to a specific client environment and time window. JIT access for privileged operations. Session recording for all client environment access. Per-client audit logs exportable to the client. The MSP never uses shared credentials between clients; access to Client A does not provide any access to Client B."
-  - q: "What is RMM and how does it relate to zero trust?"
-    a: "Remote Monitoring and Management (RMM) is the primary tool MSPs use to manage client endpoints. RMM agents on client devices give the MSP persistent access for monitoring, patch management, remote control, and script execution. Traditional RMM is a standing credential to every client device — the opposite of zero trust. Modern MSP zero trust augments RMM with access policy that limits which MSP technicians can access which client devices, requires MFA for privileged operations, and records every remote session. Tools like NinjaRMM, ConnectWise Control, and Datto RMM have varying levels of zero trust integration."
-  - q: "What compliance frameworks apply specifically to MSPs?"
-    a: "MSPs are increasingly subject to regulatory requirements directly and through client obligations. CMMC 2.0 (for MSPs serving US defence contractors) requires controls including access management, incident response, and audit logging that apply to the MSP environment, not just the client. FTC Safeguards Rule (for MSPs serving financial services clients) requires a formal information security programme. SOC 2 Type II certification is increasingly required by enterprise client procurement teams. PCI-DSS service provider requirements apply to MSPs who store, process, or transmit cardholder data. Each framework ultimately requires the MSP to demonstrate zero trust controls between their own environment and client environments."
-  - q: "How do MSPs handle the SSL inspection dilemma for client environments?"
-    a: "Many MSPs deploy network monitoring that requires TLS inspection on client networks. TLS inspection is technically an AitM (attacker-in-the-middle) pattern — the MSP terminates client TLS traffic, inspects, and re-encrypts. This requires that clients install and trust the MSP's CA certificate on all devices. The zero trust implication: the MSP with TLS inspection capability on a client network has nearly unrestricted visibility into that client's encrypted traffic. Clients should understand the models of access their MSP has and the monitoring controls the MSP has over their own technicians."
+- q: Why do MSPs need a different zero trust approach than enterprises?
+  a: Enterprise zero trust protects one organisation with a single identity provider,
+    one set of policies, and one security team owning outcomes. MSPs manage zero trust
+    for dozens or hundreds of clients simultaneously. Each client has different identity
+    providers (or none), different policy requirements, different industries and compliance
+    obligations, and critically — the MSP's own technicians are privileged third parties
+    in every client environment. MSP zero trust must support multi-tenancy, per-client
+    policy isolation, and rigorous controls over MSP technician access that block
+    lateral movement between client environments.
+- q: What is the biggest security risk specific to MSPs?
+  a: 'Lateral movement via MSP-to-client infrastructure. The 2021 Kaseya VSA breach
+    and the 2023 MOVEit exploit targeting MSP file transfer tools are canonical examples.
+    Attackers compromised MSP management tools and leveraged the access those tools
+    had to client environments to deploy ransomware at scale — affecting thousands
+    of SMB clients through a single MSP toolchain breach. The key vulnerability: MSP
+    management tools often hold wide-scope persistent credentials to client systems.
+    Zero trust mitigation: per-client access segmentation, JIT access for client operations,
+    and privileged access control for all MSP-to-client connections.'
+- q: How should an MSP structure their zero trust platform for multi-tenant management?
+  a: 'The model: MSP operates a zero trust gateway per client tenant, or uses a multi-tenant-aware
+    ZTNA platform with per-tenant policy isolation. MSP technicians authenticate centrally
+    with the MSP identity provider (Okta, Azure AD), receive a session scoped to a
+    specific client environment and time window. JIT access for privileged operations.
+    Session recording for all client environment access. Per-client audit logs exportable
+    to the client. The MSP never uses shared credentials between clients; access to
+    Client A does not provide any access to Client B.'
+- q: What is RMM and how does it relate to zero trust?
+  a: Remote Monitoring and Management (RMM) is the primary tool MSPs use to manage
+    client endpoints. RMM agents on client devices give the MSP persistent access
+    for monitoring, patch management, remote control, and script execution. Traditional
+    RMM is a standing credential to every client device — the opposite of zero trust.
+    Modern MSP zero trust augments RMM with access policy that limits which MSP technicians
+    can access which client devices, requires MFA for privileged operations, and records
+    every remote session. Tools like NinjaRMM, ConnectWise Control, and Datto RMM
+    have varying levels of zero trust integration.
+- q: What compliance frameworks apply specifically to MSPs?
+  a: MSPs are increasingly subject to regulatory requirements directly and through
+    client obligations. CMMC 2.0 (for MSPs serving US defence contractors) requires
+    controls including access management, incident response, and audit logging that
+    apply to the MSP environment, not just the client. FTC Safeguards Rule (for MSPs
+    serving financial services clients) requires a formal information security programme.
+    SOC 2 Type II certification is increasingly required by enterprise client procurement
+    teams. PCI-DSS service provider requirements apply to MSPs who store, process,
+    or transmit cardholder data. Each framework ultimately requires the MSP to demonstrate
+    zero trust controls between their own environment and client environments.
+- q: How do MSPs handle the SSL inspection dilemma for client environments?
+  a: 'Many MSPs deploy network monitoring that requires TLS inspection on client networks.
+    TLS inspection is technically an AitM (attacker-in-the-middle) pattern — the MSP
+    terminates client TLS traffic, inspects, and re-encrypts. This requires that clients
+    install and trust the MSP''s CA certificate on all devices. The zero trust implication:
+    the MSP with TLS inspection capability on a client network has nearly unrestricted
+    visibility into that client''s encrypted traffic. Clients should understand the
+    models of access their MSP has and the monitoring controls the MSP has over their
+    own technicians.'
+relatedSlugs:
+- top-10-remote-desktop-secure-access
+- ztna-metrics-for-cisos
+- soc-2-remote-access-controls
 ---
+
 
 ## TL;DR
 
@@ -210,3 +259,13 @@ The zero trust requirements for MSPs follow directly from this threat model:
 ## QuickZTNA for MSPs
 
 QuickZTNA provides MSP-tier multi-tenant ZTNA with per-client policy isolation, centralised technician identity, white-label client portal, and volume pricing. [Contact our MSP partnerships team](mailto:partners@quickztna.com) to discuss the programme.
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[The Best Secure Remote Desktop Solutions in 2026](/blog/top-10-remote-desktop-secure-access/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[17 ZTNA Metrics Every CISO Should Actually Track in 2026](/blog/ztna-metrics-for-cisos/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[SOC 2 Controls for Remote Access: 11 You'll Get Audited On](/blog/soc-2-remote-access-controls/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

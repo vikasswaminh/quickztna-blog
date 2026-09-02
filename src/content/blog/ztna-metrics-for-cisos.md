@@ -1,6 +1,8 @@
 ---
-title: "17 ZTNA Metrics Every CISO Should Actually Track in 2026"
-description: "Vendor decks quote ZTNA statistics you cannot verify. Your board wants metrics from your own environment. 17 that matter, with formulas and how to collect them."
+title: 17 ZTNA Metrics Every CISO Should Actually Track in 2026
+description: Vendor decks quote ZTNA statistics you cannot verify. Your board wants
+  metrics from your own environment. 17 that matter, with formulas and how to collect
+  them.
 publishedAt: 2026-05-09
 author:
   name: QuickZTNA Engineering
@@ -8,27 +10,51 @@ author:
   url: https://github.com/quickztna
 category: technical
 tags:
-  - ztna-metrics
-  - kpis
-  - ciso
-  - security-operations
-  - measurement
+- ztna-metrics
+- kpis
+- ciso
+- security-operations
+- measurement
 primaryKeyword: ztna metrics
 wordCount: 4060
 faq:
-  - q: "What is the difference between 'ZTNA statistics' and 'ZTNA metrics'?"
-    a: "Statistics are industry-wide numbers from research reports — 'x% of organisations have adopted Zero Trust', 'average breach cost is $y million'. Metrics are measurements from your own environment — 'our authentication failure rate is 2.3% this month, up from 1.8% last month'. Board decks citing industry statistics are interesting; board decks citing your own metrics are actionable. This post covers the latter."
-  - q: "How many of these metrics should I track from day one?"
-    a: "Start with 5-7. Trying to instrument all 17 before any are trusted is a project that never ships. The recommended starting set is covered in section 11. Once those are stable and reported, add two or three more per quarter until the dashboard is complete."
-  - q: "Where do these metrics come from operationally?"
-    a: "ZTNA product audit logs for most (authentications, authorisations, session characteristics). SIEM for correlation with other security telemetry. Identity provider for MFA and SSO metrics. Endpoint management for posture-side metrics. The bulk of the data collection is ZTNA plus IdP plus EDR exported to a SIEM or log store."
-  - q: "Are any of these metrics required for compliance?"
-    a: "Yes, indirectly. SOC 2 Common Criteria (especially CC6 and CC7 — see our [SOC 2 post](/blog/soc-2-remote-access-controls)) and HIPAA Security Rule audit controls both require evidence of the activity these metrics measure. Producing the metrics gives you a shortcut to compliance evidence."
-  - q: "What is a healthy value for each metric?"
-    a: "Organisation-specific. Every environment has a different baseline. The first month of measurement establishes your baseline; subsequent months compare to the baseline. Absolute thresholds for some metrics (e.g., 100% MFA coverage on privileged accounts) are universal; most metrics are trend-based rather than threshold-based."
-  - q: "How should these metrics be presented to the board?"
-    a: "Three to five metrics on a single slide, quarter-over-quarter trend, with one-sentence explanation and one-sentence action item. Boards do not read dashboards. They read narrative-with-numbers. The rest of the metrics support the narrative internally."
+- q: What is the difference between 'ZTNA statistics' and 'ZTNA metrics'?
+  a: Statistics are industry-wide numbers from research reports — 'x% of organisations
+    have adopted Zero Trust', 'average breach cost is $y million'. Metrics are measurements
+    from your own environment — 'our authentication failure rate is 2.3% this month,
+    up from 1.8% last month'. Board decks citing industry statistics are interesting;
+    board decks citing your own metrics are actionable. This post covers the latter.
+- q: How many of these metrics should I track from day one?
+  a: Start with 5-7. Trying to instrument all 17 before any are trusted is a project
+    that never ships. The recommended starting set is covered in section 11. Once
+    those are stable and reported, add two or three more per quarter until the dashboard
+    is complete.
+- q: Where do these metrics come from operationally?
+  a: ZTNA product audit logs for most (authentications, authorisations, session characteristics).
+    SIEM for correlation with other security telemetry. Identity provider for MFA
+    and SSO metrics. Endpoint management for posture-side metrics. The bulk of the
+    data collection is ZTNA plus IdP plus EDR exported to a SIEM or log store.
+- q: Are any of these metrics required for compliance?
+  a: Yes, indirectly. SOC 2 Common Criteria (especially CC6 and CC7 — see our [SOC
+    2 post](/blog/soc-2-remote-access-controls)) and HIPAA Security Rule audit controls
+    both require evidence of the activity these metrics measure. Producing the metrics
+    gives you a shortcut to compliance evidence.
+- q: What is a healthy value for each metric?
+  a: Organisation-specific. Every environment has a different baseline. The first
+    month of measurement establishes your baseline; subsequent months compare to the
+    baseline. Absolute thresholds for some metrics (e.g., 100% MFA coverage on privileged
+    accounts) are universal; most metrics are trend-based rather than threshold-based.
+- q: How should these metrics be presented to the board?
+  a: Three to five metrics on a single slide, quarter-over-quarter trend, with one-sentence
+    explanation and one-sentence action item. Boards do not read dashboards. They
+    read narrative-with-numbers. The rest of the metrics support the narrative internally.
+relatedSlugs:
+- soc-2-remote-access-controls
+- dora-compliance-network-resilience
+- what-is-ztna
+- top-10-msp-zero-trust-strategies
 ---
+
 
 ## TL;DR
 
@@ -337,3 +363,14 @@ fact_check:
     - https://www.cisa.gov/zero-trust-maturity-model
     - https://www.aicpa-cima.com/resources/download/trust-services-criteria
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[SOC 2 Controls for Remote Access: 11 You'll Get Audited On](/blog/soc-2-remote-access-controls/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[DORA Compliance for Financial Entities: Network Resilience in 10 Steps](/blog/dora-compliance-network-resilience/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[What Is ZTNA? A Plain-English Guide to Zero Trust Network Access in 2026](/blog/what-is-ztna/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Top 10 Zero Trust Strategies for MSPs and IT Providers in 2026](/blog/top-10-msp-zero-trust-strategies/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

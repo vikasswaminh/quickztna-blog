@@ -1,6 +1,7 @@
-﻿---
-title: "NIS2 Directive Remote Access Requirements: A Builder's Checklist"
-description: "NIS2 has applied to EU organisations since October 2024. Remote-access-specific reading of Article 21 with a concrete implementation checklist."
+---
+title: 'NIS2 Directive Remote Access Requirements: A Builder''s Checklist'
+description: NIS2 has applied to EU organisations since October 2024. Remote-access-specific
+  reading of Article 21 with a concrete implementation checklist.
 publishedAt: 2026-04-26
 author:
   name: QuickZTNA Engineering
@@ -8,27 +9,58 @@ author:
   url: https://github.com/quickztna
 category: compliance
 tags:
-  - nis2
-  - eu-cybersecurity
-  - directive-2022-2555
-  - remote-access
-  - compliance
+- nis2
+- eu-cybersecurity
+- directive-2022-2555
+- remote-access
+- compliance
 primaryKeyword: nis2 remote access
 wordCount: 4310
 faq:
-  - q: "When did NIS2 apply?"
-    a: "The NIS2 Directive — Directive (EU) 2022/2555 — was adopted on 14 December 2022 and entered into force on 16 January 2023. Member states had until 17 October 2024 to transpose it into national law, and entities were required to apply the measures from 18 October 2024. Transposition status varies per country; check the local implementation act, not just the EU directive text."
-  - q: "Is NIS2 a directive or a regulation?"
-    a: "A directive. Directives set minimum harmonisation requirements and must be transposed into national law by each member state. Regulations are directly applicable without transposition. That means the binding legal text for a given entity is the local transposition — for example Germany's NIS2UmsuCG, France's implementation in the Cadre commun de sécurité — rather than the EU directive itself. The directive sets the floor; local implementations can go beyond it."
-  - q: "What entities are in scope?"
-    a: "NIS2 applies to entities in eighteen sectors, split into 'essential' (Annex I) and 'important' (Annex II), typically at medium-sized-enterprise threshold or above — meaning at least 50 employees or more than €10 million annual turnover or balance sheet. Specific sub-sectors have their own thresholds. Some small entities are in scope regardless of size, including trust services providers and DNS service providers."
-  - q: "What are the fines?"
-    a: "For essential entities, up to €10 million or 2% of total worldwide annual turnover, whichever is higher. For important entities, up to €7 million or 1.4%. These are directive ceilings; national transpositions may set lower caps. Fines are on top of the obligation to implement the measures — i.e., non-compliance does not substitute for implementation."
-  - q: "Does Article 21 explicitly require Zero Trust?"
-    a: "No. Article 21 does not name Zero Trust or any specific architecture. It requires 'appropriate and proportionate' technical, operational, and organisational measures to manage risks, lists ten categories of measures (point (a) through (j)) that must be covered, and leaves the implementation open. A Zero Trust architecture is one way to meet several of the categories simultaneously; it is not mandated."
-  - q: "When do I report an incident?"
-    a: "Article 23 specifies a three-stage reporting obligation: an early warning to the competent authority or CSIRT within 24 hours of becoming aware, an incident notification within 72 hours including an initial assessment, and a final report within one month. The clock starts from awareness, not from containment or understanding."
+- q: When did NIS2 apply?
+  a: The NIS2 Directive — Directive (EU) 2022/2555 — was adopted on 14 December 2022
+    and entered into force on 16 January 2023. Member states had until 17 October
+    2024 to transpose it into national law, and entities were required to apply the
+    measures from 18 October 2024. Transposition status varies per country; check
+    the local implementation act, not just the EU directive text.
+- q: Is NIS2 a directive or a regulation?
+  a: A directive. Directives set minimum harmonisation requirements and must be transposed
+    into national law by each member state. Regulations are directly applicable without
+    transposition. That means the binding legal text for a given entity is the local
+    transposition — for example Germany's NIS2UmsuCG, France's implementation in the
+    Cadre commun de sécurité — rather than the EU directive itself. The directive
+    sets the floor; local implementations can go beyond it.
+- q: What entities are in scope?
+  a: NIS2 applies to entities in eighteen sectors, split into 'essential' (Annex I)
+    and 'important' (Annex II), typically at medium-sized-enterprise threshold or
+    above — meaning at least 50 employees or more than €10 million annual turnover
+    or balance sheet. Specific sub-sectors have their own thresholds. Some small entities
+    are in scope regardless of size, including trust services providers and DNS service
+    providers.
+- q: What are the fines?
+  a: For essential entities, up to €10 million or 2% of total worldwide annual turnover,
+    whichever is higher. For important entities, up to €7 million or 1.4%. These are
+    directive ceilings; national transpositions may set lower caps. Fines are on top
+    of the obligation to implement the measures — i.e., non-compliance does not substitute
+    for implementation.
+- q: Does Article 21 explicitly require Zero Trust?
+  a: No. Article 21 does not name Zero Trust or any specific architecture. It requires
+    'appropriate and proportionate' technical, operational, and organisational measures
+    to manage risks, lists ten categories of measures (point (a) through (j)) that
+    must be covered, and leaves the implementation open. A Zero Trust architecture
+    is one way to meet several of the categories simultaneously; it is not mandated.
+- q: When do I report an incident?
+  a: 'Article 23 specifies a three-stage reporting obligation: an early warning to
+    the competent authority or CSIRT within 24 hours of becoming aware, an incident
+    notification within 72 hours including an initial assessment, and a final report
+    within one month. The clock starts from awareness, not from containment or understanding.'
+relatedSlugs:
+- dora-compliance-network-resilience
+- soc-2-remote-access-controls
+- what-is-ztna
+- ztna-metrics-for-cisos
 ---
+
 
 ## TL;DR
 
@@ -284,3 +316,14 @@ fact_check:
     - https://digital-strategy.ec.europa.eu/en/library/recommendation-coordinated-implementation-roadmap-transition-post-quantum-cryptography
     - https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr02102/tr02102_node.html
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[DORA Compliance for Financial Entities: Network Resilience in 10 Steps](/blog/dora-compliance-network-resilience/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[SOC 2 Controls for Remote Access: 11 You'll Get Audited On](/blog/soc-2-remote-access-controls/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[What Is ZTNA? A Plain-English Guide to Zero Trust Network Access in 2026](/blog/what-is-ztna/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[17 ZTNA Metrics Every CISO Should Actually Track in 2026](/blog/ztna-metrics-for-cisos/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

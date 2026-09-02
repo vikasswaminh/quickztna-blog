@@ -1,6 +1,7 @@
-﻿---
-title: "DORA Compliance for Financial Entities: Network Resilience in 10 Steps"
-description: "DORA has applied to EU financial entities since January 2025. Articles 5 through 27 translated into ten concrete network-resilience implementation steps."
+---
+title: 'DORA Compliance for Financial Entities: Network Resilience in 10 Steps'
+description: DORA has applied to EU financial entities since January 2025. Articles
+  5 through 27 translated into ten concrete network-resilience implementation steps.
 publishedAt: 2026-04-27
 author:
   name: QuickZTNA Engineering
@@ -8,27 +9,60 @@ author:
   url: https://github.com/quickztna
 category: compliance
 tags:
-  - dora
-  - financial-regulation
-  - ict-risk-management
-  - eu-regulation
-  - regulation-2022-2554
+- dora
+- financial-regulation
+- ict-risk-management
+- eu-regulation
+- regulation-2022-2554
 primaryKeyword: dora compliance
 wordCount: 4260
 faq:
-  - q: "When did DORA actually apply?"
-    a: "The Digital Operational Resilience Act — Regulation (EU) 2022/2554 — entered into force on 16 January 2023. It became applicable to in-scope financial entities on 17 January 2025. From that date, financial entities must be able to demonstrate compliance with the ICT risk-management, incident-reporting, and third-party oversight requirements."
-  - q: "Is DORA a regulation or a directive?"
-    a: "A regulation. Unlike NIS2, which is a directive that member states transpose into national law, DORA is directly applicable across the EU from the date of application. Member-state-level adjustments are narrow; the binding text is the regulation itself plus the Regulatory Technical Standards (RTS) and Implementing Technical Standards (ITS) issued by the European Supervisory Authorities."
-  - q: "Who is in scope for DORA?"
-    a: "Twenty types of financial entity, defined in Article 2. The list includes credit institutions, payment institutions, e-money institutions, investment firms, central securities depositories, central counterparties, trading venues, insurance and reinsurance undertakings, crypto-asset service providers, and critical ICT third-party service providers that serve in-scope entities. Some requirements are proportionate; the largest entities (for example, significant financial market infrastructures) face the most intensive obligations."
-  - q: "How is DORA different from NIS2?"
-    a: "DORA is sector-specific (financial services) and is a regulation, not a directive. It is more detailed than NIS2 on several points — threat-led penetration testing, critical third-party oversight, and ICT contract registers are DORA-specific. A financial entity may be in scope for both frameworks; DORA prevails where the two conflict for financial entities per Article 1(2). For non-financial entities, NIS2 applies and DORA does not."
-  - q: "What does 'threat-led penetration testing' mean under DORA?"
-    a: "Also known as TLPT or red-teaming, this is a form of realistic, intelligence-led testing that simulates an actual attacker against live production systems. It is based on the TIBER-EU framework. DORA requires significant financial entities to undergo TLPT at least every three years. The test is coordinated with the competent authority and executed against a scope that includes critical and important functions."
-  - q: "What penalties apply for DORA non-compliance?"
-    a: "National competent authorities set fines under their normal enforcement regimes — DORA does not set a single harmonised cap for financial entities. For critical ICT third-party service providers (CTPPs) under the oversight framework, the regulation specifies periodic penalty payments of up to 1% of the CTPP's average daily worldwide turnover for each day of non-compliance, for up to six months. This is an unusually punitive mechanism."
+- q: When did DORA actually apply?
+  a: The Digital Operational Resilience Act — Regulation (EU) 2022/2554 — entered
+    into force on 16 January 2023. It became applicable to in-scope financial entities
+    on 17 January 2025. From that date, financial entities must be able to demonstrate
+    compliance with the ICT risk-management, incident-reporting, and third-party oversight
+    requirements.
+- q: Is DORA a regulation or a directive?
+  a: A regulation. Unlike NIS2, which is a directive that member states transpose
+    into national law, DORA is directly applicable across the EU from the date of
+    application. Member-state-level adjustments are narrow; the binding text is the
+    regulation itself plus the Regulatory Technical Standards (RTS) and Implementing
+    Technical Standards (ITS) issued by the European Supervisory Authorities.
+- q: Who is in scope for DORA?
+  a: Twenty types of financial entity, defined in Article 2. The list includes credit
+    institutions, payment institutions, e-money institutions, investment firms, central
+    securities depositories, central counterparties, trading venues, insurance and
+    reinsurance undertakings, crypto-asset service providers, and critical ICT third-party
+    service providers that serve in-scope entities. Some requirements are proportionate;
+    the largest entities (for example, significant financial market infrastructures)
+    face the most intensive obligations.
+- q: How is DORA different from NIS2?
+  a: DORA is sector-specific (financial services) and is a regulation, not a directive.
+    It is more detailed than NIS2 on several points — threat-led penetration testing,
+    critical third-party oversight, and ICT contract registers are DORA-specific.
+    A financial entity may be in scope for both frameworks; DORA prevails where the
+    two conflict for financial entities per Article 1(2). For non-financial entities,
+    NIS2 applies and DORA does not.
+- q: What does 'threat-led penetration testing' mean under DORA?
+  a: Also known as TLPT or red-teaming, this is a form of realistic, intelligence-led
+    testing that simulates an actual attacker against live production systems. It
+    is based on the TIBER-EU framework. DORA requires significant financial entities
+    to undergo TLPT at least every three years. The test is coordinated with the competent
+    authority and executed against a scope that includes critical and important functions.
+- q: What penalties apply for DORA non-compliance?
+  a: National competent authorities set fines under their normal enforcement regimes
+    — DORA does not set a single harmonised cap for financial entities. For critical
+    ICT third-party service providers (CTPPs) under the oversight framework, the regulation
+    specifies periodic penalty payments of up to 1% of the CTPP's average daily worldwide
+    turnover for each day of non-compliance, for up to six months. This is an unusually
+    punitive mechanism.
+relatedSlugs:
+- nis2-remote-access-requirements
+- ztna-metrics-for-cisos
+- soc-2-remote-access-controls
 ---
+
 
 ## TL;DR
 
@@ -291,3 +325,13 @@ fact_check:
     - https://eur-lex.europa.eu/eli/dir/2022/2555/oj
     - https://digital-strategy.ec.europa.eu/en/library/recommendation-coordinated-implementation-roadmap-transition-post-quantum-cryptography
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[NIS2 Directive Remote Access Requirements: A Builder's Checklist](/blog/nis2-remote-access-requirements/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[17 ZTNA Metrics Every CISO Should Actually Track in 2026](/blog/ztna-metrics-for-cisos/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[SOC 2 Controls for Remote Access: 11 You'll Get Audited On](/blog/soc-2-remote-access-controls/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

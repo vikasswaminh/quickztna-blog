@@ -1,6 +1,7 @@
-﻿---
-title: "ANSSI PQC Transition Plan: France's Deadlines for Public Sector Networks"
-description: "ANSSI, France's cyber agency, has a three-phase plan for post-quantum. What each phase requires and how to align ZTNA with ANSSI qualification."
+---
+title: 'ANSSI PQC Transition Plan: France''s Deadlines for Public Sector Networks'
+description: ANSSI, France's cyber agency, has a three-phase plan for post-quantum.
+  What each phase requires and how to align ZTNA with ANSSI qualification.
 publishedAt: 2026-04-28
 author:
   name: QuickZTNA Engineering
@@ -8,27 +9,61 @@ author:
   url: https://github.com/quickztna
 category: compliance
 tags:
-  - anssi
-  - france
-  - post-quantum
-  - qualification
-  - compliance
+- anssi
+- france
+- post-quantum
+- qualification
+- compliance
 primaryKeyword: anssi post quantum
 wordCount: 4050
 faq:
-  - q: "What is ANSSI?"
-    a: "ANSSI — Agence nationale de la sécurité des systèmes d'information — is France's national cybersecurity agency. It was created in 2009 and reports to the SGDSN (Secrétariat général de la défense et de la sécurité nationale). Its responsibilities include setting cybersecurity technical guidance, operating the national CERT, running the ANSSI qualification schemes for products and service providers, and supervising operators of vital importance."
-  - q: "Is ANSSI's PQC guidance legally binding?"
-    a: "It is binding on French public administration and on certain regulated entities via sector-specific provisions. For private entities, the guidance is not directly binding but is the normative reference for NIS2 transposition in France, for OIV (Opérateurs d'Importance Vitale) obligations, and for ANSSI qualification processes that many entities voluntarily pursue to market products and services."
-  - q: "What are the three phases of the ANSSI PQC plan?"
-    a: "ANSSI has described a staged transition: Phase 1 — hybrid classical-plus-post-quantum deployments using the best available post-quantum primitives, starting now; Phase 2 — standardised hybrid deployments using FIPS-approved post-quantum algorithms, as the cryptographic community gains confidence; Phase 3 — optional migration to pure post-quantum, contingent on sufficient cryptanalysis maturity. The phases overlap in practice and timelines are guidance rather than hard deadlines."
-  - q: "Does ANSSI prefer FrodoKEM over ML-KEM?"
-    a: "ANSSI has historically expressed a preference for FrodoKEM due to its security reducing to the plain Learning With Errors problem — a more conservative assumption than the Module-LWE underlying ML-KEM. Recent ANSSI guidance has accepted ML-KEM following FIPS 203 standardisation while maintaining the preference for FrodoKEM in highest-assurance use cases. Review the current ANSSI publications for the exact position."
-  - q: "What is ANSSI qualification?"
-    a: "ANSSI qualification is a formal assessment of a product or service provider's security. Two levels exist: Qualification Standard for commercial use cases with moderate assurance requirements, and Qualification Renforcée for sensitive or critical use cases. Qualified products carry the Visa de sécurité ANSSI mark. Qualification is distinct from CSPN (Certification de Sécurité de Premier Niveau), which is a product-level certification."
-  - q: "How does ANSSI guidance interact with NIS2 in France?"
-    a: "France transposes NIS2 into national law. The French transposition imports the directive's 'appropriate and proportionate' cryptographic measures requirement and relies on ANSSI's technical guidance to define what 'appropriate' means in practice. A deployment aligned with ANSSI's PQC recommendations is a defensible starting point for NIS2 Article 21(2)(h) cryptographic obligations in France."
+- q: What is ANSSI?
+  a: ANSSI — Agence nationale de la sécurité des systèmes d'information — is France's
+    national cybersecurity agency. It was created in 2009 and reports to the SGDSN
+    (Secrétariat général de la défense et de la sécurité nationale). Its responsibilities
+    include setting cybersecurity technical guidance, operating the national CERT,
+    running the ANSSI qualification schemes for products and service providers, and
+    supervising operators of vital importance.
+- q: Is ANSSI's PQC guidance legally binding?
+  a: It is binding on French public administration and on certain regulated entities
+    via sector-specific provisions. For private entities, the guidance is not directly
+    binding but is the normative reference for NIS2 transposition in France, for OIV
+    (Opérateurs d'Importance Vitale) obligations, and for ANSSI qualification processes
+    that many entities voluntarily pursue to market products and services.
+- q: What are the three phases of the ANSSI PQC plan?
+  a: 'ANSSI has described a staged transition: Phase 1 — hybrid classical-plus-post-quantum
+    deployments using the best available post-quantum primitives, starting now; Phase
+    2 — standardised hybrid deployments using FIPS-approved post-quantum algorithms,
+    as the cryptographic community gains confidence; Phase 3 — optional migration
+    to pure post-quantum, contingent on sufficient cryptanalysis maturity. The phases
+    overlap in practice and timelines are guidance rather than hard deadlines.'
+- q: Does ANSSI prefer FrodoKEM over ML-KEM?
+  a: ANSSI has historically expressed a preference for FrodoKEM due to its security
+    reducing to the plain Learning With Errors problem — a more conservative assumption
+    than the Module-LWE underlying ML-KEM. Recent ANSSI guidance has accepted ML-KEM
+    following FIPS 203 standardisation while maintaining the preference for FrodoKEM
+    in highest-assurance use cases. Review the current ANSSI publications for the
+    exact position.
+- q: What is ANSSI qualification?
+  a: 'ANSSI qualification is a formal assessment of a product or service provider''s
+    security. Two levels exist: Qualification Standard for commercial use cases with
+    moderate assurance requirements, and Qualification Renforcée for sensitive or
+    critical use cases. Qualified products carry the Visa de sécurité ANSSI mark.
+    Qualification is distinct from CSPN (Certification de Sécurité de Premier Niveau),
+    which is a product-level certification.'
+- q: How does ANSSI guidance interact with NIS2 in France?
+  a: France transposes NIS2 into national law. The French transposition imports the
+    directive's 'appropriate and proportionate' cryptographic measures requirement
+    and relies on ANSSI's technical guidance to define what 'appropriate' means in
+    practice. A deployment aligned with ANSSI's PQC recommendations is a defensible
+    starting point for NIS2 Article 21(2)(h) cryptographic obligations in France.
+relatedSlugs:
+- bsi-post-quantum-transition-2026
+- cnsa-2-0-deadlines
+- harvest-now-decrypt-later
+- post-quantum-migration-timeline
 ---
+
 
 ## TL;DR
 
@@ -296,3 +331,14 @@ fact_check:
     - https://csrc.nist.gov/pubs/fips/204/final
     - https://digital-strategy.ec.europa.eu/en/library/recommendation-coordinated-implementation-roadmap-transition-post-quantum-cryptography
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[BSI TR-02102-1 and Post-Quantum: Germany's 2026 Crypto Baseline](/blog/bsi-post-quantum-transition-2026/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[NSA CNSA 2.0: Every Deadline DoD Contractors Need to Know](/blog/cnsa-2-0-deadlines/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Harvest Now, Decrypt Later: Why Your VPN Traffic Is Already Compromised](/blog/harvest-now-decrypt-later/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page](/blog/post-quantum-migration-timeline/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

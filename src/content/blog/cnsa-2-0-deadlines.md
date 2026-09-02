@@ -1,6 +1,7 @@
-﻿---
-title: "NSA CNSA 2.0: Every Deadline DoD Contractors Need to Know"
-description: "CNSA 2.0 is the NSA's post-quantum algorithm suite for US National Security Systems. Approved algorithms, transition deadlines, and what DoD vendors must do."
+---
+title: 'NSA CNSA 2.0: Every Deadline DoD Contractors Need to Know'
+description: CNSA 2.0 is the NSA's post-quantum algorithm suite for US National Security
+  Systems. Approved algorithms, transition deadlines, and what DoD vendors must do.
 publishedAt: 2026-04-25
 author:
   name: QuickZTNA Engineering
@@ -8,28 +9,60 @@ author:
   url: https://github.com/quickztna
 category: compliance
 tags:
-  - cnsa-2-0
-  - nsa
-  - post-quantum
-  - dod
-  - compliance
-  - nss
+- cnsa-2-0
+- nsa
+- post-quantum
+- dod
+- compliance
+- nss
 primaryKeyword: cnsa 2.0
 wordCount: 4240
 faq:
-  - q: "Is CNSA 2.0 mandatory for all federal systems?"
-    a: "CNSA 2.0 applies to National Security Systems (NSS) as defined in 44 U.S.C. § 3542. That is a narrower set than federal systems in general — it covers military and intelligence systems, certain intelligence-related support systems, and cryptographic systems protecting classified information. Non-NSS federal systems follow separate NIST guidance. Many contractors sell into both categories."
-  - q: "Can I just keep using AES-256 and SHA-384?"
-    a: "Yes for the symmetric side. CNSA 2.0 keeps AES-256 for symmetric encryption and SHA-384 or SHA-512 for hashing — both remain quantum-resistant under Grover's algorithm at those key lengths. The mandatory change is in key establishment and signatures, where classical primitives are replaced by ML-KEM-1024 and ML-DSA-87 respectively."
-  - q: "What is the difference between CNSA 1.0 and CNSA 2.0?"
-    a: "CNSA 1.0 specified classical algorithms — AES, SHA-2, RSA, ECDSA with specific parameter sets for National Security Systems. CNSA 2.0 replaces the asymmetric components (key establishment and signatures) with post-quantum algorithms: ML-KEM-1024 for key establishment and ML-DSA-87 for signatures, plus specialised hash-based signatures for software and firmware. Symmetric algorithms are unchanged."
-  - q: "Does QuickZTNA meet CNSA 2.0 today?"
-    a: "No. QuickZTNA does not implement post-quantum cryptography at all — tunnels use classical WireGuard (X25519 + ChaCha20-Poly1305), and ML-KEM is not on the roadmap. If CNSA 2.0 key establishment is a hard requirement for your programme, QuickZTNA does not meet it and we will not imply a timeline we have not committed to. What it does provide is the access-control layer: ABAC policies, device posture, just-in-time access and audit evidence, alongside whatever CNSA-compliant tunnel technology your programme mandates."
-  - q: "When does the first CNSA 2.0 deadline actually hit?"
-    a: "The earliest deadline in the 2022 NSA advisory is for software and firmware signing: begin using quantum-resistant algorithms by 2025, use exclusively by 2030. Other classes — web browsers, cloud services, networking equipment, operating systems — have later dates, with the final NSS-wide deadline in 2035. The exact per-class schedule is in the advisory, summarised below."
-  - q: "How do I keep evidence of compliance for my DoD contract?"
-    a: "Maintain a cryptographic inventory aligned with NIST IR 8413 or the equivalent, including algorithm, parameter set, implementation source, and FIPS validation status per system. Pair that inventory with traffic-level evidence that the actual sessions use the claimed algorithms. Your prime contractor or contracting officer will eventually ask for both."
+- q: Is CNSA 2.0 mandatory for all federal systems?
+  a: CNSA 2.0 applies to National Security Systems (NSS) as defined in 44 U.S.C. §
+    3542. That is a narrower set than federal systems in general — it covers military
+    and intelligence systems, certain intelligence-related support systems, and cryptographic
+    systems protecting classified information. Non-NSS federal systems follow separate
+    NIST guidance. Many contractors sell into both categories.
+- q: Can I just keep using AES-256 and SHA-384?
+  a: Yes for the symmetric side. CNSA 2.0 keeps AES-256 for symmetric encryption and
+    SHA-384 or SHA-512 for hashing — both remain quantum-resistant under Grover's
+    algorithm at those key lengths. The mandatory change is in key establishment and
+    signatures, where classical primitives are replaced by ML-KEM-1024 and ML-DSA-87
+    respectively.
+- q: What is the difference between CNSA 1.0 and CNSA 2.0?
+  a: 'CNSA 1.0 specified classical algorithms — AES, SHA-2, RSA, ECDSA with specific
+    parameter sets for National Security Systems. CNSA 2.0 replaces the asymmetric
+    components (key establishment and signatures) with post-quantum algorithms: ML-KEM-1024
+    for key establishment and ML-DSA-87 for signatures, plus specialised hash-based
+    signatures for software and firmware. Symmetric algorithms are unchanged.'
+- q: Does QuickZTNA meet CNSA 2.0 today?
+  a: 'No. QuickZTNA does not implement post-quantum cryptography at all — tunnels
+    use classical WireGuard (X25519 + ChaCha20-Poly1305), and ML-KEM is not on the
+    roadmap. If CNSA 2.0 key establishment is a hard requirement for your programme,
+    QuickZTNA does not meet it and we will not imply a timeline we have not committed
+    to. What it does provide is the access-control layer: ABAC policies, device posture,
+    just-in-time access and audit evidence, alongside whatever CNSA-compliant tunnel
+    technology your programme mandates.'
+- q: When does the first CNSA 2.0 deadline actually hit?
+  a: 'The earliest deadline in the 2022 NSA advisory is for software and firmware
+    signing: begin using quantum-resistant algorithms by 2025, use exclusively by
+    2030. Other classes — web browsers, cloud services, networking equipment, operating
+    systems — have later dates, with the final NSS-wide deadline in 2035. The exact
+    per-class schedule is in the advisory, summarised below.'
+- q: How do I keep evidence of compliance for my DoD contract?
+  a: Maintain a cryptographic inventory aligned with NIST IR 8413 or the equivalent,
+    including algorithm, parameter set, implementation source, and FIPS validation
+    status per system. Pair that inventory with traffic-level evidence that the actual
+    sessions use the claimed algorithms. Your prime contractor or contracting officer
+    will eventually ask for both.
+relatedSlugs:
+- anssi-pqc-transition-plan
+- bsi-post-quantum-transition-2026
+- hybrid-key-exchange-x25519-mlkem
+- post-quantum-migration-timeline
 ---
+
 
 ## TL;DR
 
@@ -263,3 +296,14 @@ fact_check:
     - https://csrc.nist.gov/projects/cryptographic-module-validation-program/validated-modules
     - https://www.govinfo.gov/content/pkg/USCODE-2017-title44/html/USCODE-2017-title44-chap35-subchapIII-sec3542.htm
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[ANSSI PQC Transition Plan: France's Deadlines for Public Sector Networks](/blog/anssi-pqc-transition-plan/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[BSI TR-02102-1 and Post-Quantum: Germany's 2026 Crypto Baseline](/blog/bsi-post-quantum-transition-2026/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Hybrid Key Exchange X25519 + ML-KEM-768: The Complete Guide](/blog/hybrid-key-exchange-x25519-mlkem/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page](/blog/post-quantum-migration-timeline/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

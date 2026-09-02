@@ -1,6 +1,7 @@
 ---
-title: "Post-Quantum VPN: 6 Questions to Ask Your Current Vendor"
-description: "Most VPN vendors claim post-quantum readiness. Six specific questions separate real implementations from marketing — with honest answers from 2026."
+title: 'Post-Quantum VPN: 6 Questions to Ask Your Current Vendor'
+description: Most VPN vendors claim post-quantum readiness. Six specific questions
+  separate real implementations from marketing — with honest answers from 2026.
 publishedAt: 2026-04-26
 author:
   name: QuickZTNA Engineering
@@ -8,27 +9,55 @@ author:
   url: https://github.com/quickztna
 category: post-quantum
 tags:
-  - post-quantum-vpn
-  - quantum-safe
-  - vendor-evaluation
-  - ztna
-  - wireguard
+- post-quantum-vpn
+- quantum-safe
+- vendor-evaluation
+- ztna
+- wireguard
 primaryKeyword: post quantum vpn
 wordCount: 4180
 faq:
-  - q: "Is there a meaningful difference between 'post-quantum' and 'quantum-safe' and 'quantum-resistant'?"
-    a: "Not really. In 2026 the three terms are used interchangeably in marketing. In academic writing the preferred terms are 'post-quantum' (algorithms designed to resist quantum attack) and sometimes 'quantum-resistant' (same meaning). 'Quantum-safe' is a marketing-friendly umbrella. What matters is the specific algorithm and parameter set — not the label."
-  - q: "Is OpenVPN quantum-safe?"
-    a: "OpenVPN Community Edition, as of 2026, relies on OpenSSL for its cryptography. OpenSSL 3.5 added ML-KEM support. In OpenVPN terms, TLS-based control-channel sessions can use hybrid post-quantum TLS 1.3 groups if configured. The data channel uses symmetric cryptography, which is not affected by Shor's algorithm at adequate key length. Check your specific OpenVPN version and TLS configuration."
-  - q: "Is IPsec quantum-safe?"
-    a: "Classical IKEv2 with ECDH key exchange is not. The IETF has published RFC 8784 (post-quantum pre-shared keys for IKEv2) and there are ongoing drafts integrating ML-KEM into IKEv2. Vendor support varies as of 2026 — some commercial VPN concentrators have shipped post-quantum IKE modes, others have not. Ask for specifics."
-  - q: "Does Tailscale support post-quantum?"
-    a: "As of the Tailscale public documentation reviewed on April 2026, the product uses WireGuard with an additional DERP relay fabric. Post-quantum key exchange for the peer-to-peer tunnels is not a documented default. Tailscale has written about their plans; consult their current docs and release notes for the authoritative status."
-  - q: "What does 'hybrid' mean in a VPN context?"
-    a: "Hybrid means the VPN runs two key-agreement primitives in parallel — a classical one like X25519 and a post-quantum one like ML-KEM-768 — and combines the two shared secrets into the session key. The session is secure if either primitive alone is secure. We cover the details in our hybrid key exchange post linked from this page."
-  - q: "Is post-quantum VPN more expensive to run?"
-    a: "Marginally. The CPU cost of ML-KEM-768 operations is under 300 microseconds per handshake on commodity hardware. The extra bytes on the wire add a few hundred microseconds on a 100 Mbit link. Neither cost is user-visible. Pricing differences between vendors are about product positioning, not underlying crypto cost."
+- q: Is there a meaningful difference between 'post-quantum' and 'quantum-safe' and
+    'quantum-resistant'?
+  a: Not really. In 2026 the three terms are used interchangeably in marketing. In
+    academic writing the preferred terms are 'post-quantum' (algorithms designed to
+    resist quantum attack) and sometimes 'quantum-resistant' (same meaning). 'Quantum-safe'
+    is a marketing-friendly umbrella. What matters is the specific algorithm and parameter
+    set — not the label.
+- q: Is OpenVPN quantum-safe?
+  a: OpenVPN Community Edition, as of 2026, relies on OpenSSL for its cryptography.
+    OpenSSL 3.5 added ML-KEM support. In OpenVPN terms, TLS-based control-channel
+    sessions can use hybrid post-quantum TLS 1.3 groups if configured. The data channel
+    uses symmetric cryptography, which is not affected by Shor's algorithm at adequate
+    key length. Check your specific OpenVPN version and TLS configuration.
+- q: Is IPsec quantum-safe?
+  a: Classical IKEv2 with ECDH key exchange is not. The IETF has published RFC 8784
+    (post-quantum pre-shared keys for IKEv2) and there are ongoing drafts integrating
+    ML-KEM into IKEv2. Vendor support varies as of 2026 — some commercial VPN concentrators
+    have shipped post-quantum IKE modes, others have not. Ask for specifics.
+- q: Does Tailscale support post-quantum?
+  a: As of the Tailscale public documentation reviewed on April 2026, the product
+    uses WireGuard with an additional DERP relay fabric. Post-quantum key exchange
+    for the peer-to-peer tunnels is not a documented default. Tailscale has written
+    about their plans; consult their current docs and release notes for the authoritative
+    status.
+- q: What does 'hybrid' mean in a VPN context?
+  a: Hybrid means the VPN runs two key-agreement primitives in parallel — a classical
+    one like X25519 and a post-quantum one like ML-KEM-768 — and combines the two
+    shared secrets into the session key. The session is secure if either primitive
+    alone is secure. We cover the details in our hybrid key exchange post linked from
+    this page.
+- q: Is post-quantum VPN more expensive to run?
+  a: Marginally. The CPU cost of ML-KEM-768 operations is under 300 microseconds per
+    handshake on commodity hardware. The extra bytes on the wire add a few hundred
+    microseconds on a 100 Mbit link. Neither cost is user-visible. Pricing differences
+    between vendors are about product positioning, not underlying crypto cost.
+relatedSlugs:
+- post-quantum-migration-timeline
+- hybrid-key-exchange-x25519-mlkem
+- ml-kem-768-explained
 ---
+
 
 ## TL;DR
 
@@ -254,3 +283,13 @@ fact_check:
     - https://csrc.nist.gov/projects/cryptographic-module-validation-program
     - https://www.ncsc.gov.uk/whitepaper/next-steps-preparing-for-post-quantum-cryptography
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page](/blog/post-quantum-migration-timeline/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Hybrid Key Exchange X25519 + ML-KEM-768: The Complete Guide](/blog/hybrid-key-exchange-x25519-mlkem/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[ML-KEM-768 Explained: The NIST Quantum-Safe KEM (FIPS 203)](/blog/ml-kem-768-explained/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

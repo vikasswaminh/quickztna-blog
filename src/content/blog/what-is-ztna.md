@@ -1,6 +1,8 @@
 ---
-title: "What Is ZTNA? A Plain-English Guide to Zero Trust Network Access in 2026"
-description: "Zero Trust Network Access replaces 'inside is trusted' with 'every request is verified'. Plain-English explanation of the history, mechanics, and how to build it."
+title: What Is ZTNA? A Plain-English Guide to Zero Trust Network Access in 2026
+description: Zero Trust Network Access replaces 'inside is trusted' with 'every request
+  is verified'. Plain-English explanation of the history, mechanics, and how to build
+  it.
 publishedAt: 2026-05-05
 author:
   name: QuickZTNA Engineering
@@ -8,27 +10,57 @@ author:
   url: https://github.com/quickztna
 category: fundamentals
 tags:
-  - ztna
-  - zero-trust
-  - nist-800-207
-  - beyondcorp
-  - fundamentals
+- ztna
+- zero-trust
+- nist-800-207
+- beyondcorp
+- fundamentals
 primaryKeyword: what is ztna
 wordCount: 4220
 faq:
-  - q: "What is Zero Trust Network Access in one sentence?"
-    a: "Zero Trust Network Access is a security model in which every access request — from any user, any device, to any resource — is individually authenticated, authorised, and continuously re-evaluated, regardless of whether the request originates inside or outside the corporate network perimeter."
-  - q: "Is ZTNA the same as a VPN?"
-    a: "No, but they overlap. A VPN creates an encrypted tunnel that grants broad network-level access once established. ZTNA grants resource-level access per request, evaluated against identity, device posture, and policy. A modern ZTNA may use VPN-style encrypted tunnels as the data plane but adds authorisation at the application layer."
-  - q: "Who invented Zero Trust?"
-    a: "The concept emerged from multiple sources in the late 2000s and early 2010s. John Kindervag of Forrester Research coined the term 'Zero Trust' around 2010. Google published the BeyondCorp papers starting in 2014 describing an internal implementation. Gartner popularised ZTNA as part of its SASE framework in 2019. NIST formalised Zero Trust Architecture in SP 800-207 in August 2020."
-  - q: "What is NIST SP 800-207?"
-    a: "NIST Special Publication 800-207, 'Zero Trust Architecture', published August 2020, is the US federal reference document that defines Zero Trust concepts, tenets, and deployment models. It names seven tenets (verify identity, protect assets, dynamic policy, never-trust-always-verify, etc.) and three primary deployment architectures (device agent / gateway, enclave-based, resource portal)."
-  - q: "Do I need to buy a ZTNA product to 'do Zero Trust'?"
-    a: "No. Zero Trust is a strategy and architecture, not a single product. You can implement Zero Trust principles with a combination of existing tools — IdP with MFA, modern VPN with per-session authorisation, application-level access brokers, endpoint management, SIEM. A ZTNA product packages several of these together and is often the fastest path, but not the only one."
-  - q: "What are the five pillars of Zero Trust per CISA?"
-    a: "The CISA Zero Trust Maturity Model (version 2.0, April 2023) identifies five pillars: Identity, Devices, Networks, Applications and Workloads, and Data. Each pillar has maturity levels (Traditional, Initial, Advanced, Optimal) describing the progression an organisation takes from perimeter-focused security toward Zero Trust."
+- q: What is Zero Trust Network Access in one sentence?
+  a: Zero Trust Network Access is a security model in which every access request —
+    from any user, any device, to any resource — is individually authenticated, authorised,
+    and continuously re-evaluated, regardless of whether the request originates inside
+    or outside the corporate network perimeter.
+- q: Is ZTNA the same as a VPN?
+  a: No, but they overlap. A VPN creates an encrypted tunnel that grants broad network-level
+    access once established. ZTNA grants resource-level access per request, evaluated
+    against identity, device posture, and policy. A modern ZTNA may use VPN-style
+    encrypted tunnels as the data plane but adds authorisation at the application
+    layer.
+- q: Who invented Zero Trust?
+  a: The concept emerged from multiple sources in the late 2000s and early 2010s.
+    John Kindervag of Forrester Research coined the term 'Zero Trust' around 2010.
+    Google published the BeyondCorp papers starting in 2014 describing an internal
+    implementation. Gartner popularised ZTNA as part of its SASE framework in 2019.
+    NIST formalised Zero Trust Architecture in SP 800-207 in August 2020.
+- q: What is NIST SP 800-207?
+  a: NIST Special Publication 800-207, 'Zero Trust Architecture', published August
+    2020, is the US federal reference document that defines Zero Trust concepts, tenets,
+    and deployment models. It names seven tenets (verify identity, protect assets,
+    dynamic policy, never-trust-always-verify, etc.) and three primary deployment
+    architectures (device agent / gateway, enclave-based, resource portal).
+- q: Do I need to buy a ZTNA product to 'do Zero Trust'?
+  a: No. Zero Trust is a strategy and architecture, not a single product. You can
+    implement Zero Trust principles with a combination of existing tools — IdP with
+    MFA, modern VPN with per-session authorisation, application-level access brokers,
+    endpoint management, SIEM. A ZTNA product packages several of these together and
+    is often the fastest path, but not the only one.
+- q: What are the five pillars of Zero Trust per CISA?
+  a: 'The CISA Zero Trust Maturity Model (version 2.0, April 2023) identifies five
+    pillars: Identity, Devices, Networks, Applications and Workloads, and Data. Each
+    pillar has maturity levels (Traditional, Initial, Advanced, Optimal) describing
+    the progression an organisation takes from perimeter-focused security toward Zero
+    Trust.'
+relatedSlugs:
+- ztna-vs-vpn
+- sase-vs-ztna-vs-sse
+- remote-workforce-security-os
+- device-posture-checks
+- zero-trust-ma-integration
 ---
+
 
 ## TL;DR
 
@@ -285,3 +317,15 @@ fact_check:
     - https://cloud.google.com/beyondcorp
     - https://csrc.nist.gov/publications/detail/sp/800-46/rev-3/final
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[ZTNA vs VPN: 8 Real Differences (With Diagrams)](/blog/ztna-vs-vpn/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[SASE vs ZTNA vs SSE: Which Acronym Matters for a 50-Person Team?](/blog/sase-vs-ztna-vs-sse/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[The Anatomy of a Remote Workforce Security OS: Beyond Legacy Tunnels](/blog/remote-workforce-security-os/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Device Posture Checks That Actually Catch Unmanaged Laptops](/blog/device-posture-checks/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Zero Trust for M&A Integration: Connecting Networks in Days](/blog/zero-trust-ma-integration/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

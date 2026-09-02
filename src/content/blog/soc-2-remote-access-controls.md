@@ -1,6 +1,7 @@
-﻿---
-title: "SOC 2 Controls for Remote Access: 11 You'll Get Audited On"
-description: "SOC 2 is based on AICPA's Trust Services Criteria. The 11 specific Common Criteria auditors test for VPN, ZTNA, and remote-work deployments."
+---
+title: 'SOC 2 Controls for Remote Access: 11 You''ll Get Audited On'
+description: SOC 2 is based on AICPA's Trust Services Criteria. The 11 specific Common
+  Criteria auditors test for VPN, ZTNA, and remote-work deployments.
 publishedAt: 2026-05-03
 author:
   name: QuickZTNA Engineering
@@ -8,27 +9,59 @@ author:
   url: https://github.com/quickztna
 category: compliance
 tags:
-  - soc-2
-  - compliance
-  - trust-services-criteria
-  - ztna
-  - remote-access
+- soc-2
+- compliance
+- trust-services-criteria
+- ztna
+- remote-access
 primaryKeyword: soc 2 remote access controls
 wordCount: 4060
 faq:
-  - q: "What is SOC 2?"
-    a: "SOC 2 stands for System and Organization Controls 2. It is a voluntary attestation framework developed by the American Institute of Certified Public Accountants (AICPA). A SOC 2 report is issued by an independent CPA firm and assesses a service organisation's controls against the Trust Services Criteria. SOC 2 is commonly required by enterprise customers before signing vendor contracts."
-  - q: "What is the difference between SOC 2 Type I and Type II?"
-    a: "Type I is a point-in-time assessment of control design — whether the controls are appropriately designed as of a specific date. Type II is an assessment over a period, typically six to twelve months, of both control design and operating effectiveness. Most enterprise buyers require Type II before signing material contracts. A Type I is commonly a stepping-stone to the first Type II."
-  - q: "Which Trust Services Criteria apply to remote access?"
-    a: "Primarily the Common Criteria (security) across CC5 through CC9. The CC6 family (Logical and Physical Access Controls) is most directly relevant; CC7 (System Operations) covers detection and incident response; CC5 (Control Activities), CC8 (Change Management), and CC9 (Risk Mitigation) cover the organisational context. If the SOC 2 scope includes Availability or Confidentiality criteria, additional specific controls apply."
-  - q: "Is SOC 2 legally required?"
-    a: "No. SOC 2 is a private-sector attestation framework, not a law or regulation. It is a commercial requirement imposed by enterprise buyers. Many large organisations require SOC 2 Type II from vendors that handle customer data or provide production-critical services. For healthcare you additionally need HIPAA compliance; for financial services, DORA or sector-specific requirements."
-  - q: "How long does getting SOC 2 take?"
-    a: "From a standing start, most organisations reach SOC 2 Type I in three to six months and SOC 2 Type II in twelve to eighteen months (including the Type II observation period of six to twelve months). Teams with existing mature controls can sometimes achieve Type II within nine months. Remote-access controls are usually among the more straightforward technical areas because modern ZTNA products include most of the required controls natively."
-  - q: "Will I fail SOC 2 if my VPN is consumer-grade?"
-    a: "Not automatically, but you will have to produce evidence that the consumer-grade VPN meets the Common Criteria across authentication, access control, audit logging, and incident detection. Most consumer VPN products do not produce this evidence easily. An enterprise VPN or ZTNA with built-in audit logging, device posture, and SIEM integration is a much easier path through the audit."
+- q: What is SOC 2?
+  a: SOC 2 stands for System and Organization Controls 2. It is a voluntary attestation
+    framework developed by the American Institute of Certified Public Accountants
+    (AICPA). A SOC 2 report is issued by an independent CPA firm and assesses a service
+    organisation's controls against the Trust Services Criteria. SOC 2 is commonly
+    required by enterprise customers before signing vendor contracts.
+- q: What is the difference between SOC 2 Type I and Type II?
+  a: Type I is a point-in-time assessment of control design — whether the controls
+    are appropriately designed as of a specific date. Type II is an assessment over
+    a period, typically six to twelve months, of both control design and operating
+    effectiveness. Most enterprise buyers require Type II before signing material
+    contracts. A Type I is commonly a stepping-stone to the first Type II.
+- q: Which Trust Services Criteria apply to remote access?
+  a: Primarily the Common Criteria (security) across CC5 through CC9. The CC6 family
+    (Logical and Physical Access Controls) is most directly relevant; CC7 (System
+    Operations) covers detection and incident response; CC5 (Control Activities),
+    CC8 (Change Management), and CC9 (Risk Mitigation) cover the organisational context.
+    If the SOC 2 scope includes Availability or Confidentiality criteria, additional
+    specific controls apply.
+- q: Is SOC 2 legally required?
+  a: No. SOC 2 is a private-sector attestation framework, not a law or regulation.
+    It is a commercial requirement imposed by enterprise buyers. Many large organisations
+    require SOC 2 Type II from vendors that handle customer data or provide production-critical
+    services. For healthcare you additionally need HIPAA compliance; for financial
+    services, DORA or sector-specific requirements.
+- q: How long does getting SOC 2 take?
+  a: From a standing start, most organisations reach SOC 2 Type I in three to six
+    months and SOC 2 Type II in twelve to eighteen months (including the Type II observation
+    period of six to twelve months). Teams with existing mature controls can sometimes
+    achieve Type II within nine months. Remote-access controls are usually among the
+    more straightforward technical areas because modern ZTNA products include most
+    of the required controls natively.
+- q: Will I fail SOC 2 if my VPN is consumer-grade?
+  a: Not automatically, but you will have to produce evidence that the consumer-grade
+    VPN meets the Common Criteria across authentication, access control, audit logging,
+    and incident detection. Most consumer VPN products do not produce this evidence
+    easily. An enterprise VPN or ZTNA with built-in audit logging, device posture,
+    and SIEM integration is a much easier path through the audit.
+relatedSlugs:
+- hipaa-compliant-vpn-2026
+- top-10-session-recording-compliance
+- dora-compliance-network-resilience
+- what-is-ztna
 ---
+
 
 ## TL;DR
 
@@ -263,3 +296,14 @@ fact_check:
     - https://www.aicpa-cima.com/topic/audit-assurance/audit-and-assurance-greater-than-soc-2
     - https://csrc.nist.gov/publications/detail/sp/800-52/rev-2/final
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[HIPAA-Compliant VPN in 2026: What the Rule Actually Says About Encryption](/blog/hipaa-compliant-vpn-2026/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Top 10 Session Recording Tools for Compliance in 2026](/blog/top-10-session-recording-compliance/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[DORA Compliance for Financial Entities: Network Resilience in 10 Steps](/blog/dora-compliance-network-resilience/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[What Is ZTNA? A Plain-English Guide to Zero Trust Network Access in 2026](/blog/what-is-ztna/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

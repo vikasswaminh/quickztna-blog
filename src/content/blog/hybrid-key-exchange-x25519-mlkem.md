@@ -1,6 +1,7 @@
-﻿---
-title: "Hybrid Key Exchange X25519 + ML-KEM-768: The Complete Guide"
-description: "Hybrid post-quantum key exchange combines X25519 with ML-KEM-768 so a session stays secret if either primitive holds. Construction, code, failure modes."
+---
+title: 'Hybrid Key Exchange X25519 + ML-KEM-768: The Complete Guide'
+description: Hybrid post-quantum key exchange combines X25519 with ML-KEM-768 so a
+  session stays secret if either primitive holds. Construction, code, failure modes.
 publishedAt: 2026-04-25
 author:
   name: QuickZTNA Engineering
@@ -8,27 +9,58 @@ author:
   url: https://github.com/quickztna
 category: post-quantum
 tags:
-  - hybrid-key-exchange
-  - x25519
-  - ml-kem
-  - post-quantum
-  - cryptography
+- hybrid-key-exchange
+- x25519
+- ml-kem
+- post-quantum
+- cryptography
 primaryKeyword: hybrid post quantum key exchange
 wordCount: 4380
 faq:
-  - q: "Why concatenate the two shared secrets instead of XOR-ing them?"
-    a: "XOR combiners can leak structure if either input has biased bits or if an attacker gains partial information about one of the shared secrets. Concatenation followed by a KDF preserves all entropy from both inputs and is the construction recommended in NIST SP 800-56C and the IETF hybrid key exchange draft. Do not invent a custom combiner."
-  - q: "Is hybrid slower than classical?"
-    a: "Only marginally. On commodity hardware, the ML-KEM-768 operations add roughly 250 microseconds of CPU per handshake on top of X25519's 7 microseconds. The larger hit is the 2,272 extra bytes of handshake traffic, which adds roughly 100 microseconds on a 100 Mbit link. In practice total hybrid handshake overhead lands in the low milliseconds — measure it on your own hardware rather than trusting a vendor figure."
-  - q: "Can I use a hybrid key exchange for signatures too?"
-    a: "Yes. The signature analogue is a hybrid signature: sign with a classical signature algorithm and a post-quantum signature algorithm in parallel and verify both. But signatures and key exchange are separate problems and the migrations run on different timelines. This post covers key exchange only."
-  - q: "What happens if one peer speaks hybrid and the other does not?"
-    a: "Either the handshake falls back to classical-only or it fails, depending on policy. Graceful fallback with an audit entry is the common default; strict deployments refuse classical-only tunnels entirely, at the cost of interoperability with stock WireGuard peers. This is a question to put to any vendor claiming hybrid — QuickZTNA does not implement it, so for us every tunnel is classical WireGuard."
-  - q: "Does hybrid preserve forward secrecy?"
-    a: "Yes, provided both key pairs are ephemeral per handshake. Forward secrecy is a property of the protocol using the key exchange, not of the key exchange primitives themselves. A correct implementation re-runs the full hybrid derivation on every WireGuard rekey (every two minutes by default), so each session key is derived from fresh ephemeral material on both legs — worth confirming with any vendor, since a PSK derived once and cached indefinitely quietly loses that property."
-  - q: "Is hybrid TLS 1.3 already in common browsers?"
-    a: "Yes. Chrome, Edge, and Firefox have all shipped hybrid post-quantum TLS 1.3 key exchange by default for connections to servers that advertise it, using the X25519 + ML-KEM-768 group (TLS codepoint 0x11EC). As of 2026, Cloudflare, Google, and several major CDNs also advertise it on their edges. Chromium's rollout timeline is documented on the Chromium blog and the status can be inspected at chrome://flags for debugging."
+- q: Why concatenate the two shared secrets instead of XOR-ing them?
+  a: XOR combiners can leak structure if either input has biased bits or if an attacker
+    gains partial information about one of the shared secrets. Concatenation followed
+    by a KDF preserves all entropy from both inputs and is the construction recommended
+    in NIST SP 800-56C and the IETF hybrid key exchange draft. Do not invent a custom
+    combiner.
+- q: Is hybrid slower than classical?
+  a: Only marginally. On commodity hardware, the ML-KEM-768 operations add roughly
+    250 microseconds of CPU per handshake on top of X25519's 7 microseconds. The larger
+    hit is the 2,272 extra bytes of handshake traffic, which adds roughly 100 microseconds
+    on a 100 Mbit link. In practice total hybrid handshake overhead lands in the low
+    milliseconds — measure it on your own hardware rather than trusting a vendor figure.
+- q: Can I use a hybrid key exchange for signatures too?
+  a: 'Yes. The signature analogue is a hybrid signature: sign with a classical signature
+    algorithm and a post-quantum signature algorithm in parallel and verify both.
+    But signatures and key exchange are separate problems and the migrations run on
+    different timelines. This post covers key exchange only.'
+- q: What happens if one peer speaks hybrid and the other does not?
+  a: Either the handshake falls back to classical-only or it fails, depending on policy.
+    Graceful fallback with an audit entry is the common default; strict deployments
+    refuse classical-only tunnels entirely, at the cost of interoperability with stock
+    WireGuard peers. This is a question to put to any vendor claiming hybrid — QuickZTNA
+    does not implement it, so for us every tunnel is classical WireGuard.
+- q: Does hybrid preserve forward secrecy?
+  a: Yes, provided both key pairs are ephemeral per handshake. Forward secrecy is
+    a property of the protocol using the key exchange, not of the key exchange primitives
+    themselves. A correct implementation re-runs the full hybrid derivation on every
+    WireGuard rekey (every two minutes by default), so each session key is derived
+    from fresh ephemeral material on both legs — worth confirming with any vendor,
+    since a PSK derived once and cached indefinitely quietly loses that property.
+- q: Is hybrid TLS 1.3 already in common browsers?
+  a: Yes. Chrome, Edge, and Firefox have all shipped hybrid post-quantum TLS 1.3 key
+    exchange by default for connections to servers that advertise it, using the X25519
+    + ML-KEM-768 group (TLS codepoint 0x11EC). As of 2026, Cloudflare, Google, and
+    several major CDNs also advertise it on their edges. Chromium's rollout timeline
+    is documented on the Chromium blog and the status can be inspected at chrome://flags
+    for debugging.
+relatedSlugs:
+- ml-kem-768-explained
+- cnsa-2-0-deadlines
+- harvest-now-decrypt-later
+- post-quantum-migration-timeline
 ---
+
 
 ## TL;DR
 
@@ -405,3 +437,14 @@ fact_check:
     - https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF
     - https://pkg.go.dev/crypto/mlkem
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[ML-KEM-768 Explained: The NIST Quantum-Safe KEM (FIPS 203)](/blog/ml-kem-768-explained/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[NSA CNSA 2.0: Every Deadline DoD Contractors Need to Know](/blog/cnsa-2-0-deadlines/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Harvest Now, Decrypt Later: Why Your VPN Traffic Is Already Compromised](/blog/harvest-now-decrypt-later/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page](/blog/post-quantum-migration-timeline/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

@@ -1,6 +1,7 @@
-﻿---
-title: "BSI TR-02102-1 and Post-Quantum: Germany's 2026 Crypto Baseline"
-description: "Germany's BSI TR-02102-1 sets the cryptographic baseline for federal and regulated entities. Current recommendations, PQ transition, and what it means."
+---
+title: 'BSI TR-02102-1 and Post-Quantum: Germany''s 2026 Crypto Baseline'
+description: Germany's BSI TR-02102-1 sets the cryptographic baseline for federal
+  and regulated entities. Current recommendations, PQ transition, and what it means.
 publishedAt: 2026-04-27
 author:
   name: QuickZTNA Engineering
@@ -8,27 +9,56 @@ author:
   url: https://github.com/quickztna
 category: compliance
 tags:
-  - bsi
-  - tr-02102
-  - post-quantum
-  - germany
-  - compliance
+- bsi
+- tr-02102
+- post-quantum
+- germany
+- compliance
 primaryKeyword: bsi post quantum
 wordCount: 4080
 faq:
-  - q: "Is BSI TR-02102-1 legally binding?"
-    a: "Not directly for private companies, but it is binding on the German federal administration, applies to many public-sector procurement processes, and is widely referenced in contracts with regulated entities and in supervisory reviews of critical infrastructure. Alignment with TR-02102-1 is a common contractual or supervisory requirement even when not statutorily mandatory."
-  - q: "What is the BSI's position on hybrid post-quantum cryptography?"
-    a: "The BSI recommends hybrid classical-plus-post-quantum key establishment for applications where confidentiality of data must be protected beyond the projected arrival of a cryptographically relevant quantum computer. The 2024 and 2025 editions of TR-02102-1 formalise this recommendation and name acceptable post-quantum mechanisms."
-  - q: "Does the BSI prefer FrodoKEM over ML-KEM?"
-    a: "Historically the BSI has expressed preference for FrodoKEM due to its conservative security assumptions — FrodoKEM is based on plain Learning With Errors rather than Module-LWE. Recent BSI guidance has acknowledged ML-KEM as acceptable following FIPS 203 standardisation, while maintaining the preference for FrodoKEM in the highest-assurance contexts. Check the current edition of TR-02102-1 for the exact wording."
-  - q: "Does BSI certify specific ZTNA products?"
-    a: "The BSI runs the Common Criteria certification scheme (BSI-PP and BSI-CC) for products that undergo formal evaluation. Some network security products are certified; most commercial ZTNA products in 2026 are not formally CC-evaluated. Alignment with TR-02102 recommendations is more common than formal certification and is usually sufficient for supervisory purposes."
-  - q: "What is the relationship between BSI TR-02102 and NIS2?"
-    a: "TR-02102 is German technical guidance on cryptographic mechanisms. NIS2 is EU directive-level cybersecurity law that requires 'appropriate' cryptographic measures without naming specific ones. In Germany, NIS2 is transposed via the NIS2UmsuCG implementation law; entities implementing that law commonly use TR-02102-1 as the technical reference for what 'appropriate' means cryptographically."
-  - q: "When should I plan for BSI-aligned post-quantum remote access?"
-    a: "Immediately for any data with confidentiality requirements extending past the early 2030s. The BSI's 2024 position paper 'Migration zu Post-Quanten-Kryptografie' is explicit that the transition needs to start now. Deployments with retention horizons under five years have more time but should still have a stated plan."
+- q: Is BSI TR-02102-1 legally binding?
+  a: Not directly for private companies, but it is binding on the German federal administration,
+    applies to many public-sector procurement processes, and is widely referenced
+    in contracts with regulated entities and in supervisory reviews of critical infrastructure.
+    Alignment with TR-02102-1 is a common contractual or supervisory requirement even
+    when not statutorily mandatory.
+- q: What is the BSI's position on hybrid post-quantum cryptography?
+  a: The BSI recommends hybrid classical-plus-post-quantum key establishment for applications
+    where confidentiality of data must be protected beyond the projected arrival of
+    a cryptographically relevant quantum computer. The 2024 and 2025 editions of TR-02102-1
+    formalise this recommendation and name acceptable post-quantum mechanisms.
+- q: Does the BSI prefer FrodoKEM over ML-KEM?
+  a: Historically the BSI has expressed preference for FrodoKEM due to its conservative
+    security assumptions — FrodoKEM is based on plain Learning With Errors rather
+    than Module-LWE. Recent BSI guidance has acknowledged ML-KEM as acceptable following
+    FIPS 203 standardisation, while maintaining the preference for FrodoKEM in the
+    highest-assurance contexts. Check the current edition of TR-02102-1 for the exact
+    wording.
+- q: Does BSI certify specific ZTNA products?
+  a: The BSI runs the Common Criteria certification scheme (BSI-PP and BSI-CC) for
+    products that undergo formal evaluation. Some network security products are certified;
+    most commercial ZTNA products in 2026 are not formally CC-evaluated. Alignment
+    with TR-02102 recommendations is more common than formal certification and is
+    usually sufficient for supervisory purposes.
+- q: What is the relationship between BSI TR-02102 and NIS2?
+  a: TR-02102 is German technical guidance on cryptographic mechanisms. NIS2 is EU
+    directive-level cybersecurity law that requires 'appropriate' cryptographic measures
+    without naming specific ones. In Germany, NIS2 is transposed via the NIS2UmsuCG
+    implementation law; entities implementing that law commonly use TR-02102-1 as
+    the technical reference for what 'appropriate' means cryptographically.
+- q: When should I plan for BSI-aligned post-quantum remote access?
+  a: Immediately for any data with confidentiality requirements extending past the
+    early 2030s. The BSI's 2024 position paper 'Migration zu Post-Quanten-Kryptografie'
+    is explicit that the transition needs to start now. Deployments with retention
+    horizons under five years have more time but should still have a stated plan.
+relatedSlugs:
+- anssi-pqc-transition-plan
+- ml-kem-768-explained
+- post-quantum-migration-timeline
+- cnsa-2-0-deadlines
 ---
+
 
 ## TL;DR
 
@@ -251,3 +281,14 @@ fact_check:
     - https://csrc.nist.gov/pubs/fips/203/final
     - https://digital-strategy.ec.europa.eu/en/library/recommendation-coordinated-implementation-roadmap-transition-post-quantum-cryptography
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[ANSSI PQC Transition Plan: France's Deadlines for Public Sector Networks](/blog/anssi-pqc-transition-plan/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[ML-KEM-768 Explained: The NIST Quantum-Safe KEM (FIPS 203)](/blog/ml-kem-768-explained/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page](/blog/post-quantum-migration-timeline/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[NSA CNSA 2.0: Every Deadline DoD Contractors Need to Know](/blog/cnsa-2-0-deadlines/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

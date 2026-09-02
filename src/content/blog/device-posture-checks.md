@@ -1,6 +1,7 @@
 ---
-title: "Device Posture Checks That Actually Catch Unmanaged Laptops"
-description: "Most device-posture checks are checkbox exercises. Twelve signals that actually catch unmanaged laptops, how to enforce continuously, what auditors expect."
+title: Device Posture Checks That Actually Catch Unmanaged Laptops
+description: Most device-posture checks are checkbox exercises. Twelve signals that
+  actually catch unmanaged laptops, how to enforce continuously, what auditors expect.
 publishedAt: 2026-05-03
 author:
   name: QuickZTNA Engineering
@@ -8,27 +9,58 @@ author:
   url: https://github.com/quickztna
 category: technical
 tags:
-  - device-posture
-  - ztna
-  - continuous-authentication
-  - mdm
-  - edr
+- device-posture
+- ztna
+- continuous-authentication
+- mdm
+- edr
 primaryKeyword: device posture check
 wordCount: 4050
 faq:
-  - q: "What is a device posture check?"
-    a: "A device posture check is a verification of a device's security state before (and ideally continuously during) access to protected resources. Common posture signals include disk encryption, OS patch level, antivirus or EDR status, firewall state, screen-lock configuration, MDM enrolment, and presence of specific required software. The objective is to make sure the device accessing sensitive resources meets baseline security expectations."
-  - q: "Is device posture the same as device management?"
-    a: "No. Device management (MDM) is the ability to configure, patch, and control a device. Device posture is the ability to check the device's current state. They work together: MDM enforces the state, device posture verifies the state at the moment of access. A device can be managed but still in a non-compliant posture (e.g., an MDM-enrolled laptop whose user has disabled EDR)."
-  - q: "What happens to a device that fails posture?"
-    a: "Depends on policy. Common options: deny access entirely, allow access to a restricted set of resources, send the user through a remediation flow (auto-install missing software, prompt for action), or grant access with a shorter session TTL and more aggressive re-evaluation. The right answer depends on the resource sensitivity and the practical realities of your user base."
-  - q: "Does posture checking break for unmanaged or BYOD devices?"
-    a: "It restricts them, which is usually the point. A BYOD device can still satisfy basic posture (OS version, disk encryption, screen lock) without being fully managed. Stricter posture (EDR presence, MDM enrolment, corporate certificate installed) requires management. Policies typically grant BYOD access to a smaller, less-sensitive subset of resources."
-  - q: "How often should posture be re-evaluated?"
-    a: "Continuously, ideally. At tunnel establishment is the minimum. Best practice is to re-check on a regular interval during the session (every few minutes) and to re-check whenever a posture-relevant state change is detected (screen locks, antivirus disables, new software installs). One-time-at-login posture is no longer adequate for mature ZTNA deployments."
-  - q: "What is NIST SP 800-46 and does it apply to posture?"
-    a: "NIST SP 800-46 Rev. 3, 'Guide to Enterprise Telework, Remote Access, and Bring Your Own Device (BYOD) Security', covers remote-access security broadly including device security expectations for telework. It is a practical reference for the baseline an organisation should expect from remote-access devices. Posture checking is part of implementing the SP 800-46 guidance in practice."
+- q: What is a device posture check?
+  a: A device posture check is a verification of a device's security state before
+    (and ideally continuously during) access to protected resources. Common posture
+    signals include disk encryption, OS patch level, antivirus or EDR status, firewall
+    state, screen-lock configuration, MDM enrolment, and presence of specific required
+    software. The objective is to make sure the device accessing sensitive resources
+    meets baseline security expectations.
+- q: Is device posture the same as device management?
+  a: 'No. Device management (MDM) is the ability to configure, patch, and control
+    a device. Device posture is the ability to check the device''s current state.
+    They work together: MDM enforces the state, device posture verifies the state
+    at the moment of access. A device can be managed but still in a non-compliant
+    posture (e.g., an MDM-enrolled laptop whose user has disabled EDR).'
+- q: What happens to a device that fails posture?
+  a: 'Depends on policy. Common options: deny access entirely, allow access to a restricted
+    set of resources, send the user through a remediation flow (auto-install missing
+    software, prompt for action), or grant access with a shorter session TTL and more
+    aggressive re-evaluation. The right answer depends on the resource sensitivity
+    and the practical realities of your user base.'
+- q: Does posture checking break for unmanaged or BYOD devices?
+  a: It restricts them, which is usually the point. A BYOD device can still satisfy
+    basic posture (OS version, disk encryption, screen lock) without being fully managed.
+    Stricter posture (EDR presence, MDM enrolment, corporate certificate installed)
+    requires management. Policies typically grant BYOD access to a smaller, less-sensitive
+    subset of resources.
+- q: How often should posture be re-evaluated?
+  a: Continuously, ideally. At tunnel establishment is the minimum. Best practice
+    is to re-check on a regular interval during the session (every few minutes) and
+    to re-check whenever a posture-relevant state change is detected (screen locks,
+    antivirus disables, new software installs). One-time-at-login posture is no longer
+    adequate for mature ZTNA deployments.
+- q: What is NIST SP 800-46 and does it apply to posture?
+  a: NIST SP 800-46 Rev. 3, 'Guide to Enterprise Telework, Remote Access, and Bring
+    Your Own Device (BYOD) Security', covers remote-access security broadly including
+    device security expectations for telework. It is a practical reference for the
+    baseline an organisation should expect from remote-access devices. Posture checking
+    is part of implementing the SP 800-46 guidance in practice.
+relatedSlugs:
+- remote-workforce-security-os
+- identity-first-networking-scim
+- soc-2-remote-access-controls
+- what-is-ztna
 ---
+
 
 ## TL;DR
 
@@ -292,3 +324,14 @@ fact_check:
     - https://csrc.nist.gov/publications/detail/sp/800-207/final
     - https://www.cisecurity.org/cis-benchmarks
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[The Anatomy of a Remote Workforce Security OS: Beyond Legacy Tunnels](/blog/remote-workforce-security-os/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Identity-First Networking: SCIM 2.0 & Multi-IdP Least-Privilege ZTNA](/blog/identity-first-networking-scim/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[SOC 2 Controls for Remote Access: 11 You'll Get Audited On](/blog/soc-2-remote-access-controls/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[What Is ZTNA? A Plain-English Guide to Zero Trust Network Access in 2026](/blog/what-is-ztna/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

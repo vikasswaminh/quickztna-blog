@@ -1,6 +1,7 @@
-﻿---
-title: "The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page"
-description: "Post-quantum cryptography has a migration timeline set by regulators, standards bodies, and vendors. Every known deadline through 2035 with primary sources."
+---
+title: 'The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page'
+description: Post-quantum cryptography has a migration timeline set by regulators,
+  standards bodies, and vendors. Every known deadline through 2035 with primary sources.
 publishedAt: 2026-05-09
 author:
   name: QuickZTNA Engineering
@@ -8,27 +9,59 @@ author:
   url: https://github.com/quickztna
 category: post-quantum
 tags:
-  - post-quantum-timeline
-  - migration
-  - cnsa-2-0
-  - nis2
-  - cryptography
+- post-quantum-timeline
+- migration
+- cnsa-2-0
+- nis2
+- cryptography
 primaryKeyword: post quantum migration timeline
 wordCount: 4020
 faq:
-  - q: "Is there a single global deadline for post-quantum migration?"
-    a: "No. Different authorities set deadlines for different scopes. The NSA CNSA 2.0 roadmap sets US National Security Systems deadlines from 2025 to 2035. EU agencies (BSI, ANSSI) publish guidance with planning horizons rather than hard deadlines. NIST publishes standards (FIPS 203, 204, 205) and guidance timelines rather than mandates. The effective deadline for any organisation is the earliest of: their regulator's mandate, their contractual obligations, and their risk tolerance for harvest-now-decrypt-later."
-  - q: "Which deadline comes first?"
-    a: "The NSA CNSA 2.0 deadline for software and firmware signing — begin using post-quantum algorithms by 2025, use exclusively by 2030 — was the earliest in the original roadmap and has already entered the 'begin using' phase. For most commercial organisations, the EU coordinated implementation roadmap's 2030 target for critical systems, combined with NIS2 'appropriate' cryptographic measures, is the effective near-term deadline."
-  - q: "Do I need to have migrated by 2030?"
-    a: "Depends on who you are. US NSS operators: likely yes for several technology classes per CNSA 2.0. EU operators: the EU coordinated roadmap targets 2030 for critical systems. Non-regulated commercial: there is no legal requirement, but any data with confidentiality requirements extending past 2030 is at risk from harvest-now-decrypt-later and should be migrated regardless."
-  - q: "What if the timeline slips?"
-    a: "It might, in parts. Large government IT modernisations rarely hit their first deadline. What is reliable is the direction of travel — every regulator is moving toward mandated post-quantum for new systems, starting with the most sensitive. Planning against the published dates, with a buffer, is safer than waiting for them to slip."
-  - q: "Is there a specific date when classical RSA and ECDH become insecure?"
-    a: "No. Classical algorithms become insecure when a cryptographically relevant quantum computer exists, not on a calendar date. Public quantum hardware roadmaps project large fault-tolerant systems in the 2030s. The defensive posture is to migrate before that happens — and to migrate earlier for data with long confidentiality requirements — not to wait for a specific classical-break date."
-  - q: "How does this timeline interact with CBOM (Cryptographic Bill of Materials) requirements?"
-    a: "Some regulators are beginning to require CBOMs — an inventory of what cryptography is used where — as part of the migration planning. NIST IR 8413 and subsequent guidance discuss CBOMs. Producing a CBOM for your systems is a foundational step regardless of the specific regulator; you cannot migrate what you have not catalogued."
+- q: Is there a single global deadline for post-quantum migration?
+  a: 'No. Different authorities set deadlines for different scopes. The NSA CNSA 2.0
+    roadmap sets US National Security Systems deadlines from 2025 to 2035. EU agencies
+    (BSI, ANSSI) publish guidance with planning horizons rather than hard deadlines.
+    NIST publishes standards (FIPS 203, 204, 205) and guidance timelines rather than
+    mandates. The effective deadline for any organisation is the earliest of: their
+    regulator''s mandate, their contractual obligations, and their risk tolerance
+    for harvest-now-decrypt-later.'
+- q: Which deadline comes first?
+  a: The NSA CNSA 2.0 deadline for software and firmware signing — begin using post-quantum
+    algorithms by 2025, use exclusively by 2030 — was the earliest in the original
+    roadmap and has already entered the 'begin using' phase. For most commercial organisations,
+    the EU coordinated implementation roadmap's 2030 target for critical systems,
+    combined with NIS2 'appropriate' cryptographic measures, is the effective near-term
+    deadline.
+- q: Do I need to have migrated by 2030?
+  a: 'Depends on who you are. US NSS operators: likely yes for several technology
+    classes per CNSA 2.0. EU operators: the EU coordinated roadmap targets 2030 for
+    critical systems. Non-regulated commercial: there is no legal requirement, but
+    any data with confidentiality requirements extending past 2030 is at risk from
+    harvest-now-decrypt-later and should be migrated regardless.'
+- q: What if the timeline slips?
+  a: It might, in parts. Large government IT modernisations rarely hit their first
+    deadline. What is reliable is the direction of travel — every regulator is moving
+    toward mandated post-quantum for new systems, starting with the most sensitive.
+    Planning against the published dates, with a buffer, is safer than waiting for
+    them to slip.
+- q: Is there a specific date when classical RSA and ECDH become insecure?
+  a: No. Classical algorithms become insecure when a cryptographically relevant quantum
+    computer exists, not on a calendar date. Public quantum hardware roadmaps project
+    large fault-tolerant systems in the 2030s. The defensive posture is to migrate
+    before that happens — and to migrate earlier for data with long confidentiality
+    requirements — not to wait for a specific classical-break date.
+- q: How does this timeline interact with CBOM (Cryptographic Bill of Materials) requirements?
+  a: Some regulators are beginning to require CBOMs — an inventory of what cryptography
+    is used where — as part of the migration planning. NIST IR 8413 and subsequent
+    guidance discuss CBOMs. Producing a CBOM for your systems is a foundational step
+    regardless of the specific regulator; you cannot migrate what you have not catalogued.
+relatedSlugs:
+- post-quantum-vpn-vendor-questions
+- cnsa-2-0-deadlines
+- harvest-now-decrypt-later
+- hybrid-key-exchange-x25519-mlkem
 ---
+
 
 ## TL;DR
 
@@ -259,3 +292,14 @@ fact_check:
     - https://www.ncsc.gov.uk/whitepaper/next-steps-preparing-for-post-quantum-cryptography
     - https://nvlpubs.nist.gov/nistpubs/ir/2024/NIST.IR.8413.pdf
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[Post-Quantum VPN: 6 Questions to Ask Your Current Vendor](/blog/post-quantum-vpn-vendor-questions/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[NSA CNSA 2.0: Every Deadline DoD Contractors Need to Know](/blog/cnsa-2-0-deadlines/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Harvest Now, Decrypt Later: Why Your VPN Traffic Is Already Compromised](/blog/harvest-now-decrypt-later/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Hybrid Key Exchange X25519 + ML-KEM-768: The Complete Guide](/blog/hybrid-key-exchange-x25519-mlkem/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

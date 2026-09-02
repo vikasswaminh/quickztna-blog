@@ -1,6 +1,7 @@
-﻿---
-title: "Harvest Now, Decrypt Later: Why Your VPN Traffic Is Already Compromised"
-description: "Harvest now, decrypt later is a real attack model. Nation-state actors record encrypted traffic today to decrypt with future quantum computers."
+---
+title: 'Harvest Now, Decrypt Later: Why Your VPN Traffic Is Already Compromised'
+description: Harvest now, decrypt later is a real attack model. Nation-state actors
+  record encrypted traffic today to decrypt with future quantum computers.
 publishedAt: 2026-04-24
 author:
   name: QuickZTNA Engineering
@@ -8,27 +9,59 @@ author:
   url: https://github.com/quickztna
 category: post-quantum
 tags:
-  - harvest-now-decrypt-later
-  - post-quantum
-  - threat-model
-  - quantum-computing
-  - cryptography
+- harvest-now-decrypt-later
+- post-quantum
+- threat-model
+- quantum-computing
+- cryptography
 primaryKeyword: harvest now decrypt later
 wordCount: 4610
 faq:
-  - q: "Is harvest now, decrypt later a real threat or a marketing term?"
-    a: "It is a real threat model acknowledged in primary government cybersecurity guidance. The NSA's CNSA 2.0 announcement, the US CISA-NIST-NSA joint fact sheet on quantum-readiness, the UK NCSC's migration guidance, and the German BSI's TR-02102 all name it as the principal reason organisations should migrate to post-quantum cryptography before a cryptographically relevant quantum computer exists."
-  - q: "How large does a quantum computer need to be to decrypt a recorded session today?"
-    a: "For RSA-2048, published work by Gidney and Ekerå estimates approximately 20 million noisy superconducting qubits in about 8 hours with current error-correction overheads. For Curve25519, estimates range around 2,000 to 4,000 logical qubits. Neither machine exists in 2026. Public roadmaps from IBM and Google project large fault-tolerant systems into the 2030s."
-  - q: "Which traffic is most at risk?"
-    a: "Anything with confidentiality requirements lasting longer than the projected arrival of a cryptographically relevant quantum computer. Practical examples are classified government traffic with 25-year or 50-year classification periods, medical records with lifetime retention, trade secrets with indefinite value, financial records subject to long retention, and any personally identifiable information protected under laws with long retention horizons."
-  - q: "If I use TLS 1.3 today, am I safe?"
-    a: "Not against harvest-now-decrypt-later. TLS 1.3 without hybrid post-quantum key exchange uses classical elliptic-curve Diffie-Hellman, which is vulnerable to Shor's algorithm. Major browser and cloud vendors have shipped hybrid post-quantum modes for TLS 1.3 starting in 2023 and 2024, but server support is still partial. The fix is hybrid post-quantum key exchange on both ends."
-  - q: "Does WireGuard without post-quantum fix anything?"
-    a: "WireGuard's handshake is classical Curve25519. It inherits the same vulnerability to a future quantum adversary. The WireGuard protocol includes an optional pre-shared key field that can be populated from a post-quantum key exchange at a higher layer. That is the approach used by the ZTNA products that do implement post-quantum key exchange; QuickZTNA is not one of them."
-  - q: "What is the earliest defensible estimate for a cryptographically relevant quantum computer?"
-    a: "Public expert consensus ranges from the early 2030s to the late 2040s. The National Academies of Sciences, Engineering and Medicine 2019 report, the Global Risk Institute annual Quantum Threat Timeline, and individual vendor roadmaps converge on a planning horizon of roughly 10 to 20 years. Responsible engineering plans for the earlier end of that window, not the later."
+- q: Is harvest now, decrypt later a real threat or a marketing term?
+  a: It is a real threat model acknowledged in primary government cybersecurity guidance.
+    The NSA's CNSA 2.0 announcement, the US CISA-NIST-NSA joint fact sheet on quantum-readiness,
+    the UK NCSC's migration guidance, and the German BSI's TR-02102 all name it as
+    the principal reason organisations should migrate to post-quantum cryptography
+    before a cryptographically relevant quantum computer exists.
+- q: How large does a quantum computer need to be to decrypt a recorded session today?
+  a: For RSA-2048, published work by Gidney and Ekerå estimates approximately 20 million
+    noisy superconducting qubits in about 8 hours with current error-correction overheads.
+    For Curve25519, estimates range around 2,000 to 4,000 logical qubits. Neither
+    machine exists in 2026. Public roadmaps from IBM and Google project large fault-tolerant
+    systems into the 2030s.
+- q: Which traffic is most at risk?
+  a: Anything with confidentiality requirements lasting longer than the projected
+    arrival of a cryptographically relevant quantum computer. Practical examples are
+    classified government traffic with 25-year or 50-year classification periods,
+    medical records with lifetime retention, trade secrets with indefinite value,
+    financial records subject to long retention, and any personally identifiable information
+    protected under laws with long retention horizons.
+- q: If I use TLS 1.3 today, am I safe?
+  a: Not against harvest-now-decrypt-later. TLS 1.3 without hybrid post-quantum key
+    exchange uses classical elliptic-curve Diffie-Hellman, which is vulnerable to
+    Shor's algorithm. Major browser and cloud vendors have shipped hybrid post-quantum
+    modes for TLS 1.3 starting in 2023 and 2024, but server support is still partial.
+    The fix is hybrid post-quantum key exchange on both ends.
+- q: Does WireGuard without post-quantum fix anything?
+  a: WireGuard's handshake is classical Curve25519. It inherits the same vulnerability
+    to a future quantum adversary. The WireGuard protocol includes an optional pre-shared
+    key field that can be populated from a post-quantum key exchange at a higher layer.
+    That is the approach used by the ZTNA products that do implement post-quantum
+    key exchange; QuickZTNA is not one of them.
+- q: What is the earliest defensible estimate for a cryptographically relevant quantum
+    computer?
+  a: Public expert consensus ranges from the early 2030s to the late 2040s. The National
+    Academies of Sciences, Engineering and Medicine 2019 report, the Global Risk Institute
+    annual Quantum Threat Timeline, and individual vendor roadmaps converge on a planning
+    horizon of roughly 10 to 20 years. Responsible engineering plans for the earlier
+    end of that window, not the later.
+relatedSlugs:
+- post-quantum-migration-timeline
+- anssi-pqc-transition-plan
+- hybrid-key-exchange-x25519-mlkem
+- ml-kem-768-explained
 ---
+
 
 ## TL;DR
 
@@ -231,3 +264,14 @@ fact_check:
     - https://blog.google/technology/research/google-willow-quantum-chip/
     - https://globalriskinstitute.org/publication/quantum-threat-timeline-report-2023/
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page](/blog/post-quantum-migration-timeline/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[ANSSI PQC Transition Plan: France's Deadlines for Public Sector Networks](/blog/anssi-pqc-transition-plan/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Hybrid Key Exchange X25519 + ML-KEM-768: The Complete Guide](/blog/hybrid-key-exchange-x25519-mlkem/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[ML-KEM-768 Explained: The NIST Quantum-Safe KEM (FIPS 203)](/blog/ml-kem-768-explained/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+

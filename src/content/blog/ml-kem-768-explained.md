@@ -1,6 +1,8 @@
-﻿---
-title: "ML-KEM-768 Explained: The NIST Quantum-Safe KEM (FIPS 203)"
-description: "ML-KEM-768 is the NIST-standardised post-quantum KEM published as FIPS 203. How the algorithm works, real benchmarks, key sizes, and why hybrids pair it with X25519."
+---
+title: 'ML-KEM-768 Explained: The NIST Quantum-Safe KEM (FIPS 203)'
+description: ML-KEM-768 is the NIST-standardised post-quantum KEM published as FIPS
+  203. How the algorithm works, real benchmarks, key sizes, and why hybrids pair it
+  with X25519.
 publishedAt: 2026-04-24
 author:
   name: QuickZTNA Engineering
@@ -8,27 +10,59 @@ author:
   url: https://github.com/quickztna
 category: post-quantum
 tags:
-  - ml-kem
-  - post-quantum
-  - fips-203
-  - wireguard
-  - cryptography
+- ml-kem
+- post-quantum
+- fips-203
+- wireguard
+- cryptography
 primaryKeyword: ml-kem-768
 wordCount: 4520
 faq:
-  - q: "Is ML-KEM-768 the same as Kyber?"
-    a: "ML-KEM is derived from CRYSTALS-Kyber but is not identical. NIST made several changes during standardisation, including a domain-separated KDF and a different way of deriving the rejection value for implicit rejection. Any library that claims to implement FIPS 203 should implement the ML-KEM variant, not plain Kyber."
-  - q: "What security level does ML-KEM-768 provide?"
-    a: "ML-KEM-768 is NIST security category 3, intended to be at least as hard to break as recovering a 192-bit AES key via exhaustive search. It is the middle of the three parameter sets (category 1, 3, and 5). Category 3 is sufficient for any commercial use case we are aware of in 2026."
-  - q: "Why use X25519 + ML-KEM-768 as a hybrid instead of ML-KEM-768 alone?"
-    a: "Defence in depth. ML-KEM is a new standard and the body of cryptanalysis against it is a few years old. Pairing it with X25519 means an attacker has to break both a lattice-based scheme and an elliptic-curve scheme to recover the session key. If either holds, you are safe. Hybrid is also what the NSA CNSA 2.0 transition guidance, the German BSI, and the French ANSSI all recommend for the migration window."
-  - q: "How much does ML-KEM-768 slow down a WireGuard handshake?"
-    a: "On a 2022-era laptop, ML-KEM-768 keygen, encap, and decap each complete in well under a millisecond. The dominant cost is the 1,088-byte ciphertext that now travels in the handshake, not the CPU. On a 100 Mbit link, the extra bytes add roughly 100 microseconds of wire time, which puts total hybrid handshake overhead in the low milliseconds. Measure it on your own hardware — QuickZTNA does not implement hybrid key exchange, so we have no product figure to quote here."
-  - q: "Is ML-KEM-768 FIPS 140-3 certified?"
-    a: "ML-KEM is standardised as FIPS 203. Individual implementations need separate FIPS 140-3 validation through the CMVP programme. As of April 2026 several vendors have submitted ML-KEM modules for validation; NIST maintains the current list on the Cryptographic Module Validation Program site. Note that the Go standard library's implementation is not FIPS-validated on its own, so 'uses FIPS 203' and 'is FIPS 140-3 validated' are different claims worth separating when you evaluate a vendor."
-  - q: "When will NIST require ML-KEM for federal systems?"
-    a: "There is no single switch. The NSA's CNSA 2.0 roadmap sets transition deadlines per technology class, with the latest dates falling between 2030 and 2035 depending on system type. Non-federal organisations are not required to switch, but regulators in the EU, Germany, and France have all published guidance recommending that long-lived data be protected with post-quantum cryptography starting now."
+- q: Is ML-KEM-768 the same as Kyber?
+  a: ML-KEM is derived from CRYSTALS-Kyber but is not identical. NIST made several
+    changes during standardisation, including a domain-separated KDF and a different
+    way of deriving the rejection value for implicit rejection. Any library that claims
+    to implement FIPS 203 should implement the ML-KEM variant, not plain Kyber.
+- q: What security level does ML-KEM-768 provide?
+  a: ML-KEM-768 is NIST security category 3, intended to be at least as hard to break
+    as recovering a 192-bit AES key via exhaustive search. It is the middle of the
+    three parameter sets (category 1, 3, and 5). Category 3 is sufficient for any
+    commercial use case we are aware of in 2026.
+- q: Why use X25519 + ML-KEM-768 as a hybrid instead of ML-KEM-768 alone?
+  a: Defence in depth. ML-KEM is a new standard and the body of cryptanalysis against
+    it is a few years old. Pairing it with X25519 means an attacker has to break both
+    a lattice-based scheme and an elliptic-curve scheme to recover the session key.
+    If either holds, you are safe. Hybrid is also what the NSA CNSA 2.0 transition
+    guidance, the German BSI, and the French ANSSI all recommend for the migration
+    window.
+- q: How much does ML-KEM-768 slow down a WireGuard handshake?
+  a: On a 2022-era laptop, ML-KEM-768 keygen, encap, and decap each complete in well
+    under a millisecond. The dominant cost is the 1,088-byte ciphertext that now travels
+    in the handshake, not the CPU. On a 100 Mbit link, the extra bytes add roughly
+    100 microseconds of wire time, which puts total hybrid handshake overhead in the
+    low milliseconds. Measure it on your own hardware — QuickZTNA does not implement
+    hybrid key exchange, so we have no product figure to quote here.
+- q: Is ML-KEM-768 FIPS 140-3 certified?
+  a: ML-KEM is standardised as FIPS 203. Individual implementations need separate
+    FIPS 140-3 validation through the CMVP programme. As of April 2026 several vendors
+    have submitted ML-KEM modules for validation; NIST maintains the current list
+    on the Cryptographic Module Validation Program site. Note that the Go standard
+    library's implementation is not FIPS-validated on its own, so 'uses FIPS 203'
+    and 'is FIPS 140-3 validated' are different claims worth separating when you evaluate
+    a vendor.
+- q: When will NIST require ML-KEM for federal systems?
+  a: There is no single switch. The NSA's CNSA 2.0 roadmap sets transition deadlines
+    per technology class, with the latest dates falling between 2030 and 2035 depending
+    on system type. Non-federal organisations are not required to switch, but regulators
+    in the EU, Germany, and France have all published guidance recommending that long-lived
+    data be protected with post-quantum cryptography starting now.
+relatedSlugs:
+- hybrid-key-exchange-x25519-mlkem
+- bsi-post-quantum-transition-2026
+- cnsa-2-0-deadlines
+- harvest-now-decrypt-later
 ---
+
 
 ## TL;DR
 
@@ -281,3 +315,14 @@ fact_check:
     - https://pkg.go.dev/crypto/mlkem
     - https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr02102/tr02102_node.html
 -->
+
+---
+
+## Related Technical Architecture & Deep Dives
+
+* **[Hybrid Key Exchange X25519 + ML-KEM-768: The Complete Guide](/blog/hybrid-key-exchange-x25519-mlkem/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[BSI TR-02102-1 and Post-Quantum: Germany's 2026 Crypto Baseline](/blog/bsi-post-quantum-transition-2026/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[NSA CNSA 2.0: Every Deadline DoD Contractors Need to Know](/blog/cnsa-2-0-deadlines/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[Harvest Now, Decrypt Later: Why Your VPN Traffic Is Already Compromised](/blog/harvest-now-decrypt-later/):** In-depth technical architecture, protocol specifications, and implementation best practices.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+
