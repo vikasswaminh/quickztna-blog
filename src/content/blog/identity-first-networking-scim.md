@@ -505,7 +505,7 @@ By pairing SCIM 2.0 automated provisioning with a Multi-IdP bridge architecture,
 * **[Ephemeral Key Architecture: Dynamic WireGuard Key Rotation for Zero Trust](/blog/ephemeral-key-architecture/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[The Anatomy of a Remote Workforce Security OS: Beyond Legacy Tunnels](/blog/remote-workforce-security-os/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[Top 10 Just-In-Time Access Frameworks for Zero Trust in 2026](/blog/top-10-jit-access-frameworks/):** In-depth technical architecture, protocol specifications, and implementation best practices.
-* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise [WireGuard mesh network](/blog/wireguard-mesh-network/) networking, automated identity-based microsegmentation, and zero trust access control.
+* **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise [[WireGuard mesh](/blog/wireguard-mesh-network/) network](/blog/wireguard-mesh-network/) networking, automated identity-based microsegmentation, and zero trust access control.
 
 
 

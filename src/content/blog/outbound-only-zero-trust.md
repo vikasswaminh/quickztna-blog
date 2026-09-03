@@ -1,6 +1,6 @@
 ---
 title: 'Outbound-Only Zero Trust: Eliminate Public IP Exposure Across Clouds'
-description: Master Outbound-Only Zero Trust Architecture. Learn how to remove public
+description: Master Outbound-Only [Zero Trust Architecture](/blog/what-is-ztna/). Learn how to remove public
   IPv4 addresses and close inbound ports across cloud workloads using WireGuard P2P
   mesh.
 publishedAt: 2026-08-21
