@@ -61,9 +61,9 @@ relatedSlugs:
 - bsi-post-quantum-transition-2026
 - cnsa-2-0-deadlines
 - harvest-now-decrypt-later
+- post-quantum-migration-timeline
+- anssi-pqc-transition-plan
 ---
-
-
 ## TL;DR
 
 ML-KEM-768 is the NIST-standardised post-quantum key encapsulation mechanism published as [FIPS 203](https://csrc.nist.gov/pubs/fips/203/final) on August 13, 2024. It is derived from CRYSTALS-Kyber and based on the hardness of the Module Learning With Errors problem. In a hybrid deployment it is paired with X25519, so that breaking a tunnel requires breaking both a post-quantum lattice scheme and a classical elliptic-curve scheme. A public key is 1,184 bytes, a ciphertext is 1,088 bytes, and a shared secret is 32 bytes. Encapsulation and decapsulation each run in well under a millisecond on commodity hardware. This post explains how ML-KEM-768 works and what to ask a vendor before you trust their "quantum-safe" marketing. To be explicit about our own product: QuickZTNA does **not** implement post-quantum key exchange — its tunnels are classical WireGuard (X25519 + ChaCha20-Poly1305).
@@ -326,3 +326,18 @@ fact_check:
 * **[Harvest Now, Decrypt Later: Why Your VPN Traffic Is Already Compromised](/blog/harvest-now-decrypt-later/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**Hybrid Key Exchange X25519 Mlkem**](/blog/hybrid-key-exchange-x25519-mlkem/)
+* [**Bsi Post Quantum Transition 2026**](/blog/bsi-post-quantum-transition-2026/)
+* [**Cnsa 2 0 Deadlines**](/blog/cnsa-2-0-deadlines/)
+* [**Harvest Now Decrypt Later**](/blog/harvest-now-decrypt-later/)
+* [**Post-Quantum Cryptography Migration Timeline (NIST & CNSA 2.0)**](/blog/post-quantum-migration-timeline/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

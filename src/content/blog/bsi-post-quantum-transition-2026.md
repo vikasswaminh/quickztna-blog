@@ -57,9 +57,9 @@ relatedSlugs:
 - ml-kem-768-explained
 - post-quantum-migration-timeline
 - cnsa-2-0-deadlines
+- soc-2-remote-access-controls
+- dora-compliance-network-resilience
 ---
-
-
 ## TL;DR
 
 The Bundesamt für Sicherheit in der Informationstechnik (BSI) — Germany's Federal Office for Information Security — publishes [TR-02102-1 "Cryptographic Mechanisms: Recommendations and Key Lengths"](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr02102/tr02102_node.html). It is Germany's baseline cryptographic guidance for federal administration and is widely referenced in private-sector contracts and regulated-entity supervision. Current editions recommend hybrid classical-plus-post-quantum key establishment for long-term confidentiality use cases and name ML-KEM among acceptable post-quantum KEMs. For remote-access deployments in Germany, alignment with TR-02102-1 is the de facto cryptographic compliance standard. This post explains the technical recommendations, the BSI's post-quantum migration position, and what a TR-02102-1-aligned VPN or ZTNA deployment looks like in 2026.
@@ -292,3 +292,18 @@ fact_check:
 * **[NSA CNSA 2.0: Every Deadline DoD Contractors Need to Know](/blog/cnsa-2-0-deadlines/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**Anssi Pqc Transition Plan**](/blog/anssi-pqc-transition-plan/)
+* [**ML-KEM-768 (FIPS 203) Explained: Post-Quantum Key Encapsulation**](/blog/ml-kem-768-explained/)
+* [**Post-Quantum Cryptography Migration Timeline (NIST & CNSA 2.0)**](/blog/post-quantum-migration-timeline/)
+* [**Cnsa 2 0 Deadlines**](/blog/cnsa-2-0-deadlines/)
+* [**SOC 2 Type II Remote Access Controls: Trust Services Criteria Guide**](/blog/soc-2-remote-access-controls/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

@@ -62,9 +62,9 @@ relatedSlugs:
 - cnsa-2-0-deadlines
 - harvest-now-decrypt-later
 - post-quantum-migration-timeline
+- soc-2-remote-access-controls
+- dora-compliance-network-resilience
 ---
-
-
 ## TL;DR
 
 ANSSI — the Agence nationale de la sécurité des systèmes d'information — is France's national cybersecurity agency. Since 2022 it has published a series of position papers setting out a three-phase plan for the post-quantum cryptographic transition. The agency recommends hybrid classical-plus-post-quantum key establishment, names ML-KEM and ML-DSA as acceptable post-quantum primitives following FIPS 203 and FIPS 204 standardisation, and maintains an explicit preference for FrodoKEM in highest-assurance contexts. For a remote-access deployment in France — in the public sector, for operators of vital importance (OIV), or for entities pursuing NIS2 alignment — conformance with ANSSI guidance is the de facto compliance path. This post explains the three phases, the specific algorithm recommendations, the qualification schemes, and what a concrete ANSSI-aligned ZTNA deployment looks like in 2026.
@@ -342,3 +342,18 @@ fact_check:
 * **[The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page](/blog/post-quantum-migration-timeline/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**Bsi Post Quantum Transition 2026**](/blog/bsi-post-quantum-transition-2026/)
+* [**Cnsa 2 0 Deadlines**](/blog/cnsa-2-0-deadlines/)
+* [**Harvest Now Decrypt Later**](/blog/harvest-now-decrypt-later/)
+* [**Post-Quantum Cryptography Migration Timeline (NIST & CNSA 2.0)**](/blog/post-quantum-migration-timeline/)
+* [**SOC 2 Type II Remote Access Controls: Trust Services Criteria Guide**](/blog/soc-2-remote-access-controls/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

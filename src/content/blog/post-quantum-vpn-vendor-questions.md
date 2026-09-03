@@ -56,9 +56,10 @@ relatedSlugs:
 - post-quantum-migration-timeline
 - hybrid-key-exchange-x25519-mlkem
 - ml-kem-768-explained
+- cnsa-2-0-deadlines
+- harvest-now-decrypt-later
+- anssi-pqc-transition-plan
 ---
-
-
 ## TL;DR
 
 Every major VPN and ZTNA vendor has at least a "post-quantum" press release in 2026. Fewer than half ship a production-ready implementation. Six questions — specific algorithm and parameter set, hybrid or pure, rotation cadence, visible mode, default-on status, and audited source — separate working implementations from marketing. This post walks through each question, shows what a good answer looks like, and includes the honest current status of QuickZTNA plus publicly verifiable snapshots of four other vendors. Run this checklist before your next procurement decision, or before your next compliance audit.
@@ -293,3 +294,18 @@ fact_check:
 * **[ML-KEM-768 Explained: The NIST Quantum-Safe KEM (FIPS 203)](/blog/ml-kem-768-explained/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**Post-Quantum Cryptography Migration Timeline (NIST & CNSA 2.0)**](/blog/post-quantum-migration-timeline/)
+* [**Hybrid Key Exchange X25519 Mlkem**](/blog/hybrid-key-exchange-x25519-mlkem/)
+* [**ML-KEM-768 (FIPS 203) Explained: Post-Quantum Key Encapsulation**](/blog/ml-kem-768-explained/)
+* [**Cnsa 2 0 Deadlines**](/blog/cnsa-2-0-deadlines/)
+* [**Harvest Now Decrypt Later**](/blog/harvest-now-decrypt-later/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

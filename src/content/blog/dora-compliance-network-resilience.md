@@ -61,9 +61,10 @@ relatedSlugs:
 - nis2-remote-access-requirements
 - ztna-metrics-for-cisos
 - soc-2-remote-access-controls
+- hipaa-compliant-vpn-2026
+- device-posture-checks
+- ztna-vs-vpn
 ---
-
-
 ## TL;DR
 
 The Digital Operational Resilience Act — [Regulation (EU) 2022/2554](https://eur-lex.europa.eu/eli/reg/2022/2554/oj) — has applied to EU financial entities since 17 January 2025. It imposes detailed requirements across five pillars: ICT risk management, incident reporting, digital operational resilience testing, ICT third-party risk management, and information-sharing arrangements. For network and remote-access engineering, the most relevant articles are 5 through 16 (ICT risk management including cryptography and access), Articles 17 through 23 (incident management), Articles 24 through 27 (testing including threat-led penetration testing), and Articles 28 through 44 (third-party risk). This post translates those articles into ten concrete implementation steps for a financial entity's network-and-remote-access stack, with references to primary sources throughout.
@@ -335,3 +336,18 @@ fact_check:
 * **[SOC 2 Controls for Remote Access: 11 You'll Get Audited On](/blog/soc-2-remote-access-controls/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**NIS2 Directive Remote Access Security Requirements for EU Operators**](/blog/nis2-remote-access-requirements/)
+* [**17 ZTNA Metrics Every CISO Should Actually Track in 2026**](/blog/ztna-metrics-for-cisos/)
+* [**SOC 2 Type II Remote Access Controls: Trust Services Criteria Guide**](/blog/soc-2-remote-access-controls/)
+* [**Hipaa Compliant Vpn 2026**](/blog/hipaa-compliant-vpn-2026/)
+* [**Device Posture Checks That Actually Catch Unmanaged Laptops**](/blog/device-posture-checks/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

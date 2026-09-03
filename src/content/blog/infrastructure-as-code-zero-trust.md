@@ -22,6 +22,8 @@ relatedSlugs:
 - identity-first-networking-scim
 - kubernetes-zero-trust
 - ephemeral-key-architecture
+- wireguard-mesh-network
+- outbound-only-zero-trust
 faq:
 - q: Does using Terraform change how the underlying zero trust access control actually
     works?
@@ -62,8 +64,6 @@ faq:
     operator can reconcile zero trust resources the same way it reconciles other custom
     resources.
 ---
-
-
 ## TL;DR
 
 A zero trust mesh network managed by hand—clicking through a dashboard to add users, write ACL rules, and rotate auth keys—works fine for five devices and falls apart somewhere around fifty. The fix is the same one that solved this problem for compute and storage a decade ago: treat the network's identity, policy, and device state as code, version it in Git, and let Terraform reconcile the declared state against reality on every apply. This turns access policy from a set of dashboard clicks nobody remembers making into a reviewable, revertible, auditable artifact that lives next to the infrastructure it protects.
@@ -323,6 +323,22 @@ Terraform can be run from the same CI/CD pipeline that manages other Kubernetes-
 * **[Kubernetes Zero Trust: Replacing kubectl proxy With a Mesh](/blog/kubernetes-zero-trust/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[Ephemeral Key Architecture: Dynamic WireGuard Key Rotation for Zero Trust](/blog/ephemeral-key-architecture/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
+
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**Out-of-Band Policy Engines: How Dry-Run Linting Prevents Network Lockouts**](/blog/out-of-band-policy-engines/)
+* [**Identity-First Networking: SCIM 2.0 & Multi-IdP Least-Privilege ZTNA**](/blog/identity-first-networking-scim/)
+* [**Kubernetes Zero Trust: Replacing kubectl proxy With an Identity Mesh**](/blog/kubernetes-zero-trust/)
+* [**Ephemeral Key Architecture: Dynamic WireGuard Key Rotation for Zero Trust**](/blog/ephemeral-key-architecture/)
+* [**WireGuard Mesh Networking: Zero to 100 Peers Without a Config File**](/blog/wireguard-mesh-network/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)
 
 ## Conclusion
 

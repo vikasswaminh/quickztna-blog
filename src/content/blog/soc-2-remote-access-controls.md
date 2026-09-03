@@ -60,9 +60,9 @@ relatedSlugs:
 - top-10-session-recording-compliance
 - dora-compliance-network-resilience
 - what-is-ztna
+- nis2-remote-access-requirements
+- ztna-metrics-for-cisos
 ---
-
-
 ## TL;DR
 
 SOC 2 is the attestation report most commonly required by enterprise buyers. It is built on AICPA's Trust Services Criteria (TSC). Remote-access architecture touches eleven specific criteria across the Common Criteria (CC) family — principally CC6 (Logical and Physical Access Controls) and CC7 (System Operations), with supporting references from CC5, CC8, and CC9. This post walks through each of the eleven criteria, what auditors typically ask for, and what evidence a ZTNA or VPN deployment should be able to produce. For your first SOC 2 audit, treat the remote-access chapter of your compliance workbook as a mostly solved problem if you have picked a modern ZTNA product — the controls and evidence drop out of normal operations. If you are on legacy VPN, expect work.
@@ -307,3 +307,18 @@ fact_check:
 * **[What Is ZTNA? A Plain-English Guide to Zero Trust Network Access in 2026](/blog/what-is-ztna/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**Hipaa Compliant Vpn 2026**](/blog/hipaa-compliant-vpn-2026/)
+* [**Top 10 Session Recording Compliance**](/blog/top-10-session-recording-compliance/)
+* [**DORA Compliance & Digital Operational Resilience for Financial Entities**](/blog/dora-compliance-network-resilience/)
+* [**What is Zero Trust Network Access (ZTNA)? Architecture, Principles & Benefits**](/blog/what-is-ztna/)
+* [**NIS2 Directive Remote Access Security Requirements for EU Operators**](/blog/nis2-remote-access-requirements/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

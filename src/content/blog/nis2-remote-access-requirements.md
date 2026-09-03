@@ -59,9 +59,9 @@ relatedSlugs:
 - soc-2-remote-access-controls
 - what-is-ztna
 - ztna-metrics-for-cisos
+- hipaa-compliant-vpn-2026
+- device-posture-checks
 ---
-
-
 ## TL;DR
 
 The NIS2 Directive — [Directive (EU) 2022/2555](https://eur-lex.europa.eu/eli/dir/2022/2555/oj) — has applied to in-scope EU entities since 18 October 2024. Article 21 requires "appropriate and proportionate" technical and organisational measures across ten categories, including cryptography, access control, incident handling, and supply-chain security. Article 23 adds a three-stage incident-reporting obligation (24h, 72h, one month). Fines reach €10 million or 2% of global turnover for essential entities. Remote access is not called out by name, but the combination of cryptography (point (h)), access control (point (i)), and asset management (point (i)) effectively mandates a modern, auditable remote-access architecture. This post is a builder's reading: what each obligation actually requires in an implementation, and what a defensible remote-access setup looks like.
@@ -327,3 +327,18 @@ fact_check:
 * **[17 ZTNA Metrics Every CISO Should Actually Track in 2026](/blog/ztna-metrics-for-cisos/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**DORA Compliance & Digital Operational Resilience for Financial Entities**](/blog/dora-compliance-network-resilience/)
+* [**SOC 2 Type II Remote Access Controls: Trust Services Criteria Guide**](/blog/soc-2-remote-access-controls/)
+* [**What is Zero Trust Network Access (ZTNA)? Architecture, Principles & Benefits**](/blog/what-is-ztna/)
+* [**17 ZTNA Metrics Every CISO Should Actually Track in 2026**](/blog/ztna-metrics-for-cisos/)
+* [**Hipaa Compliant Vpn 2026**](/blog/hipaa-compliant-vpn-2026/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

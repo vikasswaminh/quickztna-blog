@@ -60,9 +60,9 @@ relatedSlugs:
 - anssi-pqc-transition-plan
 - hybrid-key-exchange-x25519-mlkem
 - ml-kem-768-explained
+- cnsa-2-0-deadlines
+- ztna-vs-vpn
 ---
-
-
 ## TL;DR
 
 "Harvest now, decrypt later" is a real threat model in which an adversary records encrypted traffic today with the intention of decrypting it once a sufficiently capable quantum computer is available. The practical implication is blunt: any session secured with classical elliptic-curve or RSA key exchange, with a confidentiality requirement extending into the 2030s or beyond, is already losing. Post-quantum key exchange at the transport layer closes the window, typically by layering a hybrid X25519 + [ML-KEM-768](/blog/ml-kem-768-explained) handshake into the tunnel. QuickZTNA has **not** implemented this — our data plane is classical WireGuard — so treat this post as a buyer's guide, not a product claim. This post explains who is capturing, what they are capturing, how decryption might work in practice, and what to measure in your own environment before your audit next year.
@@ -275,3 +275,18 @@ fact_check:
 * **[ML-KEM-768 Explained: The NIST Quantum-Safe KEM (FIPS 203)](/blog/ml-kem-768-explained/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**Post-Quantum Cryptography Migration Timeline (NIST & CNSA 2.0)**](/blog/post-quantum-migration-timeline/)
+* [**Anssi Pqc Transition Plan**](/blog/anssi-pqc-transition-plan/)
+* [**Hybrid Key Exchange X25519 Mlkem**](/blog/hybrid-key-exchange-x25519-mlkem/)
+* [**ML-KEM-768 (FIPS 203) Explained: Post-Quantum Key Encapsulation**](/blog/ml-kem-768-explained/)
+* [**Cnsa 2 0 Deadlines**](/blog/cnsa-2-0-deadlines/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

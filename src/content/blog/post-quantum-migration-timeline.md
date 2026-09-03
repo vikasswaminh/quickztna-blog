@@ -60,9 +60,9 @@ relatedSlugs:
 - cnsa-2-0-deadlines
 - harvest-now-decrypt-later
 - hybrid-key-exchange-x25519-mlkem
+- ml-kem-768-explained
+- anssi-pqc-transition-plan
 ---
-
-
 ## TL;DR
 
 The post-quantum cryptographic migration is driven by multiple independent timelines: standards body schedules (NIST FIPS standards, published 2024), US defence deadlines (NSA CNSA 2.0, 2025-2035), EU coordinated roadmap (2030 target for critical systems), agency-specific guidance (BSI, ANSSI, UK NCSC), and industry rollouts (browser vendors, CDN providers, cloud platforms). This post consolidates every published deadline on one page, with links to primary sources. Specific per-scope dates: software-firmware signing begins 2025 (CNSA), critical systems target 2030 (EU), full National Security Systems by 2035 (NSA). Non-regulated organisations have no legal deadline but have a risk-management case to migrate before 2030 for any data with multi-year confidentiality requirements.
@@ -303,3 +303,18 @@ fact_check:
 * **[Hybrid Key Exchange X25519 + ML-KEM-768: The Complete Guide](/blog/hybrid-key-exchange-x25519-mlkem/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**Post Quantum Vpn Vendor Questions**](/blog/post-quantum-vpn-vendor-questions/)
+* [**Cnsa 2 0 Deadlines**](/blog/cnsa-2-0-deadlines/)
+* [**Harvest Now Decrypt Later**](/blog/harvest-now-decrypt-later/)
+* [**Hybrid Key Exchange X25519 Mlkem**](/blog/hybrid-key-exchange-x25519-mlkem/)
+* [**ML-KEM-768 (FIPS 203) Explained: Post-Quantum Key Encapsulation**](/blog/ml-kem-768-explained/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

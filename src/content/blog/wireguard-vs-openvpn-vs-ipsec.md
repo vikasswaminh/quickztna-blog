@@ -59,9 +59,9 @@ relatedSlugs:
 - ephemeral-key-architecture
 - wireguard-mesh-network
 - hybrid-key-exchange-x25519-mlkem
+- infrastructure-as-code-zero-trust
+- outbound-only-zero-trust
 ---
-
-
 ## TL;DR
 
 Three VPN protocols matter in 2026: WireGuard (modern, minimal, in-kernel on Linux), OpenVPN (mature, flexible, userspace), and IPsec (standard, enterprise-entrenched, with hardware offload support). WireGuard is typically fastest and simplest; OpenVPN is the most flexible and has the widest legacy client support; IPsec is the most standardised and has the strongest enterprise-router ecosystem. The correct choice depends on your specific constraints: platform support, existing infrastructure, compliance requirements, and operational complexity budget. This post compares all three on performance, security, code size, configurability, compliance posture, and post-quantum readiness.
@@ -361,3 +361,18 @@ fact_check:
 * **[Hybrid Key Exchange X25519 + ML-KEM-768: The Complete Guide](/blog/hybrid-key-exchange-x25519-mlkem/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**ZTNA vs Legacy VPNs: 8 Architectural Differences (With Diagrams)**](/blog/ztna-vs-vpn/)
+* [**Ephemeral Key Architecture: Dynamic WireGuard Key Rotation for Zero Trust**](/blog/ephemeral-key-architecture/)
+* [**WireGuard Mesh Networking: Zero to 100 Peers Without a Config File**](/blog/wireguard-mesh-network/)
+* [**Hybrid Key Exchange X25519 Mlkem**](/blog/hybrid-key-exchange-x25519-mlkem/)
+* [**Infrastructure as Code for Zero Trust: Terraform + Mesh VPN Guide**](/blog/infrastructure-as-code-zero-trust/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

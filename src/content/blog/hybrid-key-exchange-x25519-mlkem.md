@@ -59,9 +59,9 @@ relatedSlugs:
 - cnsa-2-0-deadlines
 - harvest-now-decrypt-later
 - post-quantum-migration-timeline
+- anssi-pqc-transition-plan
+- ztna-vs-vpn
 ---
-
-
 ## TL;DR
 
 A hybrid post-quantum key exchange combines two key-agreement primitives — one classical, one post-quantum — so the resulting session key is secure if either primitive alone is secure. The production default in 2026 is X25519 paired with ML-KEM-768. The correct combiner is to run both key exchanges in parallel, concatenate the two shared secrets, fold the handshake transcript into a salt, and derive the session key through HKDF. This post spells out the construction, the gotchas, and a minimal Go implementation you can read in full. To be clear about our own product: QuickZTNA does not run this exchange — its tunnels are classical WireGuard — so read this as an engineering guide, not a description of what we ship. Every major standards body — NIST, IETF, NSA, BSI, ANSSI — recommends hybrid for the transition window.
@@ -448,3 +448,18 @@ fact_check:
 * **[The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page](/blog/post-quantum-migration-timeline/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**ML-KEM-768 (FIPS 203) Explained: Post-Quantum Key Encapsulation**](/blog/ml-kem-768-explained/)
+* [**Cnsa 2 0 Deadlines**](/blog/cnsa-2-0-deadlines/)
+* [**Harvest Now Decrypt Later**](/blog/harvest-now-decrypt-later/)
+* [**Post-Quantum Cryptography Migration Timeline (NIST & CNSA 2.0)**](/blog/post-quantum-migration-timeline/)
+* [**Anssi Pqc Transition Plan**](/blog/anssi-pqc-transition-plan/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)

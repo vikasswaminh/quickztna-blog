@@ -61,9 +61,9 @@ relatedSlugs:
 - bsi-post-quantum-transition-2026
 - hybrid-key-exchange-x25519-mlkem
 - post-quantum-migration-timeline
+- soc-2-remote-access-controls
+- dora-compliance-network-resilience
 ---
-
-
 ## TL;DR
 
 CNSA 2.0 is the United States National Security Agency's Commercial National Security Algorithm Suite version 2.0. It specifies the post-quantum algorithms that US National Security Systems must use for key establishment and digital signatures, along with classical AES-256 and SHA-384/512 for symmetric operations. The suite was announced in a [September 2022 Cybersecurity Advisory](https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF), with per-technology-class transition deadlines running from 2025 to 2035. The earliest deadline — for software and firmware signing — has already started; the latest NSS-wide deadline is 2035. If you sell into Department of Defense systems, the clock is already running. This post lays out the full algorithm suite, every published deadline, and a practical migration checklist.
@@ -307,3 +307,18 @@ fact_check:
 * **[The 2026 Post-Quantum Migration Timeline: Every Major Deadline on One Page](/blog/post-quantum-migration-timeline/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
 
+
+
+---
+
+## Recommended Reading & Related Architectural Guides
+
+To continue exploring enterprise zero trust networking, identity orchestration, and WireGuard deployment patterns, explore our related technical teardowns:
+
+* [**Anssi Pqc Transition Plan**](/blog/anssi-pqc-transition-plan/)
+* [**Bsi Post Quantum Transition 2026**](/blog/bsi-post-quantum-transition-2026/)
+* [**Hybrid Key Exchange X25519 Mlkem**](/blog/hybrid-key-exchange-x25519-mlkem/)
+* [**Post-Quantum Cryptography Migration Timeline (NIST & CNSA 2.0)**](/blog/post-quantum-migration-timeline/)
+* [**SOC 2 Type II Remote Access Controls: Trust Services Criteria Guide**](/blog/soc-2-remote-access-controls/)
+* [**QuickZTNA Zero Trust Mesh Architecture & Platform Overview**](https://quickztna.com/)
+* [**QuickZTNA Cloud Mesh Deployment & Technical Documentation**](https://quickztna.com/docs/)
