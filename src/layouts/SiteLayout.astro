@@ -22,7 +22,7 @@ const {
 // tag — which is what let Google flag /download as duplicate-without-canonical
 // on 2026-05-10. The fix is "every page must self-canonicalize, always."
 const resolvedCanonical =
-  canonical ?? new URL(Astro.url.pathname, "https://www.quickztna.com").href;
+  canonical ?? new URL(Astro.url.pathname, "https://blog.quickztna.com").href;
 
 // Site-wide structured data emitted on every page. Boosts every marketing-core
 // page (home, features, pricing, etc.) by 3-4 schema points each, and makes the
@@ -32,12 +32,12 @@ const resolvedCanonical =
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
-  "@id": "https://www.quickztna.com/#organization",
+  "@id": "https://blog.quickztna.com/#organization",
   name: "QuickZTNA",
-  url: "https://www.quickztna.com",
+  url: "https://blog.quickztna.com",
   logo: {
     "@type": "ImageObject",
-    url: "https://www.quickztna.com/favicon.svg",
+    url: "https://blog.quickztna.com/favicon.svg",
     width: 512,
     height: 512,
   },
@@ -74,16 +74,16 @@ const organizationSchema = {
 const websiteSchema = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  "@id": "https://www.quickztna.com/#website",
-  url: "https://www.quickztna.com",
+  "@id": "https://blog.quickztna.com/#website",
+  url: "https://blog.quickztna.com",
   name: "QuickZTNA",
   description: "QuickZTNA — documentation, user guide, blog.",
-  publisher: { "@id": "https://www.quickztna.com/#organization" },
+  publisher: { "@id": "https://blog.quickztna.com/#organization" },
   potentialAction: {
     "@type": "SearchAction",
     target: {
       "@type": "EntryPoint",
-      urlTemplate: "https://www.quickztna.com/blog/?q={search_term_string}",
+      urlTemplate: "https://blog.quickztna.com/blog/?q={search_term_string}",
     },
     "query-input": "required name=search_term_string",
   },
