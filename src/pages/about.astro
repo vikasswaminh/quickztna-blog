@@ -1,6 +1,5 @@
 ---
 import SiteLayout from "@/layouts/SiteLayout.astro";
-import BlogHero from "@/components/blog/BlogHero.astro";
 import { getCollection } from "astro:content";
 
 const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
@@ -165,42 +164,42 @@ const aboutSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(aboutSchema)} is:inline />
   </Fragment>
 
-  <!-- ── UNIFIED REUSABLE BLOG HERO (EXACT SAME AS TAGS & BLOG) ───── -->
-    <!-- ── ABOUT PAGE HERO (COMPACT MISSION & REMOTE ACCESS) ──────── -->
+  <!-- ── ABOUT PAGE HERO (COMPACT MISSION & REMOTE ACCESS) ──────── -->
   <section class="border-b border-border/70 bg-hero relative overflow-hidden">
     <div class="absolute inset-0 bg-grid opacity-85 pointer-events-none" aria-hidden="true"></div>
-    <div class="relative mx-auto max-w-[1700px] px-4 py-10 sm:py-12 lg:py-14">
-      <div class="max-w-3xl space-y-3.5">
+    <div class="relative mx-auto max-w-[1700px] px-4 py-8 sm:py-10">
+      <div class="max-w-3xl space-y-2.5">
         <!-- Eyebrow Pill -->
-        <div class="inline-flex items-center rounded-full border border-blue-200 bg-white/90 px-3.5 py-0.5 shadow-2xs">
+        <div class="inline-flex items-center rounded-full border border-blue-200 bg-white/90 px-3 py-0.5 shadow-2xs">
           <span class="text-xs font-semibold text-[#0066ff]">Our Mission</span>
         </div>
 
         <!-- Main H1 Heading -->
-        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#0f172a] leading-[1.14]">
+        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-[#0f172a] leading-[1.15]">
           Fast, Simple, and Secure <span class="bg-gradient-to-r from-[#0066ff] to-[#00a3c4] bg-clip-text text-transparent">Remote Access</span>
         </h1>
 
         <!-- Subtitle Description -->
-        <p class="text-sm sm:text-base text-[#475467] leading-relaxed max-w-2xl">
+        <p class="text-xs sm:text-sm lg:text-base text-[#475467] leading-relaxed max-w-2xl">
           QuickZTNA replaces legacy VPNs and complex corporate network infrastructure with lightning-fast WireGuard mesh tunnels and fine-grained Zero Trust policies.
         </p>
       </div>
     </div>
   </section>
 
-  <div class="mx-auto max-w-[1700px] px-4 py-16 sm:px-6 lg:px-8 space-y-24">
+  <!-- ── COMPACT CONTENT CONTAINER (TIGHTENED WHITESPACE) ─────────── -->
+  <div class="mx-auto max-w-[1700px] px-4 py-8 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
 
     <!-- ── SECTION 1: WHY THIS BLOG EXISTS ─────────────────────────── -->
-    <section class="rounded-3xl border border-border/80 bg-card p-8 sm:p-12 lg:p-16 shadow-xs relative overflow-hidden">
-      <div class="absolute inset-0 bg-grid opacity-40 pointer-events-none" aria-hidden="true"></div>
-      <div class="relative grid gap-10 lg:grid-cols-12 items-start">
+    <section class="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs relative overflow-hidden">
+      <div class="absolute inset-0 bg-grid opacity-30 pointer-events-none" aria-hidden="true"></div>
+      <div class="relative grid gap-6 lg:grid-cols-12 items-start">
         
-        <div class="lg:col-span-4 space-y-3">
-          <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-3.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-primary">
+        <div class="lg:col-span-4 space-y-2">
+          <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-3 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider text-primary">
             🛡️ Our Mission
           </span>
-          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground leading-tight">
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground leading-tight">
             Why the QuickZTNA Blog Exists
           </h2>
           <p class="font-mono text-xs text-muted-foreground">
@@ -208,8 +207,8 @@ const aboutSchema = {
           </p>
         </div>
 
-        <div class="lg:col-span-8 space-y-6 text-base sm:text-lg leading-relaxed text-[#334155]">
-          <p class="font-semibold text-foreground text-lg sm:text-xl">
+        <div class="lg:col-span-8 space-y-3.5 text-sm sm:text-base leading-relaxed text-[#334155]">
+          <p class="font-semibold text-foreground text-base sm:text-lg">
             Security content should help engineers, architects, and CISOs make sound technical decisions—not just echo vendor buzzwords.
           </p>
           <p>
@@ -224,43 +223,43 @@ const aboutSchema = {
     </section>
 
     <!-- ── SECTION 2: WHAT WE WRITE ABOUT (6 CATEGORIES) ───────────── -->
-    <section class="space-y-8">
-      <div class="max-w-3xl space-y-2">
+    <section class="space-y-4">
+      <div class="max-w-3xl space-y-1">
         <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
           📚 Content Taxonomy
         </span>
-        <h2 class="text-3xl font-extrabold tracking-tight text-foreground">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           What We Write About
         </h2>
-        <p class="text-sm sm:text-base text-muted-foreground">
+        <p class="text-xs sm:text-sm text-muted-foreground">
           Our articles span six core domains covering the full spectrum of modern workforce security.
         </p>
       </div>
 
-      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
         {categories.map((cat) => (
-          <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-md transition-all">
+          <div class="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-5 shadow-2xs hover:border-primary/40 hover:shadow-xs transition-all">
             <div>
-              <div class="flex items-center justify-between gap-2 mb-3">
-                <span class={`rounded-full border px-3 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider ${cat.badgeColor}`}>
+              <div class="flex items-center justify-between gap-2 mb-2">
+                <span class={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${cat.badgeColor}`}>
                   {cat.name}
                 </span>
               </div>
-              <p class="text-sm text-[#334155] mb-5 leading-relaxed font-medium">
+              <p class="text-xs sm:text-sm text-[#334155] mb-3 leading-relaxed font-medium">
                 {cat.tagline}
               </p>
               
-              <ul class="space-y-1.5 border-t border-border/50 pt-4 text-xs font-mono text-muted-foreground">
+              <ul class="space-y-1 border-t border-border/50 pt-2.5 text-[11px] font-mono text-muted-foreground">
                 {cat.topics.map((t) => (
-                  <li class="flex items-center gap-2">
-                    <span class="text-primary">•</span>
+                  <li class="flex items-center gap-1.5">
+                    <span class="text-primary font-bold">•</span>
                     <span>{t}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div class="mt-6 pt-4 border-t border-border/60">
+            <div class="mt-4 pt-3 border-t border-border/60">
               <a
                 href={`/blog/?category=${cat.id}`}
                 class="text-xs font-bold text-primary hover:underline inline-flex items-center gap-1"
@@ -274,29 +273,29 @@ const aboutSchema = {
     </section>
 
     <!-- ── SECTION 3: EDITORIAL PRINCIPLES ─────────────────────────── -->
-    <section class="rounded-3xl border border-border/80 bg-muted/20 p-8 sm:p-12 lg:p-16 space-y-10">
-      <div class="max-w-3xl space-y-2">
+    <section class="rounded-2xl border border-border/80 bg-muted/20 p-6 sm:p-8 space-y-5">
+      <div class="max-w-3xl space-y-1">
         <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
           ⚖️ Editorial Integrity
         </span>
-        <h2 class="text-3xl font-extrabold tracking-tight text-foreground">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           Our 6 Editorial Principles
         </h2>
-        <p class="text-sm sm:text-base text-muted-foreground">
+        <p class="text-xs sm:text-sm text-muted-foreground">
           The non-negotiable quality guidelines behind every article published on QuickZTNA.
         </p>
       </div>
 
-      <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
         {editorialPrinciples.map((ep) => (
-          <div class="rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 transition-all">
-            <span class="font-mono text-2xl font-black text-gradient block mb-3">
+          <div class="rounded-xl border border-border/80 bg-card p-4.5 shadow-2xs hover:border-primary/40 transition-all">
+            <span class="font-mono text-xl font-black text-gradient block mb-1.5">
               {ep.num}
             </span>
-            <h3 class="text-base font-bold text-foreground mb-2">
+            <h3 class="text-sm font-bold text-foreground mb-1">
               {ep.title}
             </h3>
-            <p class="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            <p class="text-xs text-muted-foreground leading-relaxed">
               {ep.desc}
             </p>
           </div>
@@ -305,30 +304,30 @@ const aboutSchema = {
     </section>
 
     <!-- ── SECTION 4: HOW WE RESEARCH (VISUAL PIPELINE) ────────────── -->
-    <section class="space-y-10">
-      <div class="max-w-3xl space-y-2">
+    <section class="space-y-5">
+      <div class="max-w-3xl space-y-1">
         <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
           🔬 Research Methodology
         </span>
-        <h2 class="text-3xl font-extrabold tracking-tight text-foreground">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           How We Research & Validate Technical Claims
         </h2>
-        <p class="text-sm sm:text-base text-muted-foreground">
+        <p class="text-xs sm:text-sm text-muted-foreground">
           Every guide goes through a multi-stage validation pipeline to ensure code reproducibility and cryptographic accuracy.
         </p>
       </div>
 
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {researchSteps.map((rs) => (
-          <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-5 shadow-xs hover:border-primary/40 transition-all">
+          <div class="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-4 shadow-2xs hover:border-primary/40 transition-all">
             <div>
-              <span class="inline-flex items-center justify-center h-8 w-8 rounded-full bg-primary/10 font-mono text-xs font-bold text-primary mb-4">
+              <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary/10 font-mono text-[11px] font-bold text-primary mb-2.5">
                 {rs.step}
               </span>
-              <h4 class="text-sm font-bold text-foreground mb-2">
+              <h4 class="text-xs font-bold text-foreground mb-1">
                 {rs.name}
               </h4>
-              <p class="text-xs text-muted-foreground leading-relaxed">
+              <p class="text-[11px] text-muted-foreground leading-relaxed">
                 {rs.desc}
               </p>
             </div>
@@ -336,7 +335,7 @@ const aboutSchema = {
         ))}
       </div>
 
-      <div class="rounded-2xl border border-primary/20 bg-primary/5 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs sm:text-sm text-muted-foreground">
+      <div class="rounded-xl border border-primary/20 bg-primary/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-muted-foreground">
         <p>
           <strong class="text-foreground">Standards Citations:</strong> We link directly to official NIST FIPS 203/204/205 specifications, IETF RFCs (RFC 9298, RFC 8489), and regulatory frameworks in all publications.
         </p>
@@ -347,29 +346,29 @@ const aboutSchema = {
     </section>
 
     <!-- ── SECTION 5: WHO IS THIS BLOG FOR? ────────────────────────── -->
-    <section class="space-y-8">
-      <div class="max-w-3xl space-y-2">
+    <section class="space-y-4">
+      <div class="max-w-3xl space-y-1">
         <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
           👥 Target Audience
         </span>
-        <h2 class="text-3xl font-extrabold tracking-tight text-foreground">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           Who This Blog Is For
         </h2>
-        <p class="text-sm sm:text-base text-muted-foreground">
+        <p class="text-xs sm:text-sm text-muted-foreground">
           Designed specifically for technical practitioners building and securing modern distributed networks.
         </p>
       </div>
 
-      <div class="grid gap-6 md:grid-cols-3">
+      <div class="grid gap-4 sm:gap-5 md:grid-cols-3">
         {targetAudiences.map((aud) => (
-          <div class={`rounded-2xl border bg-gradient-to-b ${aud.color} p-7 shadow-xs space-y-4`}>
-            <h3 class="text-xl font-bold text-foreground">
+          <div class={`rounded-xl border bg-gradient-to-b ${aud.color} p-5 shadow-2xs space-y-2.5`}>
+            <h3 class="text-lg font-bold text-foreground">
               {aud.title}
             </h3>
             <p class="font-mono text-xs font-semibold text-primary">
               {aud.roles}
             </p>
-            <p class="text-xs sm:text-sm text-[#334155] leading-relaxed">
+            <p class="text-xs text-[#334155] leading-relaxed">
               {aud.benefit}
             </p>
           </div>
@@ -378,81 +377,81 @@ const aboutSchema = {
     </section>
 
     <!-- ── SECTION 6: QUICKZTNA + THE BLOG ─────────────────────────── -->
-    <section class="rounded-3xl border border-border/80 bg-card p-8 sm:p-12 lg:p-16 shadow-xs space-y-8">
-      <div class="grid gap-8 lg:grid-cols-12 items-center">
-        <div class="lg:col-span-7 space-y-4">
+    <section class="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs space-y-5">
+      <div class="grid gap-6 lg:grid-cols-12 items-center">
+        <div class="lg:col-span-7 space-y-2.5">
           <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
             ⚡ Platform Connection
           </span>
-          <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
+          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
             The Technology Behind The Blog
           </h2>
-          <p class="text-sm sm:text-base text-[#334155] leading-relaxed">
+          <p class="text-xs sm:text-sm text-[#334155] leading-relaxed">
             QuickZTNA is an enterprise Zero Trust Network Access platform engineered on the open-standard WireGuard protocol. We combine encrypted peer-to-peer overlay networking, kernel-level ABAC policy enforcement, continuous device posture verification, and post-quantum ML-KEM key encapsulation.
           </p>
-          <p class="text-xs sm:text-sm text-muted-foreground">
+          <p class="text-xs text-muted-foreground">
             Our educational content reflects the actual protocols, cryptographic primitives, and distributed systems we engineer daily.
           </p>
         </div>
 
-        <div class="lg:col-span-5 flex flex-col gap-3.5 justify-center">
+        <div class="lg:col-span-5 flex flex-col gap-2.5 justify-center">
           <a
             href="https://quickztna.com/features"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-4 hover:border-primary/50 hover:bg-muted/60 transition-all group"
+            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
           >
             <div>
-              <span class="font-bold text-sm text-foreground group-hover:text-primary">Platform Features</span>
-              <p class="text-xs text-muted-foreground">Mesh, ABAC, Posture & DNS filtering</p>
+              <span class="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary">Platform Features</span>
+              <p class="text-[11px] text-muted-foreground">Mesh, ABAC, Posture & DNS filtering</p>
             </div>
-            <span class="font-bold text-primary">↗</span>
+            <span class="font-bold text-primary text-sm">↗</span>
           </a>
 
           <a
             href="https://quickztna.com/docs/"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-4 hover:border-primary/50 hover:bg-muted/60 transition-all group"
+            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
           >
             <div>
-              <span class="font-bold text-sm text-foreground group-hover:text-primary">Developer Documentation</span>
-              <p class="text-xs text-muted-foreground">API reference, SDKs, and CLI guides</p>
+              <span class="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary">Developer Documentation</span>
+              <p class="text-[11px] text-muted-foreground">API reference, SDKs, and CLI guides</p>
             </div>
-            <span class="font-bold text-primary">↗</span>
+            <span class="font-bold text-primary text-sm">↗</span>
           </a>
 
           <a
             href="https://quickztna.com/guide/quickstart/"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-4 hover:border-primary/50 hover:bg-muted/60 transition-all group"
+            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
           >
             <div>
-              <span class="font-bold text-sm text-foreground group-hover:text-primary">Quickstart Deployment</span>
-              <p class="text-xs text-muted-foreground">Deploy your first mesh tunnel in 2 minutes</p>
+              <span class="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary">Quickstart Deployment</span>
+              <p class="text-[11px] text-muted-foreground">Deploy your first mesh tunnel in 2 minutes</p>
             </div>
-            <span class="font-bold text-primary">↗</span>
+            <span class="font-bold text-primary text-sm">↗</span>
           </a>
         </div>
       </div>
     </section>
 
     <!-- ── SECTION 7: EDITORIAL TEAMS & CONTRIBUTORS ───────────────── -->
-    <section class="space-y-8">
-      <div class="max-w-3xl space-y-2">
+    <section class="space-y-4">
+      <div class="max-w-3xl space-y-1">
         <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
           👥 Engineering Authors
         </span>
-        <h2 class="text-3xl font-extrabold tracking-tight text-foreground">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           Meet the Editorial & Engineering Teams
         </h2>
-        <p class="text-sm sm:text-base text-muted-foreground">
+        <p class="text-xs sm:text-sm text-muted-foreground">
           Our articles are authored and peer-reviewed by practicing engineers across four core specializations.
         </p>
       </div>
 
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           {
             team: "Cryptography Research Team",
@@ -475,12 +474,12 @@ const aboutSchema = {
             icon: "⚙️",
           },
         ].map((tm) => (
-          <div class="rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 transition-all space-y-3">
-            <span class="text-3xl block">{tm.icon}</span>
-            <h4 class="text-sm font-bold text-foreground">
+          <div class="rounded-xl border border-border/80 bg-card p-4.5 shadow-2xs hover:border-primary/40 transition-all space-y-2">
+            <span class="text-2xl block">{tm.icon}</span>
+            <h4 class="text-xs sm:text-sm font-bold text-foreground">
               {tm.team}
             </h4>
-            <p class="text-xs text-muted-foreground leading-relaxed">
+            <p class="text-[11px] text-muted-foreground leading-relaxed">
               {tm.focus}
             </p>
           </div>
@@ -489,78 +488,78 @@ const aboutSchema = {
     </section>
 
     <!-- ── SECTION 8: TRANSPARENCY & FACT-CHECKING PLEDGE ──────────── -->
-    <section class="rounded-3xl border border-border/80 bg-muted/20 p-8 sm:p-12 lg:p-16 space-y-6">
-      <div class="max-w-3xl space-y-2">
+    <section class="rounded-2xl border border-border/80 bg-muted/20 p-6 sm:p-8 space-y-4">
+      <div class="max-w-3xl space-y-1">
         <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
           🔍 Accountability
         </span>
-        <h2 class="text-3xl font-extrabold tracking-tight text-foreground">
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           Transparency & Errata Policy
         </h2>
       </div>
 
-      <div class="grid gap-6 md:grid-cols-3 text-xs sm:text-sm text-[#334155] leading-relaxed">
-        <div class="space-y-2 rounded-2xl border border-border/80 bg-card p-5">
-          <h4 class="font-bold text-foreground flex items-center gap-1.5">
+      <div class="grid gap-4 md:grid-cols-3 text-xs text-[#334155] leading-relaxed">
+        <div class="space-y-1.5 rounded-xl border border-border/80 bg-card p-4">
+          <h4 class="font-bold text-foreground flex items-center gap-1.5 text-xs">
             <span class="text-emerald-500">✓</span> What We Test
           </h4>
-          <p>We test WireGuard configs, eBPF programs, and Noise handshakes in controlled test environments to report realistic numbers.</p>
+          <p class="text-[11px] text-muted-foreground">We test WireGuard configs, eBPF programs, and Noise handshakes in controlled test environments to report realistic numbers.</p>
         </div>
 
-        <div class="space-y-2 rounded-2xl border border-border/80 bg-card p-5">
-          <h4 class="font-bold text-foreground flex items-center gap-1.5">
+        <div class="space-y-1.5 rounded-xl border border-border/80 bg-card p-4">
+          <h4 class="font-bold text-foreground flex items-center gap-1.5 text-xs">
             <span class="text-blue-500">✓</span> What We Know
           </h4>
-          <p>We clearly delineate standardized protocols (FIPS 203 ML-KEM) from emerging proposals (draft-ietf-pquip-pqtls).</p>
+          <p class="text-[11px] text-muted-foreground">We clearly delineate standardized protocols (FIPS 203 ML-KEM) from emerging proposals (draft-ietf-pquip-pqtls).</p>
         </div>
 
-        <div class="space-y-2 rounded-2xl border border-border/80 bg-card p-5">
-          <h4 class="font-bold text-foreground flex items-center gap-1.5">
+        <div class="space-y-1.5 rounded-xl border border-border/80 bg-card p-4">
+          <h4 class="font-bold text-foreground flex items-center gap-1.5 text-xs">
             <span class="text-amber-500">✓</span> How We Correct Errata
           </h4>
-          <p>If a community member or security researcher discovers an inaccuracy, we update the post with timestamped change logs.</p>
+          <p class="text-[11px] text-muted-foreground">If a community member or security researcher discovers an inaccuracy, we update the post with timestamped change logs.</p>
         </div>
       </div>
     </section>
 
     <!-- ── SECTION 9: RECENT ARTICLES & CALL TO ACTION ─────────────── -->
-    <section class="space-y-8 pt-6 border-t border-border/70">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <section class="space-y-5 pt-4 border-t border-border/70">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <h3 class="text-2xl font-extrabold tracking-tight text-foreground">
+          <h3 class="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
             Explore Latest Engineering Notes
           </h3>
-          <p class="text-xs sm:text-sm text-muted-foreground">Recent research papers and deployment guides</p>
+          <p class="text-xs text-muted-foreground">Recent research papers and deployment guides</p>
         </div>
         <a
           href="/"
-          class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-5 py-2 text-xs sm:text-sm font-bold text-white shadow-2xs hover:opacity-95 hover:brightness-105 transition-all"
+          class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-4 py-1.5 text-xs font-bold text-white shadow-2xs hover:opacity-95 hover:brightness-105 transition-all"
         >
           <span>View All 45 Articles</span>
           <span>→</span>
         </a>
       </div>
 
-      <div class="grid gap-6 md:grid-cols-3">
+      <div class="grid gap-4 sm:gap-5 md:grid-cols-3">
         {recentPosts.map((post) => {
           const slug = post.id.replace(/\.md$/, "");
           return (
-            <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-md transition-all">
+            <div class="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-5 shadow-2xs hover:border-primary/40 hover:shadow-xs transition-all">
               <div>
-                <span class="inline-block rounded-md border border-cyan-200 bg-cyan-50 px-2.5 py-0.5 font-semibold text-xs text-cyan-700 mb-3 capitalize">
+                <span class="inline-block rounded-md border border-cyan-200 bg-cyan-50 px-2 py-0.5 font-semibold text-[11px] text-cyan-700 mb-2 capitalize">
                   {post.data.category}
                 </span>
                 <a href={`/blog/${slug}/`} class="block group">
-                  <h4 class="text-base font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
+                  <h4 class="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
                     {post.data.title}
                   </h4>
                 </a>
-                <p class="mt-2 text-xs text-muted-foreground line-clamp-3 leading-relaxed">
+                <p class="mt-1.5 text-xs text-muted-foreground line-clamp-3 leading-relaxed">
                   {post.data.description}
                 </p>
               </div>
 
-              <div class="mt-6 pt-4 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
+              <div class="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
                 <span>{post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
                 <a href={`/blog/${slug}/`} class="font-bold text-primary hover:underline">
                   Read →
