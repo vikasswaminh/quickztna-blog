@@ -1,471 +1,315 @@
 ---
 import SiteLayout from "@/layouts/SiteLayout.astro";
-import BlogHero from "@/components/blog/BlogHero.astro";
 import { getCollection } from "astro:content";
 
 const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
+  (a, b) => {
+    const dateA = a.data.publishedAt || (a.data as any).pubDate || new Date();
+    const dateB = b.data.publishedAt || (b.data as any).pubDate || new Date();
+    return new Date(dateB).valueOf() - new Date(dateA).valueOf();
+  }
 );
 
-// Extract all tags and count frequencies
-const tagMap: Record<string, { count: number; posts: Array<{ title: string; slug: string; date: string; category: string; description: string }> }> = {};
-
-for (const post of allPosts) {
-  const slug = post.id.replace(/\.md$/, "");
-  const tags = post.data.tags || [];
-  for (const rawTag of tags) {
-    const t = String(rawTag).toLowerCase().trim();
-    if (!tagMap[t]) {
-      tagMap[t] = { count: 0, posts: [] };
-    }
-    tagMap[t].count++;
-    tagMap[t].posts.push({
-      title: post.data.title,
-      slug,
-      date: post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      category: post.data.category,
-      description: post.data.description,
-    });
-  }
-}
-
-const allUniqueTags = Object.keys(tagMap).sort((a, b) => tagMap[b].count - tagMap[a].count || a.localeCompare(b));
-
-// Top most explored tags
-const topExploredTags = allUniqueTags.slice(0, 12);
-
-// Visual Domain Groups mapping existing tags
-const topicGroups = [
-  {
-    id: "zero-trust",
-    name: "Zero Trust & Architecture",
-    description: "NIST SP 800-207 principles, SDP, microsegmentation, and network access control.",
-    badgeColor: "border-blue-200 bg-blue-50 text-blue-700",
-    tags: ["zero-trust", "ztna", "nist-800-207", "beyondcorp", "software-defined-perimeter", "single-packet-authorization", "micro-segmentation", "least-privilege", "privileged-access", "jit-access"]
-  },
-  {
-    id: "wireguard",
-    name: "WireGuard & Kernel Networking",
-    description: "Noise protocol handshakes, eBPF telemetry, STUN/DERP NAT traversal, and high-speed tunneling.",
-    badgeColor: "border-cyan-200 bg-cyan-50 text-cyan-700",
-    tags: ["wireguard", "wireguard-mesh", "noise-protocol", "nat-traversal", "ebpf", "openvpn", "ipsec", "masque", "http3", "netlink", "mesh-vpn"]
-  },
-  {
-    id: "post-quantum",
-    name: "Post-Quantum Cryptography",
-    description: "NIST FIPS 203/204/205 standards, ML-KEM Kyber, hybrid key exchanges, and HNDL defense.",
-    badgeColor: "border-purple-200 bg-purple-50 text-purple-700",
-    tags: ["post-quantum", "cryptography", "ml-kem", "fips-203", "hybrid-key-exchange", "x25519", "harvest-now-decrypt-later", "quantum-computing", "quantum-safe", "cnsa-2-0"]
-  },
-  {
-    id: "compliance",
-    name: "Compliance & Regulatory Frameworks",
-    description: "Practical technical implementations for SOC 2, HIPAA, EU NIS2, DORA, and ISO 27001.",
-    badgeColor: "border-emerald-200 bg-emerald-50 text-emerald-700",
-    tags: ["compliance", "soc-2", "hipaa", "nis2", "dora", "pci-dss", "iso-27001", "anssi", "bsi", "tr-02102", "eu-cybersecurity", "security-rule"]
-  },
-  {
-    id: "identity",
-    name: "Identity, ABAC & Posture",
-    description: "Attribute-Based Access Control, SCIM 2.0 provisioning, continuous device health checks, and SPIFFE.",
-    badgeColor: "border-amber-200 bg-amber-50 text-amber-700",
-    tags: ["abac", "iam", "rbac", "device-posture", "continuous-authentication", "scim-2-0", "spiffe", "multi-idp", "okta", "entra-id", "edr", "mdm"]
-  },
-  {
-    id: "infrastructure",
-    name: "Cloud, Kubernetes & DevOps",
-    description: "Multi-cloud mesh, ephemeral CI/CD runners, Terraform automation, and database security.",
-    badgeColor: "border-indigo-200 bg-indigo-50 text-indigo-700",
-    tags: ["kubernetes", "cloud-security", "multi-cloud", "ci-cd", "ephemeral-runners", "terraform", "gitops", "infrastructure-as-code", "database-access", "secrets-management", "vault"]
-  },
-  {
-    id: "comparisons",
-    name: "Comparisons & Migration Playbooks",
-    description: "Total Cost of Ownership models, Cisco AnyConnect migration, Tailscale/Cloudflare teardowns.",
-    badgeColor: "border-rose-200 bg-rose-50 text-rose-700",
-    tags: ["comparison", "tailscale-alternative", "cloudflare-access-alternative", "twingate-alternative", "cisco-anyconnect", "ztna-vs-vpn", "total-cost", "self-host", "headscale", "netbird"]
-  }
-];
-
-// Topic Learning Paths
-const learningPaths = [
-  {
-    id: "ztna-foundation",
-    title: "Zero Trust Architecture Roadmap",
-    level: "Foundational to Advanced",
-    description: "Step-by-step progression from core perimeter teardown to enterprise policy engines.",
-    steps: [
-      { num: "01", title: "What is Zero Trust Network Access?", slug: "what-is-ztna" },
-      { num: "02", title: "Zero Trust vs Legacy VPN: Total Cost of Ownership", slug: "zero-trust-vs-vpn-cost-comparison" },
-      { num: "03", title: "NIST SP 800-207 Zero Trust Architecture Guide", slug: "zero-trust-architecture-nist-800-207" },
-      { num: "04", title: "Micro-Segmentation vs Traditional VLANs", slug: "micro-segmentation-vs-vlan" },
-      { num: "05", title: "Least-Privilege Network Access Engineering", slug: "least-privilege-access-engineering" },
-    ]
-  },
-  {
-    id: "pqc-wireguard",
-    title: "Quantum-Resistant WireGuard Blueprint",
-    level: "Cryptographic Deep Dive",
-    description: "Architectural path for deploying hybrid post-quantum key exchange in production.",
-    steps: [
-      { num: "01", title: "Harvest Now, Decrypt Later Threat Model", slug: "harvest-now-decrypt-later" },
-      { num: "02", title: "NIST FIPS 203, 204 & 205 Complete Guide", slug: "nist-fips-203-204-205-guide" },
-      { num: "03", title: "ML-KEM (Kyber) in WireGuard Noise Handshakes", slug: "ml-kem-kyber-wireguard" },
-      { num: "04", title: "Hybrid Post-Quantum VPN Engineering", slug: "hybrid-post-quantum-vpn" },
-    ]
-  },
-  {
-    id: "compliance-blueprint",
-    title: "Global Compliance & Risk Governance",
-    level: "Regulatory Engineering",
-    description: "Technical audit checklists and control mappings across international standards.",
-    steps: [
-      { num: "01", title: "SOC 2 Compliance via Zero Trust Controls", slug: "soc2-remote-access-controls" },
-      { num: "02", title: "HIPAA-Compliant Remote Access in 2026", slug: "hipaa-compliant-vpn-2026" },
-      { num: "03", title: "EU DORA Network Resilience Architecture", slug: "dora-compliance-network-resilience" },
-      { num: "04", title: "PCI DSS 4.0 Cardholder Scope Reduction", slug: "pci-dss-4-zero-trust" },
-    ]
-  }
-];
-
-const tagsIndexSchema = {
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  name: "Topic Explorer & Technical Tags — QuickZTNA Blog",
-  description: "Explore all technical topics, architecture guides, protocol deep-dives, and compliance blueprints on the QuickZTNA blog.",
-  url: "https://blog.quickztna.com/tags/",
+const categoryLabel: Record<string, string> = {
+  "post-quantum": "Architecture",
+  compliance: "Compliance",
+  comparison: "Comparison",
+  fundamentals: "Fundamentals",
+  technical: "Technical",
+  industry: "Industry",
 };
+
+const categoryBadgeColors: Record<string, { bg: string; text: string; border: string; pillBg: string }> = {
+  "post-quantum": {
+    bg: "bg-blue-50",
+    text: "text-blue-700",
+    border: "border-blue-200",
+    pillBg: "bg-blue-50/60 hover:bg-blue-100/70 hover:border-blue-300 hover:text-blue-800",
+  },
+  comparison: {
+    bg: "bg-purple-50",
+    text: "text-purple-700",
+    border: "border-purple-200",
+    pillBg: "bg-purple-50/60 hover:bg-purple-100/70 hover:border-purple-300 hover:text-purple-800",
+  },
+  compliance: {
+    bg: "bg-emerald-50",
+    text: "text-emerald-700",
+    border: "border-emerald-200",
+    pillBg: "bg-emerald-50/60 hover:bg-emerald-100/70 hover:border-emerald-300 hover:text-emerald-800",
+  },
+  technical: {
+    bg: "bg-cyan-50",
+    text: "text-cyan-700",
+    border: "border-cyan-200",
+    pillBg: "bg-cyan-50/60 hover:bg-cyan-100/70 hover:border-cyan-300 hover:text-cyan-800",
+  },
+  fundamentals: {
+    bg: "bg-amber-50",
+    text: "text-amber-700",
+    border: "border-amber-200",
+    pillBg: "bg-amber-50/60 hover:bg-amber-100/70 hover:border-amber-300 hover:text-amber-800",
+  },
+  industry: {
+    bg: "bg-rose-50",
+    text: "text-rose-700",
+    border: "border-rose-200",
+    pillBg: "bg-rose-50/60 hover:bg-rose-100/70 hover:border-rose-300 hover:text-rose-800",
+  },
+};
+
+const getCatColor = (cat: string) =>
+  categoryBadgeColors[cat] ?? {
+    bg: "bg-primary/10",
+    text: "text-primary",
+    border: "border-primary/20",
+    pillBg: "bg-muted/60 hover:bg-primary/5 hover:border-primary/40 hover:text-primary",
+  };
+
+const categories = ["post-quantum", "comparison", "compliance", "technical", "fundamentals", "industry"] as const;
+
+// Aggregate tags with counts across all posts
+const tagCounts: Record<string, number> = {};
+const tagsByCategory: Record<string, Record<string, number>> = {};
+
+categories.forEach((cat) => {
+  tagsByCategory[cat] = {};
+});
+
+allPosts.forEach((post) => {
+  const cat = post.data.category;
+  post.data.tags.forEach((rawTag: string) => {
+    const tag = rawTag.toLowerCase().trim();
+    if (!tag) return;
+    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+
+    if (tagsByCategory[cat]) {
+      tagsByCategory[cat][tag] = (tagsByCategory[cat][tag] || 0) + 1;
+    }
+  });
+});
+
+const totalTopics = Object.keys(tagCounts).length;
+
+const sortedTags = Object.entries(tagCounts).sort((a, b) => {
+  if (b[1] !== a[1]) return b[1] - a[1];
+  return a[0].localeCompare(b[0]);
+});
 ---
 
 <SiteLayout
-  title="Topic Explorer — Browse Zero Trust & WireGuard Guides | QuickZTNA Blog"
-  description="Explore all technical topics, architecture deep-dives, compliance standards, and WireGuard engineering guides across the QuickZTNA blog."
-  canonical="https://blog.quickztna.com/tags/"
+  title="Tags & Topics Hub — QuickZTNA Blog"
+  description="Explore all Zero Trust Network Access topics, WireGuard architecture, compliance frameworks, comparisons, and security guides organized by tag."
 >
-  <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(tagsIndexSchema)} is:inline />
-  </Fragment>
+  <!-- ── HERO SECTION (LEFT ALIGNED) ─────────────────────────────────── -->
+  <section class="border-b border-border bg-hero relative overflow-hidden">
+    <div class="absolute inset-0 bg-grid opacity-80 pointer-events-none" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-[1700px] px-4 py-12 sm:px-6 lg:px-8 text-left flex flex-col items-start justify-center">
+      <!-- Heading -->
+      <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-[#0f172a] leading-[1.16]">
+        Explore Every <span class="text-gradient">Topic & Tag</span>
+      </h1>
 
-  <!-- ── UNIFIED REUSABLE BLOG HERO ────────────────────────────────── -->
-  <BlogHero activePage="tags" />
+      <p class="mt-3 max-w-3xl text-base sm:text-lg text-[#475467] leading-[1.6]">
+        Browse {allPosts.length} engineering articles, architecture deep-dives, compliance frameworks, and tutorials organized by topic.
+      </p>
+    </div>
+  </section>
 
-  <div class="mx-auto max-w-[1700px] px-4 py-12 sm:px-6 lg:px-8 space-y-16">
-
-    <!-- ── SECTION 2: EXPLORE BY TOPIC & LIVE SEARCH BAR ───────────── -->
-    <section id="topics" class="rounded-3xl border border-border/80 bg-card p-6 sm:p-10 shadow-xs relative overflow-hidden">
-      <div class="max-w-4xl mx-auto text-center space-y-4">
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-3.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-primary">
-          🔎 Topic Explorer
-        </span>
-        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-          Find Exactly What You're Building
-        </h2>
-        <p class="text-sm sm:text-base text-muted-foreground">
-          Filter through 140+ verified engineering topics, standards, and deployment guides.
-        </p>
-
-        <!-- Live Instant Search Input -->
-        <div class="relative max-w-2xl mx-auto mt-6">
-          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-muted-foreground">
-            <svg class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <input
-            type="search"
-            id="tag-search-input"
-            placeholder="Search Zero Trust, WireGuard, compliance, Kyber, SOC 2..."
-            class="w-full rounded-2xl border border-border/80 bg-muted/30 py-4 pl-12 pr-12 text-sm sm:text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:bg-background focus:outline-none focus:ring-4 focus:ring-primary/10 shadow-xs transition-all"
-            autocomplete="off"
-          />
-          <button
-            id="tag-search-clear"
-            type="button"
-            class="hidden absolute inset-y-0 right-0 items-center pr-4 text-muted-foreground hover:text-foreground"
-            aria-label="Clear search"
-          >
-            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>
-          </button>
-        </div>
-
-        <!-- Fast Category Filters -->
-        <div class="pt-4 flex flex-wrap items-center justify-center gap-2" id="category-filter-bar">
-          <button data-group-filter="all" class="group-filter-btn active rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-4 py-1.5 font-bold text-xs text-white shadow-2xs transition-all">
-            All Domains (144)
-          </button>
-          {topicGroups.map((grp) => (
-            <button
-              data-group-filter={grp.id}
-              class="group-filter-btn rounded-full border border-border bg-card px-3.5 py-1.5 font-semibold text-xs text-[#475467] hover:border-primary/40 hover:text-primary transition-all"
-            >
-              {grp.name.split("&")[0].trim()}
-            </button>
-          ))}
-        </div>
-      </div>
-    </section>
-
-    <!-- ── SECTION 3: MOST EXPLORED TOPICS (DATA-DRIVEN) ───────────── -->
-    <section class="space-y-4">
-      <div class="flex items-center justify-between">
-        <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-          <span class="text-amber-500">🔥</span> MOST EXPLORED TOPICS
-        </h3>
-        <span class="text-xs text-muted-foreground font-mono">Ranked by deep-dive coverage</span>
-      </div>
-
-      <div class="flex flex-wrap gap-2.5">
-        {topExploredTags.map((tag) => {
-          const info = tagMap[tag];
+  <!-- ── CATEGORY FILTER TOOLBAR (TABS ON LEFT, STATS ON RIGHT) ─────── -->
+  <div class="sticky top-16 z-30 border-b border-border bg-white/95 backdrop-blur-md py-3 shadow-sm">
+    <div class="mx-auto max-w-[1700px] px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Left: Category Filter Tabs -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none" id="category-tabs">
+        <button
+          data-cat-tab="all"
+          class="cat-tab-btn active rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white border border-transparent px-4 py-1.5 text-xs font-bold shadow-sm transition-all flex-shrink-0 hover:brightness-105"
+        >
+          All Topics
+        </button>
+        {categories.map((c) => {
+          const catColor = getCatColor(c);
           return (
-            <a
-              href={`/tags/${tag}/`}
-              class="inline-flex items-center gap-2 rounded-xl border border-border/80 bg-card hover:border-primary/50 hover:bg-muted/30 px-4 py-2 text-xs sm:text-sm font-bold text-foreground transition-all duration-150 hover:-translate-y-0.5 shadow-2xs"
+            <button
+              data-cat-tab={c}
+              class={`cat-tab-btn rounded-full border ${catColor.border} ${catColor.bg} px-4 py-1.5 text-xs font-semibold ${catColor.text} hover:opacity-90 transition-all flex-shrink-0 shadow-2xs`}
             >
-              <span>#{tag}</span>
-              <span class="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-primary">
-                {info?.count ?? 1}
-              </span>
-            </a>
+              {categoryLabel[c]}
+            </button>
           );
         })}
       </div>
-    </section>
 
-    <!-- ── SECTION 4: VISUAL GROUPED TOPIC CARDS ───────────────────── -->
-    <section class="space-y-8" id="topic-groups-container">
-      <div class="border-b border-border/60 pb-3 flex items-center justify-between">
-        <h3 class="text-2xl font-extrabold tracking-tight text-foreground">
-          Curated Topic Domains
-        </h3>
-        <span class="text-xs font-mono text-muted-foreground">7 Architecture Hubs</span>
+      <!-- Right: Stats Bar -->
+      <div class="hidden sm:flex items-center gap-2.5 font-mono text-xs flex-shrink-0">
+        <div class="flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1 shadow-2xs">
+          <span class="font-bold text-primary">{totalTopics}</span>
+          <span class="text-muted-foreground">Topics</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1 shadow-2xs">
+          <span class="font-bold text-primary">{allPosts.length}</span>
+          <span class="text-muted-foreground">Articles</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1 shadow-2xs">
+          <span class="font-bold text-primary">{categories.length}</span>
+          <span class="text-muted-foreground">Categories</span>
+        </div>
       </div>
 
-      <div class="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
-        {topicGroups.map((group) => {
-          // Filter matching tags present in dataset
-          const presentTags = group.tags.filter((t) => tagMap[t]);
-          return (
-            <div
-              data-group-card={group.id}
-              class="topic-group-card flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-md transition-all duration-200"
-            >
-              <div>
-                <div class="flex items-center justify-between gap-2 mb-3">
-                  <span class={`rounded-full border px-3 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider ${group.badgeColor}`}>
-                    {group.name}
+    </div>
+  </div>
+
+  <!-- ── MAIN CONTENT CONTAINER (FULL WIDTH 1700px) ────────────────── -->
+  <div class="mx-auto max-w-[1700px] px-4 py-10 sm:px-6 lg:px-8 space-y-12">
+
+    <!-- ── 1. CATEGORY TOPIC CLUSTERS (2-COLUMN FULL-WIDTH GRID) ────── -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="category-clusters">
+      {categories.map((c) => {
+        const catTags = Object.entries(tagsByCategory[c] || {});
+        if (catTags.length === 0) return null;
+        const catColor = getCatColor(c);
+
+        return (
+          <div
+            data-cat-block={c}
+            class="category-card-block flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-md transition-all duration-200"
+          >
+            <div>
+              <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-border/60">
+                <div class="flex items-center gap-2.5">
+                  <span class={`rounded-full border ${catColor.border} ${catColor.bg} px-3 py-0.5 font-mono text-xs font-bold uppercase tracking-wider ${catColor.text}`}>
+                    {categoryLabel[c]}
                   </span>
                   <span class="font-mono text-xs text-muted-foreground">
-                    {presentTags.length} topics
+                    {catTags.length} {catTags.length === 1 ? "topic" : "topics"}
                   </span>
                 </div>
-
-                <p class="text-xs sm:text-sm text-muted-foreground mb-5 leading-relaxed">
-                  {group.description}
-                </p>
-
-                <!-- Tag Pills inside Group Card -->
-                <div class="flex flex-wrap gap-2">
-                  {presentTags.map((t) => {
-                    const count = tagMap[t]?.count || 1;
-                    return (
-                      <a
-                        href={`/tags/${t}/`}
-                        data-tag-name={t}
-                        class="tag-item inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-muted/40 hover:bg-primary/10 hover:border-primary/30 px-3 py-1 text-xs font-semibold text-foreground hover:text-primary transition-all"
-                      >
-                        <span>#{t}</span>
-                        <span class="font-mono text-[10px] text-muted-foreground font-normal">({count})</span>
-                      </a>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div class="mt-6 pt-4 border-t border-border/60 flex items-center justify-between text-xs">
                 <a
-                  href={`/tags/${presentTags[0]}/`}
-                  class="font-bold text-primary hover:underline inline-flex items-center gap-1"
+                  href={`/?category=${c}`}
+                  class="text-xs font-bold text-primary hover:underline flex items-center gap-1 font-mono"
                 >
-                  Explore {group.name.split("&")[0].trim()} →
+                  <span>View articles</span>
+                  <span>→</span>
                 </a>
               </div>
-            </div>
-          );
-        })}
-      </div>
-    </section>
 
-    <!-- ── SECTION 5: TOPIC LEARNING PATHS ─────────────────────────── -->
-    <section class="space-y-6 pt-6 border-t border-border/70">
-      <div class="max-w-3xl">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          🎓 Structured Learning Curriculums
-        </span>
-        <h3 class="mt-1 text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-          Step-by-Step Architecture Progression
-        </h3>
-        <p class="mt-2 text-xs sm:text-sm text-muted-foreground">
-          Follow curated reading pathways from zero-trust fundamentals to advanced quantum cryptography and compliance.
-        </p>
-      </div>
-
-      <div class="grid gap-6 md:grid-cols-3">
-        {learningPaths.map((path) => (
-          <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 transition-all">
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-2">
-                <span class="font-mono text-[10px] font-bold uppercase text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
-                  {path.level}
-                </span>
-              </div>
-              <h4 class="text-base font-bold text-foreground mb-2">
-                {path.title}
-              </h4>
-              <p class="text-xs text-muted-foreground mb-4">
-                {path.description}
-              </p>
-
-              <!-- Steps List -->
-              <ol class="space-y-2.5 border-t border-border/50 pt-4">
-                {path.steps.map((st) => (
-                  <li>
-                    <a
-                      href={`/blog/${st.slug}/`}
-                      class="group flex items-start gap-2.5 text-xs text-[#334155] hover:text-primary transition-colors"
-                    >
-                      <span class="font-mono font-bold text-primary/70 group-hover:text-primary shrink-0">
-                        {st.num}
-                      </span>
-                      <span class="group-hover:underline line-clamp-2 leading-snug">
-                        {st.title}
-                      </span>
-                    </a>
-                  </li>
+              <!-- Tags in this Category with Pastel Tint -->
+              <div class="flex flex-wrap gap-2">
+                {catTags.map(([tag, count]) => (
+                  <a
+                    href={`/tags/${encodeURIComponent(tag)}/`}
+                    data-tag-name={tag}
+                    class={`tag-pill-item group inline-flex items-center gap-2 rounded-xl border ${catColor.border} ${catColor.pillBg} px-3 py-1.5 text-xs font-medium text-foreground/85 transition-all duration-150 shadow-2xs`}
+                  >
+                    <span class={`font-mono font-bold ${catColor.text}`}>#</span>
+                    <span class="font-semibold">{tag}</span>
+                    <span class={`rounded-full bg-card border ${catColor.border} px-1.5 py-0.2 font-mono text-[10.5px] ${catColor.text}`}>
+                      {count}
+                    </span>
+                  </a>
                 ))}
-              </ol>
-            </div>
-
-            <div class="mt-6 pt-3 border-t border-border/40">
-              <a
-                href={`/blog/${path.steps[0].slug}/`}
-                class="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:underline"
-              >
-                Start Curriculum →
-              </a>
+              </div>
             </div>
           </div>
+        );
+      })}
+    </div>
+
+    <!-- ── 2. ALL TAGS DIRECTORY (WIDE 6-COLUMN GRID) ───────────────── -->
+    <div class="pt-4" id="all-tags-section">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl font-bold tracking-tight text-foreground">
+            All Tags Directory
+          </h2>
+          <p class="text-xs text-muted-foreground mt-0.5">
+            Complete list of all topics across the QuickZTNA blog
+          </p>
+        </div>
+        <span class="rounded-full border border-border bg-card px-3.5 py-1 font-mono text-xs font-semibold text-muted-foreground shadow-xs">
+          {sortedTags.length} Total Tags
+        </span>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3.5" id="all-tags-grid">
+        {sortedTags.map(([tag, count]) => (
+          <a
+            href={`/tags/${encodeURIComponent(tag)}/`}
+            data-tag-card={tag}
+            class="all-tag-card group flex items-center justify-between rounded-xl border border-border/80 bg-card p-3.5 shadow-xs transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-primary/5 hover:shadow-sm"
+          >
+            <div class="flex items-center gap-1.5 truncate">
+              <span class="text-primary font-mono text-xs font-bold flex-shrink-0">#</span>
+              <span class="text-xs font-bold text-foreground group-hover:text-primary transition-colors truncate">
+                {tag}
+              </span>
+            </div>
+            <span class="ml-2 rounded-full bg-muted border border-border/60 px-2 py-0.5 font-mono text-[10.5px] font-semibold text-muted-foreground group-hover:bg-card group-hover:text-primary flex-shrink-0">
+              {count}
+            </span>
+          </a>
         ))}
       </div>
-    </section>
+    </div>
 
-    <!-- ── SECTION 6: COMPLETE A-Z TAG DIRECTORY (100% COVERAGE) ───── -->
-    <section class="space-y-6 pt-6 border-t border-border/70">
-      <div class="flex items-center justify-between">
-        <div>
-          <h3 class="text-xl font-bold text-foreground">
-            Complete A–Z Tag Index ({allUniqueTags.length} Tags)
-          </h3>
-          <p class="text-xs text-muted-foreground">Every active tag across all 45 production articles</p>
-        </div>
-      </div>
-
-      <div class="rounded-2xl border border-border/80 bg-muted/20 p-6">
-        <div class="flex flex-wrap gap-2" id="all-tags-cloud">
-          {allUniqueTags.map((tag) => {
-            const count = tagMap[tag]?.count || 1;
-            return (
-              <a
-                href={`/tags/${tag}/`}
-                data-az-tag={tag}
-                class="az-tag-pill inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-card px-2.5 py-1 text-xs font-mono text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
-              >
-                <span>#{tag}</span>
-                <span class="text-[10px] text-muted-foreground/80">({count})</span>
-              </a>
-            );
-          })}
-        </div>
-      </div>
-    </section>
+    <!-- ── NO RESULTS EMPTY STATE ──────────────────────────────────── -->
+    <div id="no-results-box" class="hidden rounded-2xl border border-dashed border-border bg-card p-12 text-center">
+      <p class="text-base font-bold text-foreground">No matching topics found</p>
+      <p class="mt-1 text-xs text-muted-foreground">Select another category filter tab.</p>
+    </div>
 
   </div>
 </SiteLayout>
 
 <script>
-  function setupTagFilters() {
-    const searchInput = document.getElementById("tag-search-input") as HTMLInputElement | null;
-    const clearBtn = document.getElementById("tag-search-clear");
-    const groupCards = document.querySelectorAll(".topic-group-card");
-    const azTags = document.querySelectorAll(".az-tag-pill");
-    const filterBtns = document.querySelectorAll(".group-filter-btn");
+  function setupTagsFiltering() {
+    const catTabs = document.querySelectorAll<HTMLButtonElement>(".cat-tab-btn");
+    const catBlocks = document.querySelectorAll<HTMLElement>(".category-card-block");
+    const noResultsBox = document.getElementById("no-results-box");
+    const allTagsSection = document.getElementById("all-tags-section");
 
-    function applyFilter(query: string, activeGroup: string) {
-      const q = query.toLowerCase().trim();
+    let activeCategory = "all";
 
-      // Filter Domain Cards
-      groupCards.forEach((card) => {
-        const el = card as HTMLElement;
-        const groupId = el.getAttribute("data-group-card") || "";
-        const text = el.innerText.toLowerCase();
-        const matchesGroup = activeGroup === "all" || groupId === activeGroup;
-        const matchesQuery = !q || text.includes(q);
+    function filterTagsHub() {
+      let totalVisibleBlocks = 0;
 
-        if (matchesGroup && matchesQuery) {
-          el.style.display = "flex";
+      // Filter Category Blocks
+      catBlocks.forEach((block) => {
+        const blockCat = block.getAttribute("data-cat-block") || "";
+        const isCatMatch = activeCategory === "all" || blockCat === activeCategory;
+
+        if (isCatMatch) {
+          block.style.display = "flex";
+          totalVisibleBlocks++;
         } else {
-          el.style.display = "none";
+          block.style.display = "none";
         }
       });
 
-      // Filter AZ Pills
-      azTags.forEach((tagEl) => {
-        const el = tagEl as HTMLElement;
-        const tagText = (el.getAttribute("data-az-tag") || "").toLowerCase();
-        if (!q || tagText.includes(q)) {
-          el.style.display = "inline-flex";
-        } else {
-          el.style.display = "none";
-        }
-      });
+      if (allTagsSection) {
+        allTagsSection.style.display = activeCategory === "all" ? "block" : "none";
+      }
 
-      if (clearBtn) {
-        clearBtn.style.display = q.length > 0 ? "inline-flex" : "none";
+      if (noResultsBox) {
+        noResultsBox.classList.toggle("hidden", totalVisibleBlocks > 0);
       }
     }
 
-    let currentGroup = "all";
-
-    if (searchInput) {
-      searchInput.addEventListener("input", (e) => {
-        const val = (e.target as HTMLInputElement).value;
-        applyFilter(val, currentGroup);
-      });
-    }
-
-    if (clearBtn && searchInput) {
-      clearBtn.addEventListener("click", () => {
-        searchInput.value = "";
-        applyFilter("", currentGroup);
-        searchInput.focus();
-      });
-    }
-
-    filterBtns.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        filterBtns.forEach((b) => {
-          b.classList.remove("active", "bg-gradient-to-r", "from-[#0066ff]", "via-[#0088dd]", "to-[#00a3c4]", "text-white");
-          b.classList.add("border", "border-border", "bg-card", "text-[#475467]");
+    // Category Tabs click handler
+    catTabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        catTabs.forEach((t) => {
+          t.className = "cat-tab-btn rounded-full border border-border bg-card px-4 py-1.5 text-xs font-semibold text-foreground/80 hover:border-primary/40 hover:text-primary hover:bg-primary/5 transition-all flex-shrink-0";
         });
-        btn.classList.remove("border", "border-border", "bg-card", "text-[#475467]");
-        btn.classList.add("active", "bg-gradient-to-r", "from-[#0066ff]", "via-[#0088dd]", "to-[#00a3c4]", "text-white");
 
-        currentGroup = btn.getAttribute("data-group-filter") || "all";
-        applyFilter(searchInput?.value || "", currentGroup);
+        tab.className = "cat-tab-btn active rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white border border-transparent px-4 py-1.5 text-xs font-bold shadow-sm transition-all flex-shrink-0 hover:brightness-105";
+        activeCategory = tab.getAttribute("data-cat-tab") || "all";
+        filterTagsHub();
       });
     });
   }
 
-  setupTagFilters();
-  document.addEventListener("astro:after-swap", setupTagFilters);
+  setupTagsFiltering();
+  document.addEventListener("astro:after-swap", setupTagsFiltering);
 </script>

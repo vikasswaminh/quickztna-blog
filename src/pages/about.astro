@@ -1,573 +1,333 @@
 ---
 import SiteLayout from "@/layouts/SiteLayout.astro";
-import { getCollection } from "astro:content";
 
-const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
-);
-
-const recentPosts = allPosts.slice(0, 3);
-
-const categories = [
+const questions = [
   {
-    id: "post-quantum",
-    name: "Architecture",
-    tagline: "Understand how Zero Trust and quantum-resistant systems are engineered.",
-    badgeColor: "border-blue-200 bg-blue-50 text-blue-700",
-    topics: ["Noise IK Handshakes", "NIST SP 800-207", "Full-Mesh Overlay", "Microsegmentation"],
+    number: "01",
+    question: "What is QuickZTNA About?",
+    badge: "CORE PLATFORM",
+    badgeColor: "bg-blue-50 text-blue-700 border-blue-200",
+    summary: "QuickZTNA is a next-generation Zero Trust Network Access (ZTNA) platform engineered to replace fragile legacy VPNs with fast, encrypted, peer-to-peer WireGuard mesh networks.",
+    paragraphs: [
+      "Instead of granting broad, unrestricted access to an entire corporate network perimeter upon authentication, QuickZTNA enforces an identity-first, least-privilege security model. Every single connection between users, endpoints, servers, and cloud resources is authenticated, encrypted, and authorized continuously.",
+      "By leveraging the modern WireGuard cryptographic protocol, QuickZTNA establishes direct peer-to-peer tunnels with near line-rate speeds, eliminating the latency, choke points, and vulnerabilities associated with central VPN gateways."
+    ],
+    highlights: [
+      { title: "Identity-Based Access", desc: "Access is bound to user identity (via your SSO/IdP) rather than vulnerable static IP addresses or network subnets." },
+      { title: "Direct Peer-to-Peer Mesh", desc: "Encrypted tunnels connect endpoints directly without routing your private payload data through central proxy hubs." },
+      { title: "Continuous Device Posture", desc: "Automatically verifies OS version, disk encryption, EDR status, and firewall health before granting access." }
+    ]
   },
   {
-    id: "technical",
-    name: "Technical",
-    tagline: "Implementation details, Linux kernel modules, eBPF telemetry, and protocol benchmarks.",
-    badgeColor: "border-cyan-200 bg-cyan-50 text-cyan-700",
-    topics: ["eBPF Flow Probes", "Kernel vs Userspace", "NAT Traversal (STUN/DERP)", "MASQUE HTTP/3"],
+    number: "02",
+    question: "Why We Brought QuickZTNA to the Market?",
+    badge: "OUR PURPOSE & MISSION",
+    badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
+    summary: "Traditional enterprise networking was built for office buildings with static perimeters—not modern distributed workforces, hybrid clouds, and remote teams.",
+    paragraphs: [
+      "For decades, organizations relied on legacy VPN concentrators that are notorious for high latencies, complex configuration, hardware maintenance overhead, and severe security flaws. Once an attacker compromises a single VPN credential, they gain free lateral movement across the entire internal subnet.",
+      "Existing enterprise ZTNA alternatives created a different problem: they are prohibitively expensive, require sales negotiations, lock core features behind enterprise tiers, and take weeks of deployment. We built QuickZTNA to deliver enterprise-grade Zero Trust that deploys in under two minutes, requires zero credit card, and remains free forever for up to 5 users."
+    ],
+    highlights: [
+      { title: "Eliminating Lateral Movement", desc: "Micro-segmented tunnels ensure that compromised credentials cannot access unauthorized servers or internal databases." },
+      { title: "2-Minute Zero-Touch Deployment", desc: "Install and connect your team across Linux, macOS, Windows, and Docker with a single command." },
+      { title: "Accessible & Fair Pricing", desc: "Full feature parity included out-of-the-box with no artificial paywalls on SCIM, SSO, or audit logging." }
+    ]
   },
   {
-    id: "compliance",
-    name: "Compliance",
-    tagline: "Translate complex security mandates into verifiable architectural controls.",
-    badgeColor: "border-emerald-200 bg-emerald-50 text-emerald-700",
-    topics: ["SOC 2 Criteria", "HIPAA Security Rule", "EU NIS2 & DORA", "PCI DSS 4.0 Scope"],
-  },
-  {
-    id: "comparison",
-    name: "Comparisons",
-    tagline: "Unvarnished architectural breakdowns, total cost of ownership models, and trade-offs.",
-    badgeColor: "border-purple-200 bg-purple-50 text-purple-700",
-    topics: ["ZTNA vs Legacy VPN", "Tailscale vs Self-Hosted", "Cloudflare Access", "Cisco AnyConnect"],
-  },
-  {
-    id: "fundamentals",
-    name: "Fundamentals",
-    tagline: "Build a strong, first-principles foundation in zero-trust network access.",
-    badgeColor: "border-amber-200 bg-amber-50 text-amber-700",
-    topics: ["What is ZTNA?", "Single Packet Auth", "ABAC vs RBAC", "Continuous Posture"],
-  },
-  {
-    id: "industry",
-    name: "Industry",
-    tagline: "Real-world zero trust implementations across healthcare, financial, and industrial networks.",
-    badgeColor: "border-rose-200 bg-rose-50 text-rose-700",
-    topics: ["DevSecOps Ephemeral CI/CD", "Industrial OT / IoT", "Contractor Access", "Database Bastions"],
-  },
-];
-
-const editorialPrinciples = [
-  {
-    num: "01",
-    title: "Accuracy over hype",
-    desc: "We verify every cryptographic primitive and throughput metric against RFC specifications and benchmark testbeds before publication.",
-  },
-  {
-    num: "02",
-    title: "Practical engineering over buzzwords",
-    desc: "We provide functional configuration files, ASCII packet topologies, and copy-pasteable commands rather than high-level sales fluff.",
-  },
-  {
-    num: "03",
-    title: "Evidence over unsupported claims",
-    desc: "Technical claims cite official NIST standards (FIPS 203/204/205), IETF drafts, CVE advisories, and reproducible kernel benchmarks.",
-  },
-  {
-    num: "04",
-    title: "Clear trade-offs over one-sided comparisons",
-    desc: "Every comparison fairly details memory overhead, control plane latency, operational maintenance, and real-world failure modes.",
-  },
-  {
-    num: "05",
-    title: "Current information over outdated assumptions",
-    desc: "Security evolves constantly. When cryptographic guidelines (e.g. ANSSI, BSI, CNSA 2.0) or software versions change, our articles are updated.",
-  },
-  {
-    num: "06",
-    title: "Security transparency over marketing language",
-    desc: "We openly discuss what post-quantum KEMs can and cannot protect against today (e.g. Harvest Now, Decrypt Later defenses vs signature maturity).",
-  },
-];
-
-const researchSteps = [
-  {
-    step: "01",
-    name: "Threat Model & Problem",
-    desc: "Identify a concrete network vulnerability, migration blocker, or compliance gap faced by engineering teams.",
-  },
-  {
-    step: "02",
-    name: "Primary Standards Research",
-    desc: "Analyze source RFCs (RFC 8489, RFC 9298), NIST Special Publications (SP 800-207), and regulatory frameworks.",
-  },
-  {
-    step: "03",
-    name: "Lab Testbed Benchmarking",
-    desc: "Reproduce network behavior on Linux kernel testbeds to measure latency, CPU saturation, and packet loss.",
-  },
-  {
-    step: "04",
-    name: "Peer Engineering Review",
-    desc: "Cross-review draft configurations, CLI parameters, and cryptographic math with domain engineers.",
-  },
-  {
-    step: "05",
-    name: "Publication & Schema Audit",
-    desc: "Release with full JSON-LD schema (FAQ, Article, Breadcrumb) and high-density contextual backlinks.",
-  },
-  {
-    step: "06",
-    name: "Continuous Maintenance",
-    desc: "Regularly audit and update code snippets, algorithm timelines, and regulatory deadlines.",
-  },
-];
-
-const targetAudiences = [
-  {
-    title: "Security & Risk Teams",
-    roles: "CISOs, SecOps Engineers & Compliance Leads",
-    benefit: "Actionable audit control mappings (SOC 2, HIPAA, DORA, NIS2) and post-quantum migration roadmaps.",
-    color: "from-blue-500/10 to-cyan-500/10 border-blue-200",
-  },
-  {
-    title: "Network & Systems Architects",
-    roles: "Infrastructure Engineers & Network Operations",
-    benefit: "WireGuard kernel tuning, NAT traversal mechanics, eBPF telemetry, and multi-cloud mesh topologies.",
-    color: "from-purple-500/10 to-indigo-500/10 border-purple-200",
-  },
-  {
-    title: "Platform & DevOps Builders",
-    roles: "SREs, Cloud Architects & DevSecOps Teams",
-    benefit: "Securing ephemeral CI/CD runners, Just-in-Time database access, Kubernetes mesh, and Terraform automation.",
-    color: "from-emerald-500/10 to-teal-500/10 border-emerald-200",
-  },
-];
-
-const aboutSchema = {
-  "@context": "https://schema.org",
-  "@type": "AboutPage",
-  name: "About QuickZTNA Blog — Editorial Standards & Technical Mission",
-  description: "Learn why the QuickZTNA blog exists, our editorial principles, our research methodology, and the engineering team behind the publication.",
-  url: "https://blog.quickztna.com/about/",
-  publisher: {
-    "@type": "Organization",
-    name: "QuickZTNA",
-    url: "https://blog.quickztna.com",
-    logo: "https://blog.quickztna.com/favicon.svg"
+    number: "03",
+    question: "How QuickZTNA is Different from Other VPNs?",
+    badge: "COMPETITIVE COMPARISON",
+    badgeColor: "bg-emerald-50 text-emerald-700 border-emerald-200",
+    summary: "QuickZTNA combines the speed of open-source WireGuard mesh networking with enterprise-grade Attribute-Based Access Control (ABAC) and built-in DNS threat protection.",
+    paragraphs: [
+      "Unlike basic mesh VPN tools (such as Tailscale or Headscale) that only provide network connectivity, QuickZTNA integrates continuous device posture checks, DNS malware filtering, and fine-grained ABAC policies directly into the agent.",
+      "Unlike legacy cloud proxies (such as Cloudflare Access or Zscaler) that decrypt and inspect all your private traffic in third-party data centers, QuickZTNA never intercepts or decrypts your data payloads—all traffic remains strictly peer-to-peer and end-to-end encrypted."
+    ],
+    highlights: [
+      { title: "Fine-Grained ABAC vs. Basic ACLs", desc: "Define precise access rules by department, device posture, location, and service port instead of simple IP lists." },
+      { title: "Zero Payload Inspection (True Privacy)", desc: "QuickZTNA only handles coordination and signaling; your sensitive traffic flows direct peer-to-peer." },
+      { title: "Integrated DNS & Malware Defense", desc: "Built-in DNS threat intelligence shields remote team devices from phishing, ransomware, and malicious domains." }
+    ]
   }
-};
+];
+
+const comparisonMatrix = [
+  {
+    feature: "Network Topology",
+    quickztna: "Encrypted P2P WireGuard Mesh",
+    legacyVpn: "Hub-and-Spoke Gateway Bottleneck",
+    basicMesh: "Peer-to-Peer Mesh",
+    cloudProxy: "Central Cloud Proxy Decryption",
+  },
+  {
+    feature: "Access Control Model",
+    quickztna: "Identity-Based ABAC (Port/Service level)",
+    legacyVpn: "Broad Subnet / Perimeter Access",
+    basicMesh: "Basic IP / Tag ACLs",
+    cloudProxy: "Application Layer Reverse Proxy",
+  },
+  {
+    feature: "Traffic & Payload Privacy",
+    quickztna: "100% E2E Encrypted (Zero Inspection)",
+    legacyVpn: "Encrypted to Corporate Gateway",
+    basicMesh: "100% E2E Encrypted",
+    cloudProxy: "Decrypted & Inspected in Cloud Data Centers",
+  },
+  {
+    feature: "Device Posture Engine",
+    quickztna: "Continuous (OS, Disk, Firewall, EDR)",
+    legacyVpn: "None (Static Passwords / Keys)",
+    basicMesh: "Limited / High-Tier Addon",
+    cloudProxy: "High-Tier Enterprise Addon",
+  },
+  {
+    feature: "DNS Threat & Malware Defense",
+    quickztna: "Native Threat Intelligence Filtering",
+    legacyVpn: "Requires External Firewall Appliance",
+    basicMesh: "Basic MagicDNS Only",
+    cloudProxy: "Available on Expensive Enterprise Tiers",
+  },
+  {
+    feature: "Deployment & Setup",
+    quickztna: "< 2 Minutes (1-line script)",
+    legacyVpn: "Weeks of Appliance / Gateway Setup",
+    basicMesh: "5 - 10 Minutes",
+    cloudProxy: "Hours of DNS / Connector Setup",
+  },
+  {
+    feature: "Free Starter Tier",
+    quickztna: "Free Forever (up to 5 users, all features)",
+    legacyVpn: "Hardware / License Required",
+    basicMesh: "Limited User / Feature Caps",
+    cloudProxy: "Limited / Paywalled",
+  },
+];
 ---
 
 <SiteLayout
-  title="About QuickZTNA Blog — Editorial Standards & Engineering Mission"
-  description="Learn why QuickZTNA publishes in-depth Zero Trust research, our rigorous research methodology, our editorial principles, and the team behind the content."
-  canonical="https://blog.quickztna.com/about/"
+  title="About QuickZTNA — Fast, Simple, and Secure Remote Access"
+  description="Learn what QuickZTNA is about, why we brought it to the market, and how QuickZTNA differs from traditional VPNs and other ZTNA alternatives."
 >
-  <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(aboutSchema)} is:inline />
-  </Fragment>
-
-  <!-- ── ABOUT PAGE HERO (COMPACT MISSION & REMOTE ACCESS) ──────── -->
-  <section class="border-b border-border/70 bg-hero relative overflow-hidden">
-    <div class="absolute inset-0 bg-grid opacity-85 pointer-events-none" aria-hidden="true"></div>
-    <div class="relative mx-auto max-w-[1700px] px-4 py-8 sm:py-10">
-      <div class="max-w-3xl space-y-2.5">
-        <!-- Eyebrow Pill -->
-        <div class="inline-flex items-center rounded-full border border-blue-200 bg-white/90 px-3 py-0.5 shadow-2xs">
-          <span class="text-xs font-semibold text-[#0066ff]">Our Mission</span>
-        </div>
-
-        <!-- Main H1 Heading -->
-        <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-[#0f172a] leading-[1.15]">
-          Fast, Simple, and Secure <span class="bg-gradient-to-r from-[#0066ff] to-[#00a3c4] bg-clip-text text-transparent">Remote Access</span>
-        </h1>
-
-        <!-- Subtitle Description -->
-        <p class="text-xs sm:text-sm lg:text-base text-[#475467] leading-relaxed max-w-2xl">
-          QuickZTNA replaces legacy VPNs and complex corporate network infrastructure with lightning-fast WireGuard mesh tunnels and fine-grained Zero Trust policies.
-        </p>
+  <!-- ── HERO SECTION (MATCHING TAGS PAGE SIZE EXACTLY) ─────────────── -->
+  <section class="border-b border-border bg-hero relative overflow-hidden">
+    <div class="absolute inset-0 bg-grid opacity-80 pointer-events-none" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-[1700px] px-4 py-12 sm:px-6 lg:px-8 text-left flex flex-col items-start justify-center">
+      <!-- Badge -->
+      <div class="inline-flex items-center rounded-full border border-primary/20 bg-card px-3.5 py-1 text-xs font-semibold text-primary mb-3 shadow-2xs">
+        <span>Our Mission</span>
       </div>
+
+      <!-- Main Heading -->
+      <h1 class="text-3xl sm:text-5xl font-black tracking-tight text-[#0f172a] leading-[1.16]">
+        Fast, Simple, and Secure <span class="text-gradient">Remote Access</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="mt-3 max-w-3xl text-base sm:text-lg text-[#475467] leading-[1.6]">
+        QuickZTNA replaces legacy VPNs and complex corporate network infrastructure with lightning-fast WireGuard mesh tunnels and fine-grained Zero Trust policies.
+      </p>
     </div>
   </section>
 
-  <!-- ── COMPACT CONTENT CONTAINER (TIGHTENED WHITESPACE) ─────────── -->
-  <div class="mx-auto max-w-[1700px] px-4 py-8 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
-
-    <!-- ── SECTION 1: WHY THIS BLOG EXISTS ─────────────────────────── -->
-    <section class="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs relative overflow-hidden">
-      <div class="absolute inset-0 bg-grid opacity-30 pointer-events-none" aria-hidden="true"></div>
-      <div class="relative grid gap-6 lg:grid-cols-12 items-start">
+  <!-- ── THREE CORE QUESTIONS CARDS FORMATION ──────────────────────── -->
+  <div class="mx-auto max-w-[1700px] px-4 py-12 sm:px-6 lg:px-8 space-y-10">
+    
+    {questions.map((item) => (
+      <article class="rounded-3xl border border-border/80 bg-card p-7 sm:p-10 shadow-xs hover:border-primary/40 hover:shadow-lg transition-all duration-300 relative overflow-hidden">
         
-        <div class="lg:col-span-4 space-y-2">
-          <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-3 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider text-primary">
-            🛡️ Our Mission
-          </span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground leading-tight">
-            Why the QuickZTNA Blog Exists
-          </h2>
-          <p class="font-mono text-xs text-muted-foreground">
-            Cut through vendor marketing. Deliver verifiable engineering.
-          </p>
-        </div>
-
-        <div class="lg:col-span-8 space-y-3.5 text-sm sm:text-base leading-relaxed text-[#334155]">
-          <p class="font-semibold text-foreground text-base sm:text-lg">
-            Security content should help engineers, architects, and CISOs make sound technical decisions—not just echo vendor buzzwords.
-          </p>
-          <p>
-            When teams migrate from legacy hardware VPN concentrators to Zero Trust architectures, they face genuine questions: <em>How does WireGuard perform under high concurrency? How do we implement ML-KEM post-quantum key encapsulation without breaking handshakes? How do we satisfy EU DORA or HIPAA audit requirements without adding latency?</em>
-          </p>
-          <p>
-            We created this publication to document our engineering research, cryptographic testbed benchmarks, protocol teardowns, and compliance blueprints. Every article is written with depth, backed by primary RFCs, and designed to provide practical value to technical practitioners.
-          </p>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- ── SECTION 2: WHAT WE WRITE ABOUT (6 CATEGORIES) ───────────── -->
-    <section class="space-y-4">
-      <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          📚 Content Taxonomy
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-          What We Write About
-        </h2>
-        <p class="text-xs sm:text-sm text-muted-foreground">
-          Our articles span six core domains covering the full spectrum of modern workforce security.
-        </p>
-      </div>
-
-      <div class="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {categories.map((cat) => (
-          <div class="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-5 shadow-2xs hover:border-primary/40 hover:shadow-xs transition-all">
-            <div>
-              <div class="flex items-center justify-between gap-2 mb-2">
-                <span class={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${cat.badgeColor}`}>
-                  {cat.name}
-                </span>
-              </div>
-              <p class="text-xs sm:text-sm text-[#334155] mb-3 leading-relaxed font-medium">
-                {cat.tagline}
-              </p>
-              
-              <ul class="space-y-1 border-t border-border/50 pt-2.5 text-[11px] font-mono text-muted-foreground">
-                {cat.topics.map((t) => (
-                  <li class="flex items-center gap-1.5">
-                    <span class="text-primary font-bold">•</span>
-                    <span>{t}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            <div class="mt-4 pt-3 border-t border-border/60">
-              <a
-                href={`/blog/?category=${cat.id}`}
-                class="text-xs font-bold text-primary hover:underline inline-flex items-center gap-1"
-              >
-                Browse {cat.name} Articles →
-              </a>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- ── SECTION 3: EDITORIAL PRINCIPLES ─────────────────────────── -->
-    <section class="rounded-2xl border border-border/80 bg-muted/20 p-6 sm:p-8 space-y-5">
-      <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          ⚖️ Editorial Integrity
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-          Our 6 Editorial Principles
-        </h2>
-        <p class="text-xs sm:text-sm text-muted-foreground">
-          The non-negotiable quality guidelines behind every article published on QuickZTNA.
-        </p>
-      </div>
-
-      <div class="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {editorialPrinciples.map((ep) => (
-          <div class="rounded-xl border border-border/80 bg-card p-4.5 shadow-2xs hover:border-primary/40 transition-all">
-            <span class="font-mono text-xl font-black text-gradient block mb-1.5">
-              {ep.num}
+        <!-- Header Row -->
+        <div class="flex flex-wrap items-center justify-between gap-3 pb-6 border-b border-border/60 mb-6">
+          <div class="flex items-center gap-3">
+            <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-r from-[#0066ff] to-[#00a3c4] text-white font-mono text-sm font-bold shadow-2xs">
+              {item.number}
             </span>
-            <h3 class="text-sm font-bold text-foreground mb-1">
-              {ep.title}
-            </h3>
-            <p class="text-xs text-muted-foreground leading-relaxed">
-              {ep.desc}
-            </p>
+            <span class={`rounded-full border px-3.5 py-1 font-mono text-xs font-bold uppercase tracking-wider ${item.badgeColor}`}>
+              {item.badge}
+            </span>
           </div>
-        ))}
-      </div>
-    </section>
+          <span class="font-mono text-xs text-muted-foreground">QuickZTNA Architecture & Purpose</span>
+        </div>
 
-    <!-- ── SECTION 4: HOW WE RESEARCH (VISUAL PIPELINE) ────────────── -->
-    <section class="space-y-5">
-      <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          🔬 Research Methodology
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-          How We Research & Validate Technical Claims
+        <!-- Question Headline -->
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0f172a] mb-4">
+          {item.question}
         </h2>
-        <p class="text-xs sm:text-sm text-muted-foreground">
-          Every guide goes through a multi-stage validation pipeline to ensure code reproducibility and cryptographic accuracy.
-        </p>
-      </div>
 
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-        {researchSteps.map((rs) => (
-          <div class="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-4 shadow-2xs hover:border-primary/40 transition-all">
-            <div>
-              <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary/10 font-mono text-[11px] font-bold text-primary mb-2.5">
-                {rs.step}
-              </span>
-              <h4 class="text-xs font-bold text-foreground mb-1">
-                {rs.name}
-              </h4>
-              <p class="text-[11px] text-muted-foreground leading-relaxed">
-                {rs.desc}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div class="rounded-xl border border-primary/20 bg-primary/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-muted-foreground">
-        <p>
-          <strong class="text-foreground">Standards Citations:</strong> We link directly to official NIST FIPS 203/204/205 specifications, IETF RFCs (RFC 9298, RFC 8489), and regulatory frameworks in all publications.
-        </p>
-        <a href="/tags/" class="shrink-0 font-bold text-primary hover:underline">
-          Explore Research by Tag →
-        </a>
-      </div>
-    </section>
-
-    <!-- ── SECTION 5: WHO IS THIS BLOG FOR? ────────────────────────── -->
-    <section class="space-y-4">
-      <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          👥 Target Audience
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-          Who This Blog Is For
-        </h2>
-        <p class="text-xs sm:text-sm text-muted-foreground">
-          Designed specifically for technical practitioners building and securing modern distributed networks.
-        </p>
-      </div>
-
-      <div class="grid gap-4 sm:gap-5 md:grid-cols-3">
-        {targetAudiences.map((aud) => (
-          <div class={`rounded-xl border bg-gradient-to-b ${aud.color} p-5 shadow-2xs space-y-2.5`}>
-            <h3 class="text-lg font-bold text-foreground">
-              {aud.title}
-            </h3>
-            <p class="font-mono text-xs font-semibold text-primary">
-              {aud.roles}
-            </p>
-            <p class="text-xs text-[#334155] leading-relaxed">
-              {aud.benefit}
-            </p>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- ── SECTION 6: QUICKZTNA + THE BLOG ─────────────────────────── -->
-    <section class="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs space-y-5">
-      <div class="grid gap-6 lg:grid-cols-12 items-center">
-        <div class="lg:col-span-7 space-y-2.5">
-          <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-            ⚡ Platform Connection
-          </span>
-          <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-            The Technology Behind The Blog
-          </h2>
-          <p class="text-xs sm:text-sm text-[#334155] leading-relaxed">
-            QuickZTNA is an enterprise Zero Trust Network Access platform engineered on the open-standard WireGuard protocol. We combine encrypted peer-to-peer overlay networking, kernel-level ABAC policy enforcement, continuous device posture verification, and post-quantum ML-KEM key encapsulation.
-          </p>
-          <p class="text-xs text-muted-foreground">
-            Our educational content reflects the actual protocols, cryptographic primitives, and distributed systems we engineer daily.
+        <!-- Summary Banner -->
+        <div class="rounded-xl border border-primary/20 bg-primary/5 p-4 sm:p-5 mb-6">
+          <p class="text-base sm:text-lg font-medium text-primary leading-snug">
+            {item.summary}
           </p>
         </div>
 
-        <div class="lg:col-span-5 flex flex-col gap-2.5 justify-center">
-          <a
-            href="https://quickztna.com/features"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
-          >
-            <div>
-              <span class="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary">Platform Features</span>
-              <p class="text-[11px] text-muted-foreground">Mesh, ABAC, Posture & DNS filtering</p>
-            </div>
-            <span class="font-bold text-primary text-sm">↗</span>
-          </a>
-
-          <a
-            href="https://quickztna.com/docs/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
-          >
-            <div>
-              <span class="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary">Developer Documentation</span>
-              <p class="text-[11px] text-muted-foreground">API reference, SDKs, and CLI guides</p>
-            </div>
-            <span class="font-bold text-primary text-sm">↗</span>
-          </a>
-
-          <a
-            href="https://quickztna.com/guide/quickstart/"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
-          >
-            <div>
-              <span class="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary">Quickstart Deployment</span>
-              <p class="text-[11px] text-muted-foreground">Deploy your first mesh tunnel in 2 minutes</p>
-            </div>
-            <span class="font-bold text-primary text-sm">↗</span>
-          </a>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── SECTION 7: EDITORIAL TEAMS & CONTRIBUTORS ───────────────── -->
-    <section class="space-y-4">
-      <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          👥 Engineering Authors
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-          Meet the Editorial & Engineering Teams
-        </h2>
-        <p class="text-xs sm:text-sm text-muted-foreground">
-          Our articles are authored and peer-reviewed by practicing engineers across four core specializations.
-        </p>
-      </div>
-
-      <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          {
-            team: "Cryptography Research Team",
-            focus: "Post-Quantum Algorithms, ML-KEM, Noise Protocol, and Key Rotation",
-            icon: "🔐",
-          },
-          {
-            team: "Zero Trust Architecture Team",
-            focus: "NIST SP 800-207, Microsegmentation, ABAC Policies, and SDP",
-            icon: "📐",
-          },
-          {
-            team: "Compliance & Audit Engineering",
-            focus: "SOC 2 Type II, HIPAA, EU NIS2, DORA, and ISO 27001 Mapping",
-            icon: "📋",
-          },
-          {
-            team: "DevSecOps & Systems Engineering",
-            focus: "CI/CD Ephemeral Runners, Linux Kernel WireGuard, eBPF, and Cloud Mesh",
-            icon: "⚙️",
-          },
-        ].map((tm) => (
-          <div class="rounded-xl border border-border/80 bg-card p-4.5 shadow-2xs hover:border-primary/40 transition-all space-y-2">
-            <span class="text-2xl block">{tm.icon}</span>
-            <h4 class="text-xs sm:text-sm font-bold text-foreground">
-              {tm.team}
-            </h4>
-            <p class="text-[11px] text-muted-foreground leading-relaxed">
-              {tm.focus}
-            </p>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <!-- ── SECTION 8: TRANSPARENCY & FACT-CHECKING PLEDGE ──────────── -->
-    <section class="rounded-2xl border border-border/80 bg-muted/20 p-6 sm:p-8 space-y-4">
-      <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          🔍 Accountability
-        </span>
-        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
-          Transparency & Errata Policy
-        </h2>
-      </div>
-
-      <div class="grid gap-4 md:grid-cols-3 text-xs text-[#334155] leading-relaxed">
-        <div class="space-y-1.5 rounded-xl border border-border/80 bg-card p-4">
-          <h4 class="font-bold text-foreground flex items-center gap-1.5 text-xs">
-            <span class="text-emerald-500">✓</span> What We Test
-          </h4>
-          <p class="text-[11px] text-muted-foreground">We test WireGuard configs, eBPF programs, and Noise handshakes in controlled test environments to report realistic numbers.</p>
+        <!-- Detailed Description Paragraphs -->
+        <div class="space-y-4 text-sm sm:text-base text-[#475467] leading-relaxed max-w-5xl mb-8">
+          {item.paragraphs.map((p) => (
+            <p>{p}</p>
+          ))}
         </div>
 
-        <div class="space-y-1.5 rounded-xl border border-border/80 bg-card p-4">
-          <h4 class="font-bold text-foreground flex items-center gap-1.5 text-xs">
-            <span class="text-blue-500">✓</span> What We Know
-          </h4>
-          <p class="text-[11px] text-muted-foreground">We clearly delineate standardized protocols (FIPS 203 ML-KEM) from emerging proposals (draft-ietf-pquip-pqtls).</p>
-        </div>
-
-        <div class="space-y-1.5 rounded-xl border border-border/80 bg-card p-4">
-          <h4 class="font-bold text-foreground flex items-center gap-1.5 text-xs">
-            <span class="text-amber-500">✓</span> How We Correct Errata
-          </h4>
-          <p class="text-[11px] text-muted-foreground">If a community member or security researcher discovers an inaccuracy, we update the post with timestamped change logs.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- ── SECTION 9: RECENT ARTICLES & CALL TO ACTION ─────────────── -->
-    <section class="space-y-5 pt-4 border-t border-border/70">
-      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-        <div>
-          <h3 class="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground">
-            Explore Latest Engineering Notes
-          </h3>
-          <p class="text-xs text-muted-foreground">Recent research papers and deployment guides</p>
-        </div>
-        <a
-          href="/"
-          class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-4 py-1.5 text-xs font-bold text-white shadow-2xs hover:opacity-95 hover:brightness-105 transition-all"
-        >
-          <span>View All 45 Articles</span>
-          <span>→</span>
-        </a>
-      </div>
-
-      <div class="grid gap-4 sm:gap-5 md:grid-cols-3">
-        {recentPosts.map((post) => {
-          const slug = post.id.replace(/\.md$/, "");
-          return (
-            <div class="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-5 shadow-2xs hover:border-primary/40 hover:shadow-xs transition-all">
-              <div>
-                <span class="inline-block rounded-md border border-cyan-200 bg-cyan-50 px-2 py-0.5 font-semibold text-[11px] text-cyan-700 mb-2 capitalize">
-                  {post.data.category}
-                </span>
-                <a href={`/blog/${slug}/`} class="block group">
-                  <h4 class="text-sm font-bold text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-snug">
-                    {post.data.title}
-                  </h4>
-                </a>
-                <p class="mt-1.5 text-xs text-muted-foreground line-clamp-3 leading-relaxed">
-                  {post.data.description}
+        <!-- Three-Pillar Highlight Grid -->
+        <div class="pt-6 border-t border-border/60">
+          <p class="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground mb-4">
+            KEY HIGHLIGHTS & CAPABILITIES
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {item.highlights.map((hl) => (
+              <div class="rounded-2xl border border-border/70 bg-surface/70 p-5 hover:bg-card hover:border-primary/30 transition-all duration-200">
+                <h3 class="text-sm font-bold text-[#0f172a] mb-2 flex items-center gap-2">
+                  <span class="text-primary font-bold">✓</span>
+                  <span>{hl.title}</span>
+                </h3>
+                <p class="text-xs text-[#64748b] leading-relaxed">
+                  {hl.desc}
                 </p>
               </div>
+            ))}
+          </div>
+        </div>
 
-              <div class="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
-                <span>{post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
-                <a href={`/blog/${slug}/`} class="font-bold text-primary hover:underline">
-                  Read →
-                </a>
+        <!-- ── COMPARISON TABLE INSERTED FOR QUESTION 03 ─────────────── -->
+        {item.number === "03" && (
+          <div class="mt-10 pt-8 border-t border-border/70">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <p class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
+                  FEATURE-BY-FEATURE BREAKDOWN
+                </p>
+                <h3 class="text-xl font-bold tracking-tight text-[#0f172a] mt-1">
+                  How QuickZTNA Compares to Other VPNs
+                </h3>
               </div>
+              <span class="hidden sm:inline-flex rounded-full border border-border bg-card px-3.5 py-1 font-mono text-xs font-semibold text-muted-foreground shadow-2xs">
+                Comparison Matrix
+              </span>
             </div>
-          );
-        })}
+
+            <!-- Responsive Table Container -->
+            <div class="overflow-x-auto rounded-2xl border border-border/80 shadow-2xs">
+              <table class="w-full min-w-[700px] text-left border-collapse text-xs sm:text-sm">
+                <thead>
+                  <tr class="border-b border-border bg-muted/40">
+                    <th class="py-4 px-5 font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Feature / Dimension
+                    </th>
+                    <th class="py-4 px-5 font-mono text-xs font-bold uppercase tracking-wider text-primary bg-primary/10 border-x border-primary/20">
+                      <span class="inline-flex items-center gap-1.5 font-bold">
+                        <span>⚡ QuickZTNA</span>
+                        <span class="rounded-full bg-primary text-white text-[10px] px-2 py-0.5 font-sans font-semibold">Recommended</span>
+                      </span>
+                    </th>
+                    <th class="py-4 px-5 font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Legacy VPNs (IPsec/OpenVPN)
+                    </th>
+                    <th class="py-4 px-5 font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Basic Mesh (Tailscale/Headscale)
+                    </th>
+                    <th class="py-4 px-5 font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground">
+                      Cloud Proxies (Cloudflare/Zscaler)
+                    </th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-border/60 bg-card">
+                  {comparisonMatrix.map((row, idx) => (
+                    <tr class={`transition-colors hover:bg-muted/30 ${idx % 2 === 1 ? 'bg-surface/30' : ''}`}>
+                      <td class="py-3.5 px-5 font-semibold text-foreground">
+                        {row.feature}
+                      </td>
+                      <td class="py-3.5 px-5 font-bold text-primary bg-primary/5 border-x border-primary/20">
+                        <div class="flex items-center gap-2">
+                          <span class="flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white text-[11px] font-black flex-shrink-0">✓</span>
+                          <span>{row.quickztna}</span>
+                        </div>
+                      </td>
+                      <td class="py-3.5 px-5 text-muted-foreground">
+                        <div class="flex items-center gap-2">
+                          <span class="text-rose-500 font-bold text-xs flex-shrink-0">✕</span>
+                          <span>{row.legacyVpn}</span>
+                        </div>
+                      </td>
+                      <td class="py-3.5 px-5 text-muted-foreground">
+                        <div class="flex items-center gap-2">
+                          <span class="text-amber-500 font-bold text-xs flex-shrink-0">~</span>
+                          <span>{row.basicMesh}</span>
+                        </div>
+                      </td>
+                      <td class="py-3.5 px-5 text-muted-foreground">
+                        <div class="flex items-center gap-2">
+                          <span class="text-amber-500 font-bold text-xs flex-shrink-0">~</span>
+                          <span>{row.cloudProxy}</span>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+      </article>
+    ))}
+
+    <!-- ── BOTTOM CTA BANNER (SPLIT LEFT & RIGHT BUTTONS) ───────────── -->
+    <section class="rounded-3xl border border-primary/20 bg-gradient-to-br from-accent/50 to-background p-8 sm:p-12 shadow-sm flex flex-col items-center justify-center">
+      <div class="text-center max-w-3xl mb-8">
+        <p class="font-mono text-xs font-bold uppercase tracking-widest text-primary mb-2">
+          EXPERIENCE MODERN ZERO TRUST
+        </p>
+        <h2 class="text-2xl sm:text-3xl font-black text-[#0f172a]">
+          Deploy QuickZTNA for your remote team in under 2 minutes
+        </h2>
+        <p class="mt-3 text-sm sm:text-base text-muted-foreground leading-relaxed">
+          Encrypted WireGuard mesh, least-privilege ABAC policies, and real-time device posture. Free forever for up to 5 users.
+        </p>
+      </div>
+
+      <!-- Action Buttons Row: Left Group & Right Group -->
+      <div class="w-full pt-8 border-t border-primary/15 flex flex-col md:flex-row items-center justify-between gap-5">
+        
+        <!-- Left Side Buttons -->
+        <div class="flex flex-wrap items-center justify-center md:justify-start gap-3.5">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-6 py-2.5 text-sm font-bold shadow-sm transition-all duration-200 hover:shadow-md hover:brightness-105 active:scale-[0.98] no-underline"
+            style="color: #ffffff !important;"
+          >
+            <span style="color: #ffffff !important;">Read Our Technical Blog</span>
+            <span style="color: #ffffff !important;" class="font-black">→</span>
+          </a>
+          <a
+            href="https://quickztna.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted no-underline shadow-2xs"
+          >
+            <span>Visit quickztna.com</span>
+            <span>↗</span>
+          </a>
+        </div>
+
+        <!-- Right Side Buttons -->
+        <div class="flex flex-wrap items-center justify-center md:justify-end gap-3.5">
+          <a
+            href="https://login.quickztna.com/auth"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-6 py-2.5 text-sm font-bold shadow-sm transition-all duration-200 hover:shadow-md hover:brightness-105 active:scale-[0.98] no-underline"
+            style="color: #ffffff !important;"
+          >
+            <span style="color: #ffffff !important;">Start Free Account →</span>
+          </a>
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-semibold text-foreground hover:bg-muted hover:text-primary transition-colors no-underline shadow-2xs"
+          >
+            <span>Explore Blog & Tutorials</span>
+          </a>
+        </div>
+
       </div>
     </section>
 
