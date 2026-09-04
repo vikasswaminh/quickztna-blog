@@ -1,0 +1,83 @@
+---
+interface Props {
+  activePage?: "blog" | "tags" | "about";
+}
+const { activePage = "blog" } = Astro.props;
+---
+<section class="border-b border-border/70 bg-hero relative overflow-hidden">
+  <div class="absolute inset-0 bg-grid opacity-85 pointer-events-none" aria-hidden="true"></div>
+  <div class="relative mx-auto max-w-[1700px] px-4 py-16 sm:py-20 lg:py-24 text-center flex flex-col items-center justify-center">
+    
+    <!-- Eyebrow Pill -->
+    <div class="inline-flex items-center gap-2 rounded-full border border-border/80 bg-card/90 px-4 py-1.5 font-mono text-xs font-bold uppercase tracking-wider mb-6 shadow-2xs backdrop-blur-xs">
+      <span class="h-2 w-2 rounded-full bg-[#0066ff] animate-pulse"></span>
+      <span class="text-[#334155]">QUICKZTNA</span>
+      <span class="text-gradient font-extrabold">BLOG</span>
+    </div>
+
+    <!-- H1 Headline -->
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-foreground leading-[1.15] max-w-4xl">
+      Zero Trust + Workforce Security, <span class="text-gradient">Explained</span>
+    </h1>
+
+    <!-- Short Description -->
+    <p class="mt-4 max-w-2xl text-base sm:text-lg text-muted-foreground leading-relaxed">
+      Engineering notes, security research, compliance deep-dives and practical Zero Trust guidance.
+    </p>
+
+    <!-- CTAs -->
+    <div class="mt-8 flex flex-wrap items-center justify-center gap-3.5">
+      <a
+        href="/tags/"
+        class={`inline-flex items-center gap-2 rounded-full px-6 py-2.5 text-sm font-bold shadow-sm transition-all duration-200 hover:shadow-md active:scale-[0.98] ${
+          activePage === "tags"
+            ? "bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white"
+            : "bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white hover:opacity-95 hover:brightness-105"
+        }`}
+      >
+        <span>Explore Topics</span>
+        <svg class="h-4 w-4" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M6 3l5 5-5 5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+
+      <a
+        href="/"
+        class={`inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-6 py-2.5 text-sm font-bold text-foreground transition-all duration-200 hover:bg-muted hover:border-primary/40 hover:text-primary active:scale-[0.98] ${
+          activePage === "blog" ? "border-primary/50 text-primary" : ""
+        }`}
+      >
+        <span>Read Articles</span>
+        <span class="font-mono text-xs text-muted-foreground font-semibold">45 Posts</span>
+      </a>
+
+      <a
+        href="/about/"
+        class={`inline-flex items-center gap-2 rounded-full border border-transparent px-4 py-2.5 text-sm font-bold transition-all duration-200 hover:text-primary ${
+          activePage === "about" ? "text-primary underline underline-offset-4" : "text-muted-foreground"
+        }`}
+      >
+        <span>About The Publication</span>
+      </a>
+    </div>
+
+    <!-- Quick Stats Bar -->
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-mono text-xs text-muted-foreground border-t border-border/40 pt-6">
+      <div class="flex items-center gap-1.5">
+        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
+        <span class="font-semibold text-foreground">45</span> Technical Deep Dives
+      </div>
+      <span class="text-border hidden sm:inline">/</span>
+      <div class="flex items-center gap-1.5">
+        <span class="h-1.5 w-1.5 rounded-full bg-blue-500"></span>
+        <span class="font-semibold text-foreground">180K+</span> Words Published
+      </div>
+      <span class="text-border hidden sm:inline">/</span>
+      <div class="flex items-center gap-1.5">
+        <span class="h-1.5 w-1.5 rounded-full bg-purple-500"></span>
+        <span class="font-semibold text-foreground">100%</span> Engineering Verified
+      </div>
+    </div>
+
+  </div>
+</section>
