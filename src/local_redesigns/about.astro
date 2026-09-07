@@ -200,7 +200,7 @@ const aboutSchema = {
   <div class="mx-auto max-w-[1700px] px-4 py-8 sm:px-6 lg:px-8 space-y-10 sm:space-y-12">
 
     <!-- ── SECTION 1: WHY THIS BLOG EXISTS ─────────────────────────── -->
-    <section class="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs relative overflow-hidden">
+    <section class="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs relative overflow-hidden">
       <div class="absolute inset-0 bg-grid opacity-30 pointer-events-none" aria-hidden="true"></div>
       <div class="relative grid gap-6 lg:grid-cols-12 items-start">
         
@@ -247,7 +247,7 @@ const aboutSchema = {
 
       <div class="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
         {categories.map((cat) => (
-          <div class="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-5 shadow-2xs hover:border-primary/40 hover:shadow-xs transition-all">
+          <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
             <div>
               <div class="flex items-center justify-between gap-2 mb-2">
                 <span class={`rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider ${cat.badgeColor}`}>
@@ -282,7 +282,7 @@ const aboutSchema = {
     </section>
 
     <!-- ── SECTION 3: EDITORIAL PRINCIPLES ─────────────────────────── -->
-    <section class="rounded-2xl border border-border/80 bg-muted/20 p-6 sm:p-8 space-y-5">
+    <section class="rounded-3xl border border-border/80 bg-muted/20 p-6 sm:p-8 space-y-5">
       <div class="max-w-3xl space-y-1">
         <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
           <Scale class="h-3.5 w-3.5" /> Editorial Integrity
@@ -297,7 +297,7 @@ const aboutSchema = {
 
       <div class="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
         {editorialPrinciples.map((ep) => (
-          <div class="flex flex-col justify-start rounded-xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
+          <div class="flex flex-col justify-start rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
             <span class="font-mono text-xl font-black text-gradient block mb-2">
               {ep.num}
             </span>
@@ -328,7 +328,7 @@ const aboutSchema = {
 
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
         {researchSteps.map((rs) => (
-          <div class="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-4 shadow-2xs hover:border-primary/40 transition-all">
+          <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-4.5 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
             <div>
               <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-primary/10 font-mono text-[11px] font-bold text-primary mb-2.5">
                 {rs.step}
@@ -344,7 +344,7 @@ const aboutSchema = {
         ))}
       </div>
 
-      <div class="rounded-xl border border-primary/20 bg-primary/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-muted-foreground">
+      <div class="rounded-2xl border border-primary/20 bg-primary/5 p-4.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs text-muted-foreground">
         <p>
           <strong class="text-foreground">Standards Citations:</strong> We link directly to official NIST FIPS 203/204/205 specifications, IETF RFCs (RFC 9298, RFC 8489), and regulatory frameworks in all publications.
         </p>
@@ -370,7 +370,7 @@ const aboutSchema = {
 
       <div class="grid gap-4 sm:gap-5 md:grid-cols-3">
         {targetAudiences.map((aud) => (
-          <div class={`rounded-xl border bg-gradient-to-b ${aud.color} p-5 shadow-2xs space-y-2.5`}>
+          <div class={`rounded-2xl border bg-gradient-to-b ${aud.color} p-5.5 shadow-sm space-y-2.5`}>
             <h3 class="text-lg font-bold text-foreground">
               {aud.title}
             </h3>
@@ -386,7 +386,7 @@ const aboutSchema = {
     </section>
 
     <!-- ── SECTION 6: QUICKZTNA + THE BLOG ─────────────────────────── -->
-    <section class="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs space-y-5">
+    <section class="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs space-y-5">
       <div class="grid gap-6 lg:grid-cols-12 items-center">
         <div class="lg:col-span-7 space-y-2.5">
           <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
@@ -408,7 +408,7 @@ const aboutSchema = {
             href="https://quickztna.com/features"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
+            class="flex items-center justify-between rounded-2xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
           >
             <div>
               <span class="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary">Platform Features</span>
@@ -421,7 +421,7 @@ const aboutSchema = {
             href="https://quickztna.com/docs/"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
+            class="flex items-center justify-between rounded-2xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
           >
             <div>
               <span class="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary">Developer Documentation</span>
@@ -434,7 +434,7 @@ const aboutSchema = {
             href="https://quickztna.com/guide/quickstart/"
             target="_blank"
             rel="noopener noreferrer"
-            class="flex items-center justify-between rounded-xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
+            class="flex items-center justify-between rounded-2xl border border-border/80 bg-muted/30 p-3.5 hover:border-primary/50 hover:bg-muted/60 transition-all group"
           >
             <div>
               <span class="font-bold text-xs sm:text-sm text-foreground group-hover:text-primary">Quickstart Deployment</span>
@@ -489,8 +489,8 @@ const aboutSchema = {
         ].map((tm) => {
           const IconComp = tm.icon;
           return (
-            <div class="flex flex-col justify-start rounded-xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
-              <div class={`inline-flex items-center justify-center h-10 w-10 rounded-lg border ${tm.color} mb-3.5 shrink-0`}>
+            <div class="flex flex-col justify-start rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
+              <div class={`inline-flex items-center justify-center h-10 w-10 rounded-xl border ${tm.color} mb-3.5 shrink-0`}>
                 <IconComp class="h-5 w-5" />
               </div>
               <h4 class="text-xs sm:text-sm font-bold text-foreground mb-1.5 leading-snug">
@@ -506,7 +506,7 @@ const aboutSchema = {
     </section>
 
     <!-- ── SECTION 8: TRANSPARENCY & FACT-CHECKING PLEDGE ──────────── -->
-    <section class="rounded-2xl border border-border/80 bg-muted/20 p-6 sm:p-8 space-y-4">
+    <section class="rounded-3xl border border-border/80 bg-muted/20 p-6 sm:p-8 space-y-4">
       <div class="max-w-3xl space-y-1">
         <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
           <Search class="h-3.5 w-3.5" /> Accountability
@@ -517,21 +517,21 @@ const aboutSchema = {
       </div>
 
       <div class="grid gap-4 md:grid-cols-3 text-xs text-[#334155] leading-relaxed">
-        <div class="space-y-1.5 rounded-xl border border-border/80 bg-card p-4">
+        <div class="space-y-1.5 rounded-2xl border border-border/80 bg-card p-4.5 shadow-sm">
           <h4 class="font-bold text-foreground flex items-center gap-1.5 text-xs">
             <span class="text-emerald-500">✓</span> What We Test
           </h4>
           <p class="text-[11px] text-muted-foreground">We test WireGuard configs, eBPF programs, and Noise handshakes in controlled test environments to report realistic numbers.</p>
         </div>
 
-        <div class="space-y-1.5 rounded-xl border border-border/80 bg-card p-4">
+        <div class="space-y-1.5 rounded-2xl border border-border/80 bg-card p-4.5 shadow-sm">
           <h4 class="font-bold text-foreground flex items-center gap-1.5 text-xs">
             <span class="text-blue-500">✓</span> What We Know
           </h4>
           <p class="text-[11px] text-muted-foreground">We clearly delineate standardized protocols (FIPS 203 ML-KEM) from emerging proposals (draft-ietf-pquip-pqtls).</p>
         </div>
 
-        <div class="space-y-1.5 rounded-xl border border-border/80 bg-card p-4">
+        <div class="space-y-1.5 rounded-2xl border border-border/80 bg-card p-4.5 shadow-sm">
           <h4 class="font-bold text-foreground flex items-center gap-1.5 text-xs">
             <span class="text-amber-500">✓</span> How We Correct Errata
           </h4>
@@ -551,7 +551,7 @@ const aboutSchema = {
         </div>
         <a
           href="/"
-          class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-4 py-1.5 text-xs font-bold text-white shadow-2xs hover:opacity-95 hover:brightness-105 transition-all"
+          class="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-4 py-1.5 text-xs font-bold text-white shadow-sm hover:opacity-95 hover:brightness-105 transition-all"
         >
           <span>View All 45 Articles</span>
           <span>→</span>
@@ -562,7 +562,7 @@ const aboutSchema = {
         {recentPosts.map((post) => {
           const slug = post.id.replace(/\.md$/, "");
           return (
-            <div class="flex flex-col justify-between rounded-xl border border-border/80 bg-card p-5 shadow-2xs hover:border-primary/40 hover:shadow-xs transition-all">
+            <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
               <div>
                 <span class="inline-block rounded-md border border-cyan-200 bg-cyan-50 px-2 py-0.5 font-semibold text-[11px] text-cyan-700 mb-2 capitalize">
                   {post.data.category}
