@@ -297,11 +297,11 @@ const aboutSchema = {
 
       <div class="grid gap-4 sm:gap-5 md:grid-cols-2 lg:grid-cols-3">
         {editorialPrinciples.map((ep) => (
-          <div class="rounded-xl border border-border/80 bg-card p-5 sm:p-5.5 shadow-sm hover:border-primary/40 hover:shadow transition-all">
-            <span class="font-mono text-xl font-black text-gradient block mb-1.5">
+          <div class="flex flex-col justify-start rounded-xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
+            <span class="font-mono text-xl font-black text-gradient block mb-2">
               {ep.num}
             </span>
-            <h3 class="text-sm font-bold text-foreground mb-1">
+            <h3 class="text-sm sm:text-base font-bold text-foreground mb-1.5 leading-snug">
               {ep.title}
             </h3>
             <p class="text-xs text-muted-foreground leading-relaxed">
@@ -489,18 +489,16 @@ const aboutSchema = {
         ].map((tm) => {
           const IconComp = tm.icon;
           return (
-            <div class="flex flex-col rounded-xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm hover:border-primary/40 hover:shadow transition-all space-y-3.5">
-              <div class={`inline-flex items-center justify-center h-10 w-10 rounded-lg border ${tm.color} shrink-0`}>
+            <div class="flex flex-col justify-start rounded-xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
+              <div class={`inline-flex items-center justify-center h-10 w-10 rounded-lg border ${tm.color} mb-3.5 shrink-0`}>
                 <IconComp class="h-5 w-5" />
               </div>
-              <div class="space-y-1.5 flex-1">
-                <h4 class="text-xs sm:text-sm font-bold text-foreground leading-snug">
-                  {tm.team}
-                </h4>
-                <p class="text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
-                  {tm.focus}
-                </p>
-              </div>
+              <h4 class="text-xs sm:text-sm font-bold text-foreground mb-1.5 leading-snug">
+                {tm.team}
+              </h4>
+              <p class="text-[11px] sm:text-xs text-muted-foreground leading-relaxed">
+                {tm.focus}
+              </p>
             </div>
           );
         })}
