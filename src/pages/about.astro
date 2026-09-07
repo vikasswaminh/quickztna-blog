@@ -1,6 +1,20 @@
 ---
 import SiteLayout from "@/layouts/SiteLayout.astro";
 import { getCollection } from "astro:content";
+import {
+  Lock,
+  Network,
+  ClipboardCheck,
+  ServerCog,
+  Shield,
+  BookOpen,
+  Scale,
+  FlaskConical,
+  Users,
+  Zap,
+  UsersRound,
+  Search,
+} from "lucide-astro";
 
 const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
@@ -192,7 +206,7 @@ const aboutSchema = {
         
         <div class="lg:col-span-4 space-y-2">
           <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-3 py-0.5 font-mono text-[11px] font-bold uppercase tracking-wider text-primary">
-            🛡️ Our Mission
+            <Shield class="h-3.5 w-3.5" /> Our Mission
           </span>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground leading-tight">
             Why the QuickZTNA Blog Exists
@@ -220,8 +234,8 @@ const aboutSchema = {
     <!-- ── SECTION 2: WHAT WE WRITE ABOUT (6 CATEGORIES) ───────────── -->
     <section class="space-y-4">
       <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          📚 Content Taxonomy
+        <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+          <BookOpen class="h-3.5 w-3.5" /> Content Taxonomy
         </span>
         <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           What We Write About
@@ -270,8 +284,8 @@ const aboutSchema = {
     <!-- ── SECTION 3: EDITORIAL PRINCIPLES ─────────────────────────── -->
     <section class="rounded-2xl border border-border/80 bg-muted/20 p-6 sm:p-8 space-y-5">
       <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          ⚖️ Editorial Integrity
+        <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+          <Scale class="h-3.5 w-3.5" /> Editorial Integrity
         </span>
         <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           Our 6 Editorial Principles
@@ -301,8 +315,8 @@ const aboutSchema = {
     <!-- ── SECTION 4: HOW WE RESEARCH (VISUAL PIPELINE) ────────────── -->
     <section class="space-y-5">
       <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          🔬 Research Methodology
+        <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+          <FlaskConical class="h-3.5 w-3.5" /> Research Methodology
         </span>
         <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           How We Research & Validate Technical Claims
@@ -343,8 +357,8 @@ const aboutSchema = {
     <!-- ── SECTION 5: WHO IS THIS BLOG FOR? ────────────────────────── -->
     <section class="space-y-4">
       <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          👥 Target Audience
+        <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+          <Users class="h-3.5 w-3.5" /> Target Audience
         </span>
         <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           Who This Blog Is For
@@ -375,8 +389,8 @@ const aboutSchema = {
     <section class="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 shadow-xs space-y-5">
       <div class="grid gap-6 lg:grid-cols-12 items-center">
         <div class="lg:col-span-7 space-y-2.5">
-          <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-            ⚡ Platform Connection
+          <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+            <Zap class="h-3.5 w-3.5" /> Platform Connection
           </span>
           <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
             The Technology Behind The Blog
@@ -435,8 +449,8 @@ const aboutSchema = {
     <!-- ── SECTION 7: EDITORIAL TEAMS & CONTRIBUTORS ───────────────── -->
     <section class="space-y-4">
       <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          👥 Engineering Authors
+        <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+          <UsersRound class="h-3.5 w-3.5" /> Engineering Authors
         </span>
         <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           Meet the Editorial & Engineering Teams
@@ -451,42 +465,53 @@ const aboutSchema = {
           {
             team: "Cryptography Research Team",
             focus: "Post-Quantum Algorithms, ML-KEM, Noise Protocol, and Key Rotation",
-            icon: "🔐",
+            icon: Lock,
+            color: "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/50 border-blue-200/80 dark:border-blue-800/60",
           },
           {
             team: "Zero Trust Architecture Team",
             focus: "NIST SP 800-207, Microsegmentation, ABAC Policies, and SDP",
-            icon: "📐",
+            icon: Network,
+            color: "text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/50 border-cyan-200/80 dark:border-cyan-800/60",
           },
           {
             team: "Compliance & Audit Engineering",
             focus: "SOC 2 Type II, HIPAA, EU NIS2, DORA, and ISO 27001 Mapping",
-            icon: "📋",
+            icon: ClipboardCheck,
+            color: "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 border-emerald-200/80 dark:border-emerald-800/60",
           },
           {
             team: "DevSecOps & Systems Engineering",
             focus: "CI/CD Ephemeral Runners, Linux Kernel WireGuard, eBPF, and Cloud Mesh",
-            icon: "⚙️",
+            icon: ServerCog,
+            color: "text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/50 border-purple-200/80 dark:border-purple-800/60",
           },
-        ].map((tm) => (
-          <div class="rounded-xl border border-border/80 bg-card p-4.5 shadow-2xs hover:border-primary/40 transition-all space-y-2">
-            <span class="text-2xl block">{tm.icon}</span>
-            <h4 class="text-xs sm:text-sm font-bold text-foreground">
-              {tm.team}
-            </h4>
-            <p class="text-[11px] text-muted-foreground leading-relaxed">
-              {tm.focus}
-            </p>
-          </div>
-        ))}
+        ].map((tm) => {
+          const IconComp = tm.icon;
+          return (
+            <div class="rounded-xl border border-border/80 bg-card p-4.5 shadow-2xs hover:border-primary/40 hover:shadow-xs transition-all space-y-3">
+              <div class={`inline-flex items-center justify-center h-10 w-10 rounded-lg border ${tm.color}`}>
+                <IconComp class="h-5 w-5" />
+              </div>
+              <div class="space-y-1">
+                <h4 class="text-xs sm:text-sm font-bold text-foreground">
+                  {tm.team}
+                </h4>
+                <p class="text-[11px] text-muted-foreground leading-relaxed">
+                  {tm.focus}
+                </p>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </section>
 
     <!-- ── SECTION 8: TRANSPARENCY & FACT-CHECKING PLEDGE ──────────── -->
     <section class="rounded-2xl border border-border/80 bg-muted/20 p-6 sm:p-8 space-y-4">
       <div class="max-w-3xl space-y-1">
-        <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
-          🔍 Accountability
+        <span class="inline-flex items-center gap-1.5 font-mono text-xs font-bold uppercase tracking-wider text-primary">
+          <Search class="h-3.5 w-3.5" /> Accountability
         </span>
         <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
           Transparency & Errata Policy
