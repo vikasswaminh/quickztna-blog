@@ -98,3 +98,43 @@
 .center-scroll-feed::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary) / 0.5);
 }
+
+/* Clean white card styling for code & architecture diagrams inside blog posts */
+#article-body pre,
+#article-body pre.astro-code {
+  background-color: #ffffff !important;
+  color: #1e293b !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 1rem !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.02) !important;
+  padding: 1.25rem 1.5rem !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
+#article-body pre.astro-code code,
+#article-body pre.astro-code span,
+#article-body pre code {
+  color: #1e293b !important;
+  font-size: 0.85rem !important;
+  line-height: 1.65 !important;
+}
+
+#article-body table {
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+#article-body table th {
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-weight: 600;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+#article-body table td {
+  border-bottom: 1px solid #f1f5f9;
+  color: #334155;
+}
