@@ -74,6 +74,14 @@ Outbound-Only Zero Trust Architecture structurally alters this exposure model. B
 
 > **Definition:** **Outbound-Only Zero Trust Architecture** is a networking security model where workload endpoints (servers, containers, databases) maintain zero open inbound listening ports and require no public IP addresses. Endpoints establish outbound-only, encrypted TLS signaling connections to a central control plane, building peer-to-peer WireGuard mesh tunnels dynamically based on authenticated identity, attribute-based access control (ABAC), and continuous device posture verification.
 
+| Dimension | Inbound Perimeter (Legacy) | Outbound-Only Zero Trust (QuickZTNA) |
+|---|---|---|
+| **Ingress Firewall Rule** | `0.0.0.0/0:22,443,5432 ALLOW` | `0.0.0.0/0 INGRESS: DROP ALL (100% Dark)` |
+| **Public IPv4 Requirement** | Mandatory per public instance ($$ hourly cloud fee). | Zero public IPs required; operates in private subnets. |
+| **Internet Scanner Visibility** | Indexed by Shodan, Censys within 15 minutes. | Mathematically invisible to external SYN/port scans. |
+| **Connection Direction** | Inbound connection directly to workload port. | Outbound-only stateful tunnel established to mesh peers. |
+| **Lateral Movement Resistance** | Flat subnet lateral movement once perimeter breached. | Microsegmented per-process ABAC policy enforcement. |
+
 ---
 
 ## Key Takeaways for SecOps and Infrastructure Architects

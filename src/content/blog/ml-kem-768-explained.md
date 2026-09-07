@@ -68,6 +68,35 @@ relatedSlugs:
 
 ML-KEM-768 is the NIST-standardised post-quantum key encapsulation mechanism published as [FIPS 203](https://csrc.nist.gov/pubs/fips/203/final) on August 13, 2024. It is derived from CRYSTALS-Kyber and based on the hardness of the Module Learning With Errors problem. In a hybrid deployment it is paired with X25519, so that breaking a tunnel requires breaking both a post-quantum lattice scheme and a classical elliptic-curve scheme. A public key is 1,184 bytes, a ciphertext is 1,088 bytes, and a shared secret is 32 bytes. Encapsulation and decapsulation each run in well under a millisecond on commodity hardware. This post explains how ML-KEM-768 works and what to ask a vendor before you trust their "quantum-safe" marketing. To be explicit about our own product: QuickZTNA does **not** implement post-quantum key exchange — its tunnels are classical WireGuard (X25519 + ChaCha20-Poly1305).
 
+| Parameter | FIPS 203 Specification (ML-KEM-768) |
+|---|---|
+| **Hardness Assumption** | Module Learning With Errors (M-LWE) over polynomial rings. |
+| **NIST Security Level** | Category 3 (Equivalent to the security strength of AES-192). |
+| **Public Key Size ($pk$)** | 1,184 Bytes |
+| **Ciphertext Size ($ct$)** | 1,088 Bytes |
+| **Shared Secret Size ($ss$)** | 32 Bytes (256-bit symmetric entropy) |
+| **Computation Speed** | Encapsulation and decapsulation execute in under 100 microseconds on modern x86/ARM cores. |
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                      ML-KEM-768 Key Encapsulation Flow                  │
+│                                                                         │
+│   [Receiver / Server]                               [Sender / Client]   │
+│            │                                                │           │
+│   1. KeyGen()                                               │           │
+│      ├── Public Key (pk: 1,184 B) ─────────────────────────►│           │
+│      └── Secret Key (sk: 2,400 B)                           │           │
+│                                                     2. Encap(pk)        │
+│                                                        ├── Shared Secret│
+│            │◄────── Ciphertext (ct: 1,088 B) ──────────┤   (SS: 32 B)   │
+│            │                                           └── ct           │
+│   3. Decap(ct, sk)                                                      │
+│      └── Derived Shared Secret (SS: 32 B)                               │
+│                                                                         │
+│   Result: Identical 256-bit symmetric key established without ECDH      │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Security engineers, platform teams, and compliance leads who want a technical, non-handwavy explanation of what sits inside a modern post-quantum key exchange. We assume you are comfortable reading a bit of code and are familiar with TLS or WireGuard at a glance. Cryptographers writing security proofs should read the primary sources instead — this post is for builders and buyers.

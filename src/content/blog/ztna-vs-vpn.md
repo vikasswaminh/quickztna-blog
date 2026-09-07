@@ -62,6 +62,35 @@ relatedSlugs:
 
 "ZTNA vs VPN" is a slightly misleading framing because they sit at different layers. VPN is a transport technology — an encrypted tunnel. ZTNA is an architecture — a set of principles about how access is granted. Most modern ZTNA products use VPN technology (WireGuard in particular) as the data plane, so the real distinction is not "do we use tunnels" but "what happens above the tunnel". Eight differences actually matter: trust model, authorisation granularity, device posture, continuous re-evaluation, micro-segmentation, policy language, audit telemetry, and post-quantum posture. We cover each with diagrams and a direct comparison.
 
+| Evaluation Vector | Legacy Enterprise VPN | Modern ZTNA Fabric (QuickZTNA) |
+|---|---|---|
+| **1. OSI Layer & Scope** | Layer 3 (Full subnet IP routing). | Layer 4/7 (Application and port specific). |
+| **2. Authentication Lifecycle** | One-time check at connection initiation. | Continuous real-time identity & device posture re-evaluation. |
+| **3. Access Granularity** | Broad network access to the entire subnet. | Attribute-Based Access Control (ABAC) per connection. |
+| **4. Ingress Visibility** | Publicly reachable IP address and open listening port. | Completely Dark; single-packet authorization / WireGuard mesh. |
+| **5. Lateral Movement** | Permitted across internal LAN unless blocked by ACLs. | Cryptographically impossible; peer isolation by default. |
+| **6. Deployment Topology** | Centralized hub-and-spoke concentrators (latency bottleneck). | Direct peer-to-peer mesh with edge routing. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   ZTNA vs. VPN Architectural Topology                  │
+│                                                                        │
+│   LEGACY VPN (Hub-and-Spoke):                                          │
+│   [Client] ──► [Concentrator Chokepoint] ──► [Flat Internal Subnet]    │
+│                (Publicly Scannable Port)     (Unrestricted Lateral LAN)│
+│                                                                        │
+│   QUICKZTNA (Decoupled Peer-to-Peer Mesh):                             │
+│   [Client]                                  [Target Private Workload]  │
+│      │                                                 ▲               │
+│      │  1. Auth & Posture Check                        │               │
+│      ▼                                                 │               │
+│   [Decoupled Cloud PDP] ──► 2. Issue Ephemeral Grant ──┤               │
+│                                                        │               │
+│      └──────────────── 3. Direct Encrypted Tunnel ─────┘               │
+│                        (Peer-to-Peer / Zero Latency)                   │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Engineering leads and architects evaluating whether to replace a legacy VPN with a ZTNA product, or reviewing the design of an existing VPN deployment to add Zero Trust principles on top. Assumes familiarity with basic networking and with the concept of encrypted tunnels.

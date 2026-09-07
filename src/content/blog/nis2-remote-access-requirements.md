@@ -66,6 +66,38 @@ relatedSlugs:
 
 The NIS2 Directive — [Directive (EU) 2022/2555](https://eur-lex.europa.eu/eli/dir/2022/2555/oj) — has applied to in-scope EU entities since 18 October 2024. Article 21 requires "appropriate and proportionate" technical and organisational measures across ten categories, including cryptography, access control, incident handling, and supply-chain security. Article 23 adds a three-stage incident-reporting obligation (24h, 72h, one month). Fines reach €10 million or 2% of global turnover for essential entities. Remote access is not called out by name, but the combination of cryptography (point (h)), access control (point (i)), and asset management (point (i)) effectively mandates a modern, auditable remote-access architecture. This post is a builder's reading: what each obligation actually requires in an implementation, and what a defensible remote-access setup looks like.
 
+| NIS2 Obligation (Article 21) | Directive Requirement | QuickZTNA Technical Control |
+|---|---|---|
+| **Art. 21(2)(h) — Cryptography & Encryption** | Use of appropriate and proportionate cryptographic controls and encryption. | End-to-end WireGuard tunnels (ChaCha20-Poly1305) with zero standing public IPs. |
+| **Art. 21(2)(i) — Access Control & Policies** | Human resources security, access policies, and asset management. | Identity-first ABAC policies, continuous device posture checks, and MFA enforcement. |
+| **Art. 21(2)(j) — Multi-Factor & Secure Comms** | Secured voice, video, and text comms; secured emergency comms systems. | OIDC / SCIM integration with Okta, Microsoft Entra ID, and Google Workspace. |
+| **Art. 21(2)(d) — Supply-Chain Security** | Risk management for direct suppliers and third-party contractors. | Time-bounded JIT vendor access; auto-revoked paths without broad subnet bridging. |
+| **Art. 23 — Incident Reporting (24h/72h)** | Rapid forensic notification and incident root-cause analysis. | Structured real-time SIEM audit stream with user, host, IP, and timestamp telemetry. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│               NIS2 Article 21 Compliant Remote-Access Fabric           │
+│                                                                        │
+│   [Remote Workforce & Supply-Chain Contractors]                        │
+│                         │                                              │
+│                         ▼ (MFA + Continuous Device Posture)            │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Policy Decision Point (PDP) - Deny by Default         │ │
+│   │  └── Evaluates: User Identity + Device Health + Geo + Time       │ │
+│   └─────────────────────────────┬────────────────────────────────────┘ │
+│                                 │ (Encrypted WireGuard Micro-Tunnels)  │
+│                                 ▼                                      │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Segmented Critical EU Infrastructure (Water, Energy, Cloud)     │ │
+│   │  ├── Scada / OT Controller (JIT Elevation Required)              │ │
+│   │  ├── Internal ERP / CRM (Authorized Staff Only)                  │ │
+│   │  └── Production Databases (No Public IP; Dark from Scans)        │ │
+│   └─────────────────────────────┬────────────────────────────────────┘ │
+│                                 ▼                                      │
+│   [Real-Time Audit Telemetry ──► CSIRT Incident Reporting Pipeline]    │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Security architects, CISO teams, and compliance leads in EU organisations whose remote-access stack needs to be NIS2-aligned. Also ZTNA, VPN, and remote-desktop vendors who want a concrete technical framing of the directive's requirements rather than another executive summary. Familiarity with GDPR and with any prior NIS (2016/1148) implementation is helpful but not required.

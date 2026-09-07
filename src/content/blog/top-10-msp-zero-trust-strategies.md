@@ -85,6 +85,38 @@ relatedSlugs:
 
 MSPs face a zero trust challenge that no enterprise playbook covers: managing zero trust simultaneously across dozens of client environments, while keeping those environments strictly isolated from each other and from the MSP's own infrastructure. This list covers the ten most important strategies and tools for MSPs building a scalable zero trust programme in 2026 — from multi-tenant ZTNA platforms to per-client JIT access automation.
 
+| Strategy Area | Legacy MSP Operational Risk | Modern Zero Trust MSP Architecture |
+|---|---|---|
+| **Multi-Tenant Isolation** | Technician VPN can cross-route between client networks. | Strict cryptographic tenant boundary; zero cross-tenant lateral movement. |
+| **Technician Privilege** | Standing 24/7 admin credentials on every client server. | JIT access elevation tied to approved client support tickets (ConnectWise/Autotask). |
+| **RMM / Remote Control** | Unrestricted agent listening for inbound commands. | Outbound-only WireGuard control channel with mandatory MFA per session. |
+| **Client Audit & Evidence** | Shared MSP service account masks technician identity. | Per-technician attribution with immutable session audit exportable to client SIEM. |
+| **Client Offboarding** | Manual hunt to remove credentials, SSH keys, and tunnels. | Single-click tenant de-federation automatically revoking all technician mesh paths. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Multi-Tenant MSP Zero Trust Architecture             │
+│                                                                        │
+│   [MSP Technician Pool]                                                │
+│            │                                                           │
+│            ▼ 1. Ticket-Gated JIT Elevation (Autotask / ConnectWise)    │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Multi-Tenant Control Plane                            │ │
+│   │  ├── Tenant A Partition: Strict Policy & Audit                   │ │
+│   │  ├── Tenant B Partition: Strict Policy & Audit                   │ │
+│   │  └── Tenant C Partition: Strict Policy & Audit                   │ │
+│   └────────┬─────────────────────────┬─────────────────────────┬─────┘ │
+│            │                         │                         │       │
+│            ▼ (WireGuard Tunnel A)    ▼ (WireGuard Tunnel B)    ▼ (WG C)│
+│   ┌───────────────────┐     ┌───────────────────┐    ┌───────────────┐ │
+│   │ Client A (Legal)  │     │ Client B (Health) │    │ Client C (Fin)│ │
+│   │ [Dark Gateway]    │     │ [Dark Gateway]    │    │ [Dark Gateway]│ │
+│   │ - No Cross-Tenant │     │ - No Cross-Tenant │    │ - No Cross-Ten│ │
+│   │   Communication   │     │   Communication   │    │   Communicatio│ │
+│   └───────────────────┘     └───────────────────┘    └───────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 > **Adding up your per-client tool bill?** MSPs stack a mesh VPN, a ZTNA gateway, DNS filtering and monitoring across every client. QuickZTNA folds those into one agent and one bill per seat; keep your RMM for remote support. [See what you'd save →](/savings/)
 
 ## The unique MSP threat model

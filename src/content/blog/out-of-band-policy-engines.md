@@ -75,6 +75,14 @@ An **out-of-band policy engine** decouples policy linting, static analysis, and 
 
 By executing dry-run linting out-of-band, security infrastructure evaluates abstract syntax trees (ASTs), identity context, and network state graphs prior to atomic policy commits. The dry-run engine simulates full evaluation against live state telemetry, detecting self-blocking rules, orphaned interfaces, implicit drop conditions, and identity provider (IdP) mismatches without putting live traffic or control channels at risk. Modern enterprise zero-trust solutions, such as QuickZTNA, rely on out-of-band validation frameworks to enforce non-disruptive continuous policy updates across distributed edge architectures.
 
+| Validation Dimension | In-Band / Direct Push Policy Deployment | Out-of-Band Policy Engine with Dry-Run Linting |
+| :--- | :--- | :--- |
+| **Execution Path** | Injected directly into active kernel / eBPF data path | Isolated verification sandbox using mirrored state telemetry |
+| **Lockout Protection** | High risk: Logic flaws sever SSH/gRPC control channels | 100% Protected: Automated detection of self-blocking rules |
+| **Context Simulation** | Limited to basic syntax checks at runtime | Evaluates ASTs against live IdP claims, JWTs, and posture scores |
+| **Blast Radius & Rollback** | Requires physical/serial console recovery if orphaned | Zero risk: Blocks broken PRs in CI/CD before atomic commits |
+| **Throughput Impact** | Risk of CPU spikes during compilation in active plane | Zero latency or packet loss on live production tunnels |
+
 ---
 
 ## Key Takeaways

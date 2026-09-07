@@ -72,6 +72,37 @@ relatedSlugs:
 
 The HIPAA Security Rule (45 CFR Part 164, Subpart C) governs the technical safeguards that covered entities and business associates apply to electronic protected health information (ePHI). Encryption of ePHI in transit is an "addressable" implementation specification — which does not mean optional. In the vast majority of modern remote-access deployments, encryption is reasonable and mandatory in practice. A HIPAA-compliant VPN or ZTNA deployment in 2026 requires: a signed Business Associate Agreement with the vendor, encryption to the standards referenced by HHS guidance, audit logging, access controls, and incident-response capability that supports the Breach Notification Rule's 60-day timeline. The December 2024 NPRM proposes significant updates; verify current status at [HHS OCR](https://www.hhs.gov/hipaa/). This post explains the current rule, the 2024 proposed changes, and the practical architecture that a HIPAA-aligned remote-access deployment follows.
 
+| HIPAA Safeguard (45 CFR § 164) | Regulatory Requirement | QuickZTNA Technical Implementation |
+|---|---|---|
+| **Transmission Security (§ 164.312(e))** | End-to-end encryption of ePHI in transit over public/untrusted networks. | Kernel WireGuard tunnels with ChaCha20-Poly1305 and Noise protocol. |
+| **Access Control (§ 164.312(a))** | Unique user identification, emergency access, and auto-logoff. | Scoped workload identities, MFA/SSO integration, and JIT session TTLs. |
+| **Audit Controls (§ 164.312(b))** | Record and examine activity in information systems containing ePHI. | Immutable per-packet flow logs capturing user, timestamp, target, and byte counts. |
+| **Integrity Controls (§ 164.312(c))** | Protect ePHI from improper alteration or destruction. | Cryptographic packet authentication via ChaCha20-Poly1305 AEAD. |
+| **Business Associate Agreement (BAA)** | Mandatory contract for third-party access providers processing ePHI. | Zero-knowledge mesh architecture—control plane never decrypts or stores payload data. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   HIPAA Technical Safeguards Architecture              │
+│                                                                        │
+│   [Healthcare Clinician / Telehealth Laptop]                           │
+│              │                                                         │
+│              ▼ (Continuous Device Posture & BitLocker/FileVault Check) │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Decoupled Control Plane (MFA / RBAC / IdP Federated)  │ │
+│   └──────────────────────────────┬───────────────────────────────────┘ │
+│                                  │ (Encrypted WireGuard Peer-to-Peer)  │
+│                                  ▼                                     │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Microsegmented EHR / PACS Medical System                        │ │
+│   │  ├── EHR Web Portal (Port 443 - Authorized Medical Staff)        │ │
+│   │  ├── DICOM Imaging Archive (Port 104 - Radiology Only)           │ │
+│   │  └── Patient Core SQL DB (Blocked from Direct Client Access)     │ │
+│   └──────────────────────────────┬───────────────────────────────────┘ │
+│                                  ▼                                     │
+│   [HIPAA Audit Log Stream ──► SIEM Pipeline (6-Year Retention)]        │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Compliance officers, privacy officers, and security leads at US healthcare providers, health plans, healthcare clearinghouses, and their business associates. Vendors selling VPN or ZTNA into the healthcare market. Readers should be familiar with the basic healthcare-compliance vocabulary (covered entity, business associate, PHI, ePHI).

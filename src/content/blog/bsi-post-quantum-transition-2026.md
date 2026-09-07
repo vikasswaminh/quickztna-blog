@@ -64,6 +64,34 @@ relatedSlugs:
 
 The Bundesamt für Sicherheit in der Informationstechnik (BSI) — Germany's Federal Office for Information Security — publishes [TR-02102-1 "Cryptographic Mechanisms: Recommendations and Key Lengths"](https://www.bsi.bund.de/DE/Themen/Unternehmen-und-Organisationen/Standards-und-Zertifizierung/Technische-Richtlinien/TR-nach-Thema-sortiert/tr02102/tr02102_node.html). It is Germany's baseline cryptographic guidance for federal administration and is widely referenced in private-sector contracts and regulated-entity supervision. Current editions recommend hybrid classical-plus-post-quantum key establishment for long-term confidentiality use cases and name ML-KEM among acceptable post-quantum KEMs. For remote-access deployments in Germany, alignment with TR-02102-1 is the de facto cryptographic compliance standard. This post explains the technical recommendations, the BSI's post-quantum migration position, and what a TR-02102-1-aligned VPN or ZTNA deployment looks like in 2026.
 
+| Dimension / Requirement | BSI TR-02102-1 Baseline |
+|---|---|
+| **Scope & Authority** | Mandatory for German Federal Administration & KRITIS critical infrastructure; baseline for NIS2UmsuCG transposition. |
+| **PQC Recommendation** | Mandatory hybrid key establishment (ECDH + Post-Quantum KEM) for data with long-term confidentiality horizons. |
+| **Accepted Primitives** | ML-KEM (FIPS 203), FrodoKEM (preferred in ultra-high assurance), AES-256-GCM, SHA-384/512. |
+| **Migration Window** | Immediate planning and hybrid deployment; classical-only algorithms to be phased out across federal IT systems. |
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    BSI TR-02102-1 Hybrid Crypto Architecture            │
+│                                                                         │
+│   [Remote Client (KRITIS)]                  [Gateway / Data Center]     │
+│              │                                         │                │
+│              ├───── 1. Dual Key Exchange Offer ───────►│                │
+│              │      - Classical: ECDH (Curve25519)     │                │
+│              │      - Post-Quantum: ML-KEM-768         │                │
+│              │                                         │                │
+│              │◄──── 2. Dual Response + Ciphertext ─────┤                │
+│              │                                         │                │
+│              ▼                                         ▼                │
+│   ┌──────────────────────────────────────────────────────────────────┐  │
+│   │ Combine Shared Secrets via HKDF (BSI Conforming KDF Construction)│  │
+│   └──────────────────────────────────┬───────────────────────────────┘  │
+│                                      ▼                                  │
+│                 [Symmetric Tunnel Key (AES-256-GCM)]                    │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Security and compliance leads at German federal administration, German critical infrastructure operators (KRITIS), and any private entity with German public-sector contracts. Also non-German teams selling into the German market whose customer contracts reference TR-02102 compliance. Familiarity with general cryptographic vocabulary is assumed; some German-language terms are used where the English translation is awkward.

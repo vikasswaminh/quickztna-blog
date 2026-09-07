@@ -67,6 +67,31 @@ relatedSlugs:
 
 "Harvest now, decrypt later" is a real threat model in which an adversary records encrypted traffic today with the intention of decrypting it once a sufficiently capable quantum computer is available. The practical implication is blunt: any session secured with classical elliptic-curve or RSA key exchange, with a confidentiality requirement extending into the 2030s or beyond, is already losing. Post-quantum key exchange at the transport layer closes the window, typically by layering a hybrid X25519 + [ML-KEM-768](/blog/ml-kem-768-explained) handshake into the tunnel. QuickZTNA has **not** implemented this — our data plane is classical WireGuard — so treat this post as a buyer's guide, not a product claim. This post explains who is capturing, what they are capturing, how decryption might work in practice, and what to measure in your own environment before your audit next year.
 
+| Threat Dimension | Analysis & Technical Reality |
+|---|---|
+| **What is HNDL?** | Adversaries intercept and store encrypted ciphertext today to decrypt once cryptographically relevant quantum computers (CRQCs) emerge. |
+| **Vulnerable Primitives** | RSA-2048/4096, ECDH (Curve25519, P-256/P-384), and DSA/ECDSA (broken by Shor's algorithm). |
+| **Safe Primitives** | AES-256, ChaCha20-Poly1305, SHA-384, SHA-512 (resistant against Grover's algorithm). |
+| **High-Risk Data** | Classified defense intel (25-50 yr horizon), medical histories (lifetime), trade secrets, and financial ledgers. |
+| **Architectural Fix** | Immediate deployment of hybrid post-quantum key exchange (X25519 + ML-KEM-768) at the transport layer. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│               Harvest Now, Decrypt Later (HNDL) Attack Flow            │
+│                                                                        │
+│   TODAY (2026):                                                        │
+│   [Client] ──► [Encrypted Session: TLS/VPN (ECDH)] ──► [Server]        │
+│                         │                                              │
+│                         ▼ (Passive Egress Tap / In-Transit Intercept)  │
+│               [Adversary Storage Farm]                                 │
+│               (Petabytes of raw encrypted ciphertext archived)         │
+│                                                                        │
+│   FUTURE (2030s+):                                                     │
+│   [Adversary Storage] ──► [CRQC (Shor's Algorithm)] ──► [Plaintext PII]│
+│   (Derives Session Keys from captured ECDH transcripts retroactively)  │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Chief information security officers, risk leads, and architects who need to translate "quantum" from a buzzword into a line in a risk register. Also engineers who want a clear framing for why they should care about post-quantum today, even though no quantum attacker exists. Readers should be comfortable with TLS or WireGuard basics.

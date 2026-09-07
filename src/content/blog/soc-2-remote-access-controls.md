@@ -67,6 +67,38 @@ relatedSlugs:
 
 SOC 2 is the attestation report most commonly required by enterprise buyers. It is built on AICPA's Trust Services Criteria (TSC). Remote-access architecture touches eleven specific criteria across the Common Criteria (CC) family — principally CC6 (Logical and Physical Access Controls) and CC7 (System Operations), with supporting references from CC5, CC8, and CC9. This post walks through each of the eleven criteria, what auditors typically ask for, and what evidence a ZTNA or VPN deployment should be able to produce. For your first SOC 2 audit, treat the remote-access chapter of your compliance workbook as a mostly solved problem if you have picked a modern ZTNA product — the controls and evidence drop out of normal operations. If you are on legacy VPN, expect work.
 
+| Trust Services Criterion (TSC) | Auditor Requirement | QuickZTNA Evidence Generation |
+|---|---|---|
+| **CC6.1 — Perimeter & Logical Access** | Infrastructure boundary protection and restricted access points. | Single-Packet Authorization (SPA) / Dark nodes + encrypted WireGuard mesh. |
+| **CC6.2 — User Registration & Access** | Unique user identities, authenticated via enterprise IdP. | SCIM 2.0 lifecycle sync + OIDC SSO integration (Okta, Entra ID, Google). |
+| **CC6.3 — Least Privilege & Role Access** | Access restricted strictly to authorized business requirements. | Attribute-Based Access Control (ABAC) per connection; deny-by-default. |
+| **CC6.6 — Boundary Defense & Lateral Move** | Prevent unauthorized lateral traversal across network boundaries. | Microsegmentation down to port/host; eliminates flat subnet routing. |
+| **CC6.7 — Data Transmission Security** | Encryption of data in transit across public and untrusted networks. | ChaCha20-Poly1305 AEAD wire-speed encryption with automated key rotation. |
+| **CC7.2 — Security Monitoring & Telemetry** | Detect and log anomalous access and authorization failures. | Real-time structured JSON audit telemetry streaming to Splunk, Datadog, Elastic. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   SOC 2 Type II Remote Access Evidence Fabric          │
+│                                                                        │
+│   [Employee / Contractor Endpoint]                                     │
+│                  │                                                     │
+│                  ▼ (CC6.2: IdP Federated SSO & MFA Verification)       │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Policy Engine (CC6.3 & CC6.6: ABAC Microsegmentation) │ │
+│   │  - Evaluates Identity + Posture (CC6.8) + Resource Permission    │ │
+│   └──────────────────────────────┬───────────────────────────────────┘ │
+│                                  │ (CC6.7: Encrypted WireGuard Tunnel) │
+│                                  ▼                                     │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Protected Enterprise Workloads (CC6.1: Dark VPC Infrastructure) │ │
+│   │  ├── Production API Gateway (Allowed per Role)                   │ │
+│   │  └── Core Database Cluster (JIT Approved Elevation Only)         │ │
+│   └──────────────────────────────┬───────────────────────────────────┘ │
+│                                  ▼                                     │
+│   [CC7.2: Immutable Audit Log Stream ──► SOC 2 Compliance Evidence]    │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Compliance leads, CISOs, and engineering managers preparing for a first SOC 2 Type II audit or tightening controls for an existing report. Vendor security-review teams who get buyer questionnaires and need to map answers back to SOC 2. Technical readers comfortable with the AICPA TSC vocabulary; if you are new to it, the [AICPA Trust Services Criteria page](https://www.aicpa-cima.com/resources/download/trust-services-criteria) is the canonical reference.

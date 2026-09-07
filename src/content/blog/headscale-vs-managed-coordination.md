@@ -66,6 +66,35 @@ relatedSlugs:
 
 Headscale is an open-source, Tailscale-compatible coordination server. It is a real alternative to running Tailscale's managed control plane, with a predictable set of trade-offs. The headline "free" of running open source is misleading: on a fully loaded cost basis including engineering time, backups, monitoring, and high availability, self-host often costs more than managed until a team reaches 20–30 active users, and comes with slower feature delivery. Self-host wins on data sovereignty, on licensing flexibility, and on customisation. Managed wins on features-per-day, on time to first connection, and on compliance paperwork. This post compares the two honestly with costs and operational patterns we have seen in real deployments.
 
+| Evaluation Vector | Self-Hosted Headscale | Managed Coordination (QuickZTNA / Tailscale) |
+|---|---|---|
+| **Data Sovereignty** | 100% On-Premises / Private VPC; no external control plane. | Multi-tenant SaaS control plane (zero payload data decrypted). |
+| **Total Cost of Ownership (TCO)** | Software is $0, but requires ~4–8 hours/mo SRE maintenance + VM hosting. | Predictable flat per-user pricing (QuickZTNA is free up to 5 users). |
+| **High Availability & Relay** | Single-point of failure unless custom HA PostgreSQL & DERP deployed. | Globally distributed active-active control plane + multi-region relays. |
+| **Feature Lag & Compatibility** | Community reverse-engineered; lags new client features by months. | Native feature parity across desktop, mobile, CLI, and kernel agents. |
+| **Compliance & Attestations** | DIY: Must produce and defend own SOC 2, HIPAA, and ISO evidence. | Turnkey SOC 2 Type II, BAA, ISO 27001 evidence ready out-of-the-box. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│               Self-Hosted Headscale vs. Managed QuickZTNA Fabric       │
+│                                                                        │
+│   SELF-HOSTED HEADSCALE:                                               │
+│   [Tailscale Client] ──► [Self-Hosted Linux VM] ──► [PostgreSQL DB]    │
+│                          (You manage OS patches, SSL certs, backups)   │
+│                                                                        │
+│   MANAGED QUICKZTNA:                                                   │
+│   [Workforce / Servers]                                                │
+│            │                                                           │
+│            ▼ 1. Ephemeral Signaling & Posture                          │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Multi-Region Control Plane (99.99% SLA / SOC 2 Type 2)│ │
+│   └────────────────────────┬─────────────────────────────────────────┘ │
+│                            │ 2. Direct Peer-to-Peer Tunneling          │
+│                            ▼                                           │
+│   [Direct WireGuard Mesh Tunnels between Nodes with Zero Maintenance]  │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Platform engineers deciding whether to self-host a mesh-VPN coordination server. Infrastructure leads doing a build-vs-buy analysis. CISOs with self-host constraints from regulators. This post assumes you already know the basics of mesh VPN and have identified the coordination-server-choice as the open question.

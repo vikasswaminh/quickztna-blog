@@ -64,6 +64,34 @@ relatedSlugs:
 
 Cloudflare Access is an edge-native identity-aware proxy. It is strong for user-to-web-app access with global-edge latency benefits, but it is not the right product for every remote-access pattern. Teams looking for a Cloudflare Access alternative typically want one of four things: a real device agent with mesh connectivity, an audit-able open-protocol data plane (usually WireGuard), a self-hostable coordination plane, or post-quantum key exchange on the tunnel itself rather than only on the Cloudflare edge. The serious alternatives in 2026: Tailscale, NetBird, QuickZTNA, Twingate, Zscaler Private Access, and AWS Verified Access. This post compares each against the typical motivations for leaving Cloudflare Access.
 
+| Architectural Dimension | Cloudflare Access (Edge-Proxy) | QuickZTNA / Tailscale (WireGuard Mesh) |
+|---|---|---|
+| **Data Plane Topology** | All traffic hairpins through Cloudflare global edge data centers. | Direct peer-to-peer tunnels (sub-2ms direct LAN/WAN speed). |
+| **Protocol Support** | Best for HTTP/HTTPS web apps (Non-HTTP requires WARP/cloudflared). | Full Layer 3/4 support (SSH, RDP, Postgres, custom UDP/TCP). |
+| **Data Privacy & Decryption** | Cloudflare edge decrypts TLS session for inspection. | End-to-end encryption; control plane never sees or decrypts payloads. |
+| **On-Prem & Multi-Cloud Mesh** | Requires running `cloudflared` connectors per app. | Native mesh routing across AWS, GCP, Azure, and bare-metal nodes. |
+| **Pricing & User Tiers** | Pay-per-user with strict feature gates on enterprise tiers. | Free forever up to 5 users on QuickZTNA with full enterprise ABAC. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│               Edge Proxy (Cloudflare) vs. Direct Mesh (QuickZTNA)      │
+│                                                                        │
+│   EDGE PROXY MODEL (Cloudflare Access):                                │
+│   [Developer Laptop] ──► [Cloudflare Edge POP] ──► [cloudflared] ──►[DB]│
+│   (Traffic hairpins across public internet edge proxy; added latency)  │
+│                                                                        │
+│   DIRECT MESH MODEL (QuickZTNA):                                       │
+│   [Developer Laptop]                                  [Private App/DB] │
+│           │                                                   ▲        │
+│           │ 1. Ephemeral Signaling                            │        │
+│           ▼                                                   │        │
+│   [QuickZTNA Control] ──────── 2. Issue ABAC Policy ──────────┤        │
+│                                                               │        │
+│           └──────────── 3. Direct WireGuard P2P Pipe ─────────┘        │
+│                         (Zero Hairpinning / Wire-Speed)                │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 > **Adding up your tool bill?** An access proxy like Cloudflare Access is usually just one line item — most teams also pay separately for a device-agent mesh, DNS filtering and a monitoring tool. QuickZTNA folds those into one agent and one bill. [See what you'd save →](/savings/)
 
 ## Who this is for

@@ -64,6 +64,38 @@ relatedSlugs:
 
 Every major VPN and ZTNA vendor has at least a "post-quantum" press release in 2026. Fewer than half ship a production-ready implementation. Six questions — specific algorithm and parameter set, hybrid or pure, rotation cadence, visible mode, default-on status, and audited source — separate working implementations from marketing. This post walks through each question, shows what a good answer looks like, and includes the honest current status of QuickZTNA plus publicly verifiable snapshots of four other vendors. Run this checklist before your next procurement decision, or before your next compliance audit.
 
+| Evaluation Dimension | Passing Vendor Answer | Red Flag / Marketing Evasion |
+|---|---|---|
+| **1. Concrete Algorithm & Parameter Set** | Explicitly names `ML-KEM-768` or `ML-KEM-1024` from FIPS 203. | Vague terms ("military-grade quantum safe", "proprietary lattice"). |
+| **2. Hybrid vs. Pure Post-Quantum** | Dual-key hybrid (`X25519 + ML-KEM`) preserving classical forward secrecy. | Pure PQ only without classical defense or proprietary combiners. |
+| **3. Ephemeral Rekeying Cadence** | Rekeying derives fresh ephemeral PQ keys periodically (e.g. every 2–10 min). | Static PSK configured once at provision time and never rotated. |
+| **4. Telemetry & Protocol Visibility** | CLI and audit logs show the negotiated cipher suite per active session. | Opaque client with no user or SIEM visibility into active crypto groups. |
+| **5. Default-On vs. Lab Flag** | Enabled by default in production client builds without hidden flags. | Requires special beta builds or contact-sales feature toggles. |
+| **6. Open Implementation & Audited Code** | Standard open cryptographic libraries (e.g., Go `crypto/mlkem`, Circl, OpenSSL 3.5). | Closed-source unverified custom crypto implementations. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Post-Quantum Vendor Vetting Pipeline                 │
+│                                                                        │
+│   [Vendor Claim: "Quantum-Safe"]                                       │
+│                 │                                                      │
+│                 ▼                                                      │
+│   [Q1: FIPS 203 Standard Algorithm?] ──► NO  ──► [DISQUALIFY]          │
+│                 │ YES                                                  │
+│                 ▼                                                      │
+│   [Q2: Hybrid Dual-Key (X25519+ML-KEM)?] ──► NO ──► [SECURITY RISK]    │
+│                 │ YES                                                  │
+│                 ▼                                                      │
+│   [Q3: Ephemeral Rekeying & Rotation?] ──► NO ──► [STATIC PSK FLAW]   │
+│                 │ YES                                                  │
+│                 ▼                                                      │
+│   [Q4-Q6: Audited Open Libraries & Default-On?] ──► NO ──► [NOT PROD]  │
+│                 │ YES                                                  │
+│                 ▼                                                      │
+│   [APPROVED PRODUCTION PQC ARCHITECTURE]                               │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Security leads evaluating a VPN or Zero Trust Network Access product. Architects renewing a contract. Auditors testing the claims of a deployed product. If you already know what to ask, skip to the table in section 9.

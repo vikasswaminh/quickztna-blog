@@ -69,6 +69,37 @@ relatedSlugs:
 
 The Digital Operational Resilience Act — [Regulation (EU) 2022/2554](https://eur-lex.europa.eu/eli/reg/2022/2554/oj) — has applied to EU financial entities since 17 January 2025. It imposes detailed requirements across five pillars: ICT risk management, incident reporting, digital operational resilience testing, ICT third-party risk management, and information-sharing arrangements. For network and remote-access engineering, the most relevant articles are 5 through 16 (ICT risk management including cryptography and access), Articles 17 through 23 (incident management), Articles 24 through 27 (testing including threat-led penetration testing), and Articles 28 through 44 (third-party risk). This post translates those articles into ten concrete implementation steps for a financial entity's network-and-remote-access stack, with references to primary sources throughout.
 
+| Pillar / Mandate | DORA Requirement (Regulation EU 2022/2554) | QuickZTNA Technical Control |
+|---|---|---|
+| **ICT Risk Management (Art. 9)** | Strong encryption in transit, least privilege, and network microsegmentation. | WireGuard ChaCha20-Poly1305 encryption + fine-grained ABAC per connection. |
+| **Identity & Access Control (Art. 9.4)** | Continuous authentication and rigorous access control policies. | Continuous device posture checking + JIT elevation with auto-revocation. |
+| **ICT Third-Party Risk (Art. 28-30)** | Granular contractor access governance without standing lateral network access. | Scoped vendor identities, time-bounded grants, and zero public IP exposure. |
+| **Operational Resilience (Art. 12)** | Resilient multi-region mesh architecture with no single point of failure. | Distributed peer-to-peer mesh with automated DERP relay fallback. |
+| **Audit & Incident Evidence (Art. 13)** | Complete, tamper-proof logging of all access decisions exportable to SIEM. | Real-time JSON audit telemetry streams for SOC 2, DORA, and ISO 27001. |
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    DORA Digital Operational Resilience Architecture     │
+│                                                                         │
+│   [Remote Financial Worker / Third-Party Vendor]                        │
+│                          │                                              │
+│                          ▼ (Continuous Device Posture & MFA)            │
+│   ┌──────────────────────────────────────────────────────────────────┐  │
+│   │  QuickZTNA Decoupled Control Plane (ABAC Policy & JIT Access)    │  │
+│   └──────────────────────────────┬───────────────────────────────────┘  │
+│                                  │ (Encrypted WireGuard Mesh)           │
+│                                  ▼                                      │
+│   ┌──────────────────────────────────────────────────────────────────┐  │
+│   │  Microsegmented Core Banking & Payment Infrastructure (Dark VPC) │  │
+│   │  ├── Core Banking API (Port 443 only - Scoped by Role)          │  │
+│   │  ├── SWIFT Gateway (JIT Approver Grant Required)                │  │
+│   │  └── Transaction Database (Denied to General Workforce)        │  │
+│   └──────────────────────────────┬───────────────────────────────────┘  │
+│                                  ▼                                      │
+│   [Real-Time Audit Telemetry Stream ──► Enterprise SIEM / Regulator]    │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 CISOs, heads of ICT risk, and chief operating officers at EU financial entities — banks, payment institutions, investment firms, insurers, crypto-asset service providers — or vendors selling into those entities. Specific value for teams working on VPN, ZTNA, and remote-access architecture that must align with DORA evidence requirements. Familiarity with basic banking or insurance regulatory vocabulary is helpful.

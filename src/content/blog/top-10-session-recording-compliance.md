@@ -78,6 +78,37 @@ relatedSlugs:
 
 Session recording is a mandatory control for any organisation holding sensitive data. PCI-DSS, HIPAA, SOC 2, and ISO 27001 all require evidence that privileged user actions on sensitive systems are audited. Most organisations have audit logs; fewer have the full session context that makes investigation conclusive. This list ranks the ten most important session recording tools in 2026, from enterprise PAM platforms with entire departments behind them to ZTNA-integrated solutions that add recording without deploying new infrastructure.
 
+| Evaluation Metric | Compliance-Grade Standard | QuickZTNA / PAM Integration |
+|---|---|---|
+| **Tamper-Proof Storage** | WORM (Write-Once-Read-Many) encrypted storage with segregated admin access. | Forwarded immutably to cloud cold storage / SIEM with cryptographic hashes. |
+| **Searchability & Indexing** | Full-text command/keystroke indexing and OCR metadata extraction. | Structured session timeline bound to user identity, target hostname, and PID. |
+| **Data Masking (DLP)** | Automated real-time obfuscation of passwords, credit cards (PCI), and PII/PHI. | Sensitive CLI arguments and database query secrets masked inline before recording. |
+| **Performance Overhead** | Latency impact < 15ms; no disruption to SSH terminal/RDP interactivity. | Kernel WireGuard data plane with lightweight sidecar protocol interception. |
+| **Compliance Mapping** | Satisfies PCI-DSS 10.2, HIPAA 164.312(b), SOC 2 CC6.1/CC7.2, NIST 800-53 AU-12. | Direct SIEM export formatted for automated auditor review. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│               Compliance-Grade Session Recording Architecture          │
+│                                                                        │
+│   [Privileged Engineer / External Contractor]                          │
+│                        │                                               │
+│                        ▼ (MFA + JIT Elevation Grant)                   │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Access Gateway / Bastion Proxy                        │ │
+│   │  ├── Real-Time Keystroke & Terminal Command Parser               │ │
+│   │  └── Inline Secret & PII Masking Engine (PCI-DSS / HIPAA)        │ │
+│   └────────────────────────────┬─────────────────────────────────────┘ │
+│                                │                                       │
+│                ┌───────────────┴───────────────┐                       │
+│                ▼ (Forward Traffic)             ▼ (Fork Audit Stream)   │
+│   ┌──────────────────────────┐    ┌──────────────────────────────────┐ │
+│   │  Target Production Node  │    │  Tamper-Proof WORM Storage       │ │
+│   │  (SSH / RDP / SQL Port)  │    │  ├── Cryptographic SHA-256 Hash  │ │
+│   └──────────────────────────┘    │  └── Indexed Searchable Telemetry│ │
+│                                   └──────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## What "compliance-grade" session recording actually means
 
 Not every screen-capture tool qualifies as compliance-grade. The requirements that elevate a tool from "IT convenience" to "compliance evidence" are:

@@ -67,6 +67,32 @@ relatedSlugs:
 
 The post-quantum cryptographic migration is driven by multiple independent timelines: standards body schedules (NIST FIPS standards, published 2024), US defence deadlines (NSA CNSA 2.0, 2025-2035), EU coordinated roadmap (2030 target for critical systems), agency-specific guidance (BSI, ANSSI, UK NCSC), and industry rollouts (browser vendors, CDN providers, cloud platforms). This post consolidates every published deadline on one page, with links to primary sources. Specific per-scope dates: software-firmware signing begins 2025 (CNSA), critical systems target 2030 (EU), full National Security Systems by 2035 (NSA). Non-regulated organisations have no legal deadline but have a risk-management case to migrate before 2030 for any data with multi-year confidentiality requirements.
 
+| Jurisdiction / Sector | Near-Term Target (2025–2028) | Full Mandate / Deprecation (2030–2035) | Primary Reference |
+|---|---|---|---|
+| **US Defence & NSS** | 2025: Software & firmware signing begins | 2030 (Software exclusive) → 2035 (NSS-wide) | NSA CNSA 2.0 Advisory |
+| **EU Critical Infrastructure** | 2026: Hybrid key exchange recommended | 2030: Mandatory PQC for critical sectors | EU Coordinated PQC Roadmap & NIS2 |
+| **Germany (BSI)** | 2024–2026: Hybrid deployment baseline | 2030+: Phase-out of classical-only crypto | BSI TR-02102-1 |
+| **France (ANSSI)** | Phase 1 & 2: Standardised Hybrid (ML-KEM) | Phase 3: Pure PQC contingent on maturity | ANSSI PQC Views |
+| **Global Browsers & CDNs** | 2024–2026: Default X25519MLKEM768 in TLS 1.3 | Deprecation of pure classical ECDH groups | IETF / Chromium / Cloudflare |
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                 Global Post-Quantum Migration Master Timeline           │
+│                                                                         │
+│  2024: NIST FIPS Standardization (FIPS 203, 204, 205 finalized)         │
+│                                                                         │
+│  2025: US NSA CNSA 2.0 software/firmware signing transition begins      │
+│                                                                         │
+│  2026: Hybrid X25519+ML-KEM adopted across browsers, CDNs, and ZTNA     │
+│                                                                         │
+│  2030: EU Critical Systems deadline & NSA firmware exclusive PQC        │
+│                                                                         │
+│  2033: NSA Networking & Operating Systems exclusively post-quantum      │
+│                                                                         │
+│  2035: 100% US National Security Systems Cutover Complete               │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Compliance officers, security architects, and executive teams planning the post-quantum migration. Programme managers building multi-year roadmaps. Anyone who needs to cite the authoritative deadlines in a planning document.

@@ -80,6 +80,39 @@ relatedSlugs:
 
 Manufacturing and industrial environments have unique security requirements that general-purpose IT ZTNA tools may not address out of the box: OT protocols, air-gapped networks, agentless device access, and regulatory frameworks like NERC CIP and IEC 62443. This list covers the ten ZTNA and network access control solutions most relevant to manufacturing, ICS, and industrial IoT environments in 2026.
 
+| Industrial Challenge | Legacy OT VPN Vulnerability | QuickZTNA / OT Zero Trust Architecture |
+|---|---|---|
+| **Purdue Model Violation** | VPN bridges IT network (Level 4) directly into plant cell (Level 2/3). | Protocol-isolated gateway; zero flat routing across Purdue levels. |
+| **Legacy PLC / SCADA Controllers** | Cannot run endpoint agents; vulnerable to unauthenticated commands. | Placed behind dark subnet gateways; reachable only via validated ABAC proxy. |
+| **OEM Vendor Remote Maintenance** | External vendors hold standing VPN accounts to entire factory LAN. | JIT-approved, time-bounded sessions scoped strictly to specific PLC IP/port. |
+| **OT Protocol Handling** | VPN exposes raw Ethernet broadcast domains across plants. | Microsegmentation isolates Modbus, OPC-UA, DNP3, and EtherNet/IP streams. |
+| **Safety & Availability (Uptime)** | Hub VPN outages halt remote monitoring and telemetry. | Resilient distributed WireGuard mesh operating independently of central cloud outages. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Zero Trust OT & Purdue Model Architecture            │
+│                                                                        │
+│   [External OEM Vendor / Remote Plant Engineer]                        │
+│                          │                                             │
+│                          ▼ (MFA + JIT Elevation Grant)                 │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Decoupled Cloud Control Plane                         │ │
+│   └──────────────────────────────┬───────────────────────────────────┘ │
+│                                  │ (Encrypted WireGuard Mesh Tunnel)   │
+│                                  ▼                                     │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Plant Edge Gateway (Level 3.5 Industrial DMZ - Dark Ingress)    │ │
+│   │  ├── Level 3: SCADA / Historian / MES Web Console                │ │
+│   │  │                                                               │ │
+│   │  ├── Level 2: HMI Operator Workstations (Role-Based RDP Proxy)   │ │
+│   │  │                                                               │ │
+│   │  └── Level 1: PLC / RTU / Field Controllers (Isolated Enclave)  │ │
+│   └──────────────────────────────┬───────────────────────────────────┘ │
+│                                  ▼                                     │
+│   [Audit Telemetry Stream ──► NERC CIP / IEC 62443 Compliance SIEM]    │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Why industrial environments are at escalating risk
 
 The IT/OT convergence trend is a double-edged sword. Connecting factory floor systems to business networks and cloud analytics improves production efficiency and enables predictive maintenance. It also exposes systems that have never been designed with network security in mind to threat actors who have a decade of experience attacking IT infrastructure.

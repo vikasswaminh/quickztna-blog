@@ -68,6 +68,42 @@ faq:
 
 A zero trust mesh network managed by hand—clicking through a dashboard to add users, write ACL rules, and rotate auth keys—works fine for five devices and falls apart somewhere around fifty. The fix is the same one that solved this problem for compute and storage a decade ago: treat the network's identity, policy, and device state as code, version it in Git, and let Terraform reconcile the declared state against reality on every apply. This turns access policy from a set of dashboard clicks nobody remembers making into a reviewable, revertible, auditable artifact that lives next to the infrastructure it protects.
 
+| Dimension | Manual Dashboard ClickOps | Infrastructure as Code (Terraform + GitOps) |
+|---|---|---|
+| **Change Review & Approval** | Ad-hoc dashboard toggles with zero peer review. | Multi-approver GitHub PR with dry-run policy linting. |
+| **Rollback Capability** | Manual scramble through logs to undo broken ACLs. | Single-command `git revert` followed by `terraform apply`. |
+| **Configuration Drift** | Untracked policy drift between staging and prod. | Declarative state reconciliation detects and alerts on drift. |
+| **Auditability (SOC 2 / ISO)** | Ephemeral UI audit logs that expire after 30 days. | Immutable Git commit history documenting author, reviewer, timestamp. |
+| **Multi-Environment Replication** | Re-creating complex policies manually across regions. | Reusable Terraform modules applied across Dev, Staging, and Prod. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Zero Trust Policy-as-Code (GitOps) Pipeline          │
+│                                                                        │
+│   [Developer / Security Engineer]                                      │
+│                │                                                       │
+│                ▼ 1. Author ABAC ACL / Tag Rules in HCL                 │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  GitHub Pull Request (`policies.tf` / `main.tf`)                 │ │
+│   │  ├── Automated OPA / Rego Policy Linting                         │ │
+│   │  ├── Dry-Run Lockout Analysis (`quickztna policy lint`)          │ │
+│   │  └── Mandatory Peer Security Approvals                           │ │
+│   └────────────────────────────┬─────────────────────────────────────┘ │
+│                                │ 2. Merge to `main`                    │
+│                                ▼                                       │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  GitHub Actions / Atlantis CI/CD Runner                          │ │
+│   │  └── `terraform apply -auto-approve`                             │ │
+│   └────────────────────────────┬─────────────────────────────────────┘ │
+│                                │ 3. Reconcile Network State via API   │
+│                                ▼                                       │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Cloud Control Plane                                   │ │
+│   │  └── Pushes microsegmented WireGuard rules to all connected nodes│ │
+│   └──────────────────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ---
 
 ## Key Takeaways

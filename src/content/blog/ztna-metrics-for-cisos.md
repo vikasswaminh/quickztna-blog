@@ -60,6 +60,39 @@ relatedSlugs:
 
 Vendor slide decks quote ZTNA statistics from market research — adoption rates, average breach costs, industry maturity levels. These are fine for context but they are not your numbers. Your board wants metrics from your own environment: is the ZTNA working, are attackers being kept out, is the team getting better over time. This post lists the 17 metrics that actually matter, with the formula for each, the data source, the collection cadence, and the failure mode to watch for. Start with 5-7 of them; expand over quarters; avoid the common trap of instrumenting everything before reporting anything.
 
+| KPI Category | Core Metric | Formula / Source | Target Benchmark |
+|---|---|---|---|
+| **Attack Surface Reduction** | Exposed Public Ingress IPs | Count of internet-facing ports on internal assets | **0 (100% Dark Infrastructure)** |
+| **Privilege Governance** | Standing vs. JIT Access Ratio | `JIT Sessions / (Standing Accounts + JIT Sessions) * 100` | **> 85% for Prod/Admin Access** |
+| **Device Hygiene** | Posture Failure Isolation Rate | Time to isolate non-compliant endpoint | **< 5 seconds (Real-time auto-quarantine)** |
+| **Operational Velocity** | Vendor Provisioning Time | Time from contract approval to active scoped access | **< 15 minutes (vs. 3-5 days on legacy VPN)** |
+| **Forensic Audit Readiness** | Unmapped Network Connections | Count of unauthenticated network sessions | **0 (100% Attributable Identity Records)** |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   CISO Zero Trust Telemetry & KPI Pipeline             │
+│                                                                        │
+│   [Data Sources]                                                       │
+│   ├── Device Posture Telemetry (EDR, OS, Disk Encryption)              │
+│   ├── QuickZTNA PDP Logs (ABAC decisions, auth tokens)                 │
+│   └── WireGuard Mesh Flow Records (Source, Target, Ports, Bytes)       │
+│                                │                                       │
+│                                ▼                                       │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  SIEM / Lakehouse Ingestion & Normalization Layer (Daily/Hourly) │ │
+│   └────────────────────────────┬─────────────────────────────────────┘ │
+│                                │                                       │
+│                                ▼                                       │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Executive CISO Dashboard & Board Reporting Metric Tiles         │ │
+│   │  ├── Ingress Attack Surface: 0 Exposed Ports (Dark VPC)          │ │
+│   │  ├── JIT Access Elevation Rate: 92% of Admin Sessions            │ │
+│   │  ├── Mean Time to Policy Quarantine: 1.2s                        │ │
+│   │  └── SOC 2 / DORA Audit Evidence Readiness: 100%                 │ │
+│   └──────────────────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 CISOs, security leads, and security-operations managers responsible for reporting on ZTNA programme health. Platform engineers who build the dashboards. Board members and audit committee members who read the output and need to know what to ask about. Assumes familiarity with basic security operations concepts.

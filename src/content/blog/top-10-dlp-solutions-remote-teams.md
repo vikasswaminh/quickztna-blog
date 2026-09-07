@@ -69,6 +69,33 @@ relatedSlugs:
 
 Remote teams create new DLP challenges. Data flows through home networks, personal cloud storage, SaaS apps, and AI tools. Traditional perimeter-based DLP is dead — either you move to endpoint-native DLP, network-layer inspection via a cloud proxy, or a ZTNA product with DLP built in. This list covers the nine serious options in 2026, with an honest breakdown of where each excels and where it falls short. Start with one tool and expand; no single product catches everything.
 
+| DLP Vector | Exfiltration Channel | Modern Remote Mitigation Strategy |
+|---|---|---|
+| **SaaS & Cloud Uploads** | Direct file drops into personal Dropbox / Box / Drive. | Inline CASB & Selective Egress Proxy via WireGuard exit nodes. |
+| **Shadow AI Prompts** | Copy-pasting proprietary code/PII into web LLMs. | MagicDNS DoH blocking + Regex DLP for tokens (`sk-proj-...`). |
+| **Local Endpoint Channels** | USB mass storage, local printing, clipboard scraping. | Endpoint MDM agent with hardware device control and OS policies. |
+| **Developer Repositories** | Accidental `git push` of API keys or database connection strings. | Pre-commit git hooks + CI/CD secret scanning (TruffleHog, Gitleaks). |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Remote Workforce DLP Defense In Depth                │
+│                                                                        │
+│   [Remote Laptop / BYOD Workstation]                                   │
+│    ├── 1. Host OS Layer: FileVault, EDR & Clipboard Governance         │
+│    ├── 2. DNS Layer: MagicDNS Loopback Blocks Unsanctioned AI/Storage  │
+│    └── 3. Network Plane: Kernel WireGuard Egress Route                 │
+│              │                                                         │
+│              ▼ (Encrypted Selective Egress)                            │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Egress Gateway + DLP Inspection Proxy                 │ │
+│   │  ├── Regex Pattern Matching (Credit Cards, PII, Private Keys)    │ │
+│   │  └── Drops & Alerts on Exfiltration Attempts                     │ │
+│   └──────────────────────────┬───────────────────────────────────────┘ │
+│                              ▼                                         │
+│   [Sanctioned SaaS / Clean Corporate Repositories Only]                │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 > **Adding up your tool bill?** Standalone DLP is usually one line item among several — most remote teams also pay separately for a mesh VPN, a ZTNA gateway and DNS filtering. QuickZTNA folds those into one agent and one bill, and adds file-hash malware detection; it does **not** replace content-inspection DLP. [See what you'd save →](/savings/)
 
 ## What makes DLP for remote teams different

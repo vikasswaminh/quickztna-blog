@@ -73,9 +73,14 @@ By default, WireGuard requires pre-sharing long-term public keys between peers. 
 
 **Ephemeral Key Architecture (EKA)** solves this paradox. EKA injects an out-of-band dynamic control plane on top of WireGuard’s kernel-level data plane. Instead of relying on static key pairs, EKA automatically negotiates, injects, rotates, and destroys short-lived WireGuard public/private key pairs tied directly to short-lived identity tokens (e.g., OIDC tokens, device posture checks).
 
-This guide provides an exhaustive engineering analysis of how Dynamic WireGuard Key Rotation transforms WireGuard from a simple static point-to-point tunnel into a continuous, identity-aware Zero Trust network engine, incorporating architectural models matching high-assurance frameworks like QuickZTNA.
-
----
+| Metric / Architectural Dimension | Native WireGuard (Static) | Ephemeral Key Architecture (EKA) |
+| :--- | :--- | :--- |
+| **Cryptographic Identity** | Static 32-byte Curve25519 public key | Short-lived dynamic key pairs bound to OIDC/IdP |
+| **Key Storage & Persistence** | Persisted on disk in configuration files | Volatile RAM only (`mlock`); zero disk footprint |
+| **Re-Authentication Trigger** | Manual administrator revocation | Dynamic expiration (60s - 15m) + Continuous Posture |
+| **Identity Co-Signing** | None (Operates strictly at L3/L4) | Signed via IdP JWT/OIDC assertions & EDR health |
+| **Key Injection Mechanism** | Static `wg set` / static config reload | Atomic Netlink dual-key staging (zero connection drop) |
+| **Forwarding Performance** | Line rate in-kernel (38+ Gbps) | Uncompromised line rate (<180µs injection latency) |
 
 ## Key Takeaways
 

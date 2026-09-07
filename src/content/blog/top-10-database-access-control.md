@@ -79,6 +79,38 @@ relatedSlugs:
 
 Databases are the last firewall exception standing. Most organisations have built ZTNA or SSO for application access, but DBAs still connect directly to production databases with shared static passwords. That one open port (5432, 3306, 1433) invalidates every other control. Database access brokers, dynamic credentials, and SQL session recording close this gap. This is the complete map of tools in 2026.
 
+| Access Model | Legacy DBA Access | Zero Trust Database Access Broker |
+|---|---|---|
+| **Network Reachability** | Database port (5432/3306) open to corporate VPN/LAN. | Database is 100% Dark in private subnet; reachable only via mesh. |
+| **Credential Type** | Long-lived static root/admin password shared across DBAs. | Ephemeral dynamic credentials issued on-demand via OIDC / Vault. |
+| **Query & DML Auditing** | None or coarse connection-level logs in DBMS. | Full SQL query auditing, table-level masking, and session capture. |
+| **Privilege Lifecycle** | Standing 24/7 superuser access. | Just-in-Time (JIT) access elevation with automatic TTL revocation. |
+| **Data Masking** | PII/Credit card numbers visible in cleartext in SQL client. | Dynamic inline masking of sensitive columns based on user role. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│               Zero Trust Database Access Architecture                  │
+│                                                                        │
+│   [DBA / Engineer Client (DBeaver / psql)]                             │
+│                      │                                                 │
+│                      ▼ (OIDC Login + Device Posture Check)             │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA / Vault Access Broker                                 │ │
+│   │  ├── 1. Approves JIT Request for `db-prod-replica`               │ │
+│   │  └── 2. Issues Ephemeral 1-Hour Database Credential              │ │
+│   └──────────────────────────┬───────────────────────────────────────┘ │
+│                              │ (Encrypted WireGuard Mesh Pipe)         │
+│                              ▼                                         │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Private Database Host (Postgres / MySQL / MongoDB)              │ │
+│   │  ├── Zero Public Ports Exposed (Dark Private Subnet)             │ │
+│   │  └── Authenticates short-lived token; records SQL query audit    │ │
+│   └──────────────────────────┬───────────────────────────────────────┘ │
+│                              ▼                                         │
+│   [Query Audit Stream ──► SIEM (User Identity bound to every SQL stmt)]│
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## The production database problem
 
 Walk through the standard production database access scenario at most companies:

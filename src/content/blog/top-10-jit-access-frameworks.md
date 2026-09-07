@@ -78,6 +78,40 @@ relatedSlugs:
 
 Every CISO says "least privilege." Almost no one actually implements it for privileged access, because granting and revoking permissions manually is operationally painful. JIT access frameworks solve this by automating the workflow: request → approve → grant → auto-revoke. This list covers the ten most mature implementations in 2026, from cloud-native tools to standalone frameworks that sit across any infrastructure.
 
+| JIT Access Model | Elevation Mechanism | Average TTL Window | Best Fit Use Case |
+|---|---|---|---|
+| **Zero-Standing Privilege (ZSP)** | Dynamic on-demand role creation; deleted immediately upon session end. | 30 minutes – 2 hours | Production database access & cloud root operations. |
+| **Ephemeral Credential Brokering** | Issues short-lived certificates / STS tokens instead of static passwords. | 1 – 8 hours | Kubernetes cluster management, SSH bastion access. |
+| **ChatOps Approval Workflows** | Slack / Teams interactive webhooks for dual-custody peer sign-off. | Ticket / Incident duration | Incident response (PagerDuty) & break-glass elevation. |
+| **Network-Layer JIT Elevation** | Opens dynamic WireGuard micro-tunnel to target port upon approval. | 1 – 4 hours | Contractor access to dark, unexposed internal servers. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Just-In-Time (JIT) Access Lifecycle Flow             │
+│                                                                        │
+│   [Engineer / Contractor]                                              │
+│              │                                                         │
+│              ▼ 1. Request Temporary Elevation (Slack / Web / CLI)      │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA / Sym JIT Policy Engine                               │ │
+│   │  - Validates context (PagerDuty Incident #, Business Justification│
+│   └──────────────────────────┬───────────────────────────────────────┘ │
+│                              │ 2. Dual-Custody Approval Push           │
+│                              ▼                                         │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Authorized Approver (Lead / Security Admin Signs Off)          │ │
+│   └──────────────────────────┬───────────────────────────────────────┘ │
+│                              │ 3. Ephemeral Grant Issued               │
+│                              ▼                                         │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Dynamic WireGuard Mesh Tunnel Opened (TTL: 60 minutes)          │ │
+│   │  └── Automatic Revocation & Session Terminated upon Expiry       │ │
+│   └──────────────────────────┬───────────────────────────────────────┘ │
+│                              ▼ 4. SIEM Audit Telemetry Record          │
+│   [Full Forensic Audit: Who requested, Who approved, TTL, Actions]    │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## The standing privilege problem
 
 In a 2023 survey of cloud security engineers, 71% reported that their organisation had production accounts with permanent admin access that was never formally reviewed. This is the norm, not an outlier. Standing privileges accumulate because:

@@ -62,6 +62,14 @@ relatedSlugs:
 ---
 ## TL;DR
 
+| Evaluation Pillar | Open-Source ZTNA (Headscale, NetBird, OpenZiti) | Managed SaaS ZTNA (QuickZTNA, Tailscale, Cloudflare) |
+| :--- | :--- | :--- |
+| **Operational Overhead** | High: Requires self-hosting, DB backups, STUN/DERP relays, and patching | Zero: Handled entirely by SaaS vendor with automatic high availability |
+| **Compliance & Attestations** | Self-attestation burden (SOC 2 / HIPAA / ISO are on your team) | Bundled out-of-the-box (SOC 2 Type II, HIPAA BAA, signed logs) |
+| **Data Sovereignty & Air-Gap** | 100% On-premise / Sovereign hosting possible | Cloud coordination (Regional relay nodes available) |
+| **Workforce Governance Features** | Basic tag/group routing; custom scripting needed for advanced JIT/ABAC | Native ABAC, continuous device posture, JIT access, DNS filtering |
+| **Cost Profile Break-Even** | Predictable infrastructure costs ($50-$200/mo) + Engineering hours | Low entry per-seat pricing; highly cost-effective under 60-100 seats |
+
 The open-source-vs-managed decision for Zero Trust Network Access is not ideological. It is a matter of matching the delivery model to your constraints: engineering capacity, compliance scope, data-sovereignty requirements, scale, and customisation needs. Open source wins when you have platform engineering capacity, need full control, or operate under strict sovereignty rules. Managed wins when you need features fast, want compliance attestations bundled, have a small team, or cannot budget for self-host operations. The total-cost break-even is typically between 20 and 60 users — below that managed is cheaper, above it open source often is. This post gives a structured decision framework that makes the choice explicit, with the four serious options on each side of the line.
 
 ## Who this is for
@@ -69,6 +77,35 @@ The open-source-vs-managed decision for Zero Trust Network Access is not ideolog
 Security leads, platform engineers, and CTOs making a build-vs-buy decision for Zero Trust Network Access. This post assumes familiarity with the ZTNA product category and with at least one of the named open-source or managed products; see our [ZTNA fundamentals coverage](/blog/ml-kem-768-explained) if you want a product-level primer.
 
 ## 1. The frame — it is not an ideology question
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                   ZTNA BUILD VS BUY DECISION FLOWCHART                      │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                          [ Assess Requirements ]
+                                     │
+                 ┌───────────────────┴───────────────────┐
+                 │ Air-Gapped / Strict Data Sovereignty? │
+                 └───────────────────┬───────────────────┘
+                           YES ┌─────┴─────┐ NO
+                               │           │
+                     ┌─────────▼──┐   ┌────▼─────────────────────────┐
+                     │ OPEN SOURCE│   │ Dedicated SRE/DevOps Team to │
+                     │ SELF-HOST  │   │ Manage Relays & Control DBs? │
+                     └────────────┘   └──────────────┬───────────────┘
+                                           YES ┌─────┴─────┐ NO
+                                               │           │
+                                     ┌─────────▼──┐   ┌────▼──────────────┐
+                                     │ OPEN SOURCE│   │ Turnkey SOC2/JIT/ │
+                                     │ (NetBird/  │   │ Managed Security? │
+                                     │ OpenZiti)  │   └────┬──────────────┘
+                                     └────────────┘        │ YES
+                                                      ┌────▼──────────────┐
+                                                      │ MANAGED SaaS ZTNA │
+                                                      │ (QuickZTNA / SASE)│
+                                                      └───────────────────┘
+```
 
 Teams sometimes pick open source because they believe it is inherently better, or managed because they believe open source is inherently risky. Neither framing helps.
 

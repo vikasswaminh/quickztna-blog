@@ -68,6 +68,33 @@ relatedSlugs:
 
 CNSA 2.0 is the United States National Security Agency's Commercial National Security Algorithm Suite version 2.0. It specifies the post-quantum algorithms that US National Security Systems must use for key establishment and digital signatures, along with classical AES-256 and SHA-384/512 for symmetric operations. The suite was announced in a [September 2022 Cybersecurity Advisory](https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF), with per-technology-class transition deadlines running from 2025 to 2035. The earliest deadline — for software and firmware signing — has already started; the latest NSS-wide deadline is 2035. If you sell into Department of Defense systems, the clock is already running. This post lays out the full algorithm suite, every published deadline, and a practical migration checklist.
 
+| Requirement / Scope | CNSA 2.0 Specification |
+|---|---|
+| **Governing Authority & Scope** | US National Security Agency (NSA); mandatory for all US National Security Systems (NSS) up to TOP SECRET. |
+| **Mandatory PQC Algorithms** | ML-KEM-1024 (Key Exchange), ML-DSA-87 (Digital Signatures), LMS / XMSS (Stateful Firmware Signing). |
+| **Symmetric Baseline** | AES-256 (Encryption) and SHA-384 / SHA-512 (Hashing) remain compliant without changes. |
+| **Transition Milestones** | 2025 (Firmware signing begins) → 2030 (Firmware exclusive) → 2033 (Network/OS) → 2035 (Complete NSS-wide). |
+| **Zero Trust Layering** | Enforce continuous device posture, ABAC microsegmentation, and JIT elevation alongside compliant tunnels via QuickZTNA. |
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                    NSA CNSA 2.0 Transition Timeline                     │
+│                                                                         │
+│  2025: Software & Firmware Signing Transition Begins                    │
+│  ├── LMS / HSS / XMSS stateful hash-based signatures introduced         │
+│                                                                         │
+│  2030: Software / Firmware Mandatory & Web / Cloud Support Begins       │
+│  ├── Software signing exclusively PQC                                   │
+│  ├── Web browsers, servers, and cloud services support ML-KEM-1024      │
+│                                                                         │
+│  2033: Networking Equipment & Operating Systems Exclusively PQC         │
+│  ├── Routers, VPNs, ZTNA gateways, and OS kernels mandate ML-KEM / DSA  │
+│                                                                         │
+│  2035: Full NSS Cutover (Complete Classical Deprecation)                │
+│  └── 100% of US National Security Systems operating on CNSA 2.0 suite   │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Security architects and compliance leads at companies selling into the US defence, intelligence, or federal civilian market. Programme managers with contracts that reference National Security Systems controls. Engineering leads whose roadmap has to include post-quantum milestones. If you do not sell into the US federal market, the NIS2 and DORA posts will be more directly relevant; this one is United States-specific.

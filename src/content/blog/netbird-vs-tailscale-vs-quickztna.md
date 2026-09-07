@@ -58,6 +58,15 @@ relatedSlugs:
 ---
 ## TL;DR
 
+| Dimension | Tailscale | NetBird | QuickZTNA |
+| :--- | :--- | :--- | :--- |
+| **Licensing & Codebase** | Proprietary control plane (Open clients) | Permissive BSD-3-Clause Open Source | Managed SaaS (Proprietary control plane) |
+| **Self-Hosting** | Via 3rd-party Headscale only | Native 1st-party self-hosting (Docker/K8s) | Fully managed SaaS cloud service |
+| **Data-Plane Protocol** | WireGuard (Kernel TUN / Userspace Go) | WireGuard (Kernel / Userspace Go) | WireGuard (Kernel TUN optimization) |
+| **Access Policy Engine** | Tag-based JSON ACLs & Grants | Group & Tag-based Policy Rules | Full ABAC with real-time Device Posture & JIT |
+| **Workforce Governance** | Device approval & MagicDNS | Peer routing & basic posture | JIT requests, Access reviews, Edge firewall, DNS filters |
+| **Relay Infrastructure** | Global DERP relay mesh | Custom NetBird Relays | Bangalore & Frankfurt relay infrastructure |
+
 NetBird, Tailscale, and QuickZTNA all build on WireGuard as the data-plane protocol and all deliver a mesh-VPN experience with centralised coordination. They differ in three important axes: licensing (BSD-3-Clause for NetBird, proprietary for Tailscale and QuickZTNA), self-host capability (NetBird fully, Tailscale not directly but Headscale exists, QuickZTNA managed cloud only), and the feature layer on top. Tailscale has the most mature developer ergonomics after multiple years of product iteration, NetBird has the strongest open-source story, and QuickZTNA goes deepest on access governance: ABAC with device posture, JIT access requests with approvals, access-review campaigns, policy version rollback, DNS threat filtering, a per-org edge firewall, and signed compliance evidence — with remote shell included on the free tier. This post is a developer-focused comparison, meaning we prioritise the practical engineering evaluation over marketing claims.
 
 > **Adding up your tool bill?** A mesh VPN is usually just one line item — most teams also pay separately for a ZTNA gateway, DNS filtering and a monitoring tool. QuickZTNA folds those into one agent and one bill. [See what you'd save →](/savings/)
@@ -80,6 +89,34 @@ All three products provide:
 Where they diverge starts in the coordination plane and moves outward from there.
 
 ## 2. Architecture differences
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│               COORDINATION & DATA PLANE ARCHITECTURE COMPARISON             │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+ [ TAILSCALE ]                    [ NETBIRD ]                    [ QUICKZTNA ]
+┌─────────────────────────┐     ┌─────────────────────────┐    ┌─────────────────────────┐
+│ Tailscale Control Plane │     │ NetBird Management/Sgnl │    │ QuickZTNA ABAC Engine   │
+│ (Proprietary SaaS /     │     │ (Open-Source BSD-3      │    │ (Managed Cloud + JIT    │
+│  Community Headscale)   │     │  Self-Host or Cloud)    │    │  + Device Posture)      │
+└───────────┬─────────────┘     └───────────┬─────────────┘    └───────────┬─────────────┘
+            │ Distribute                    │ Distribute                   │ Distribute
+            │ JSON ACLs                     │ Group Rules                  │ ABAC + Posture
+            ▼                               ▼                              ▼
+┌─────────────────────────┐     ┌─────────────────────────┐    ┌─────────────────────────┐
+│ Client Node (Tailscale) │     │ Client Node (NetBird)   │    │ Client Node (QuickZTNA) │
+│ • MagicDNS resolver     │     │ • Peer routing engine   │    │ • Kernel WireGuard TUN  │
+│ • Userspace/Kernel WG   │     │ • WireGuard Go / Kernel │    │ • Continuous posture chk│
+└───────────┬─────────────┘     └───────────┬─────────────┘    └───────────┬─────────────┘
+            │                               │                              │
+            │ Direct P2P WireGuard Tunnel   │ Direct P2P WireGuard Tunnel  │ Direct P2P WireGuard Tunnel
+            │ (or Global DERP Relays)       │ (or NetBird Relays)          │ (or Regional Relays)
+            ▼                               ▼                              ▼
+┌─────────────────────────┐     ┌─────────────────────────┐    ┌─────────────────────────┐
+│ Target Resource / Peer  │     │ Target Resource / Peer  │    │ Target Server / Gateway │
+└─────────────────────────┘     └─────────────────────────┘    └─────────────────────────┘
+```
 
 ### Tailscale
 

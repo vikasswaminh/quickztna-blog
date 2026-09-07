@@ -66,6 +66,41 @@ relatedSlugs:
 
 A hybrid post-quantum key exchange combines two key-agreement primitives — one classical, one post-quantum — so the resulting session key is secure if either primitive alone is secure. The production default in 2026 is X25519 paired with ML-KEM-768. The correct combiner is to run both key exchanges in parallel, concatenate the two shared secrets, fold the handshake transcript into a salt, and derive the session key through HKDF. This post spells out the construction, the gotchas, and a minimal Go implementation you can read in full. To be clear about our own product: QuickZTNA does not run this exchange — its tunnels are classical WireGuard — so read this as an engineering guide, not a description of what we ship. Every major standards body — NIST, IETF, NSA, BSI, ANSSI — recommends hybrid for the transition window.
 
+| Component / Parameter | Technical Specification |
+|---|---|
+| **Classical Primitive** | X25519 (ECDH over Montgomery Curve25519, 32-byte public key / 32-byte shared secret). |
+| **Post-Quantum Primitive** | ML-KEM-768 (FIPS 203, Module-LWE, 1,184-byte public key / 1,088-byte ciphertext). |
+| **Key Derivation (Combiner)** | Secret Concatenation (`SS_Classical || SS_PQC`) + HKDF-Extract / HKDF-Expand (NIST SP 800-56C). |
+| **Dual-Defense Guarantee** | Session remains cryptographically unassailable if *either* X25519 or ML-KEM-768 holds. |
+| **Handshake Overhead** | Adds ~2.27 KB to initial handshake payload; CPU processing latency is < 300 µs. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│             Hybrid Key Exchange Architecture (X25519 + ML-KEM)         │
+│                                                                        │
+│   [Initiator / Client]                               [Responder / Host]│
+│            │                                                 │         │
+│            ├─────── Ephemeral Public Keys (X25519 + ML-KEM) ─►│         │
+│            │                                                 │         │
+│            │◄────── Ephemeral Key (X25519) + PQC Ciphertext ─┤         │
+│            │                                                 │         │
+│            ▼                                                 ▼         │
+│   ┌─────────────────────┐                           ┌────────────────┐ │
+│   │ Derive SS_Classical │                           │ SS_Classical   │ │
+│   │ Derive SS_PQC       │                           │ SS_PQC         │ │
+│   └──────────┬──────────┘                           └────────┬───────┘ │
+│              │                                               │         │
+│              ▼                                               ▼         │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Dual-Secret Concatenation: SS_Combined = SS_Class || SS_PQC     │ │
+│   │  HKDF-Extract(Salt=Transcript_Hash, IKM=SS_Combined)             │ │
+│   │  HKDF-Expand(PRK, Info="hybrid-session-key", L=32)               │ │
+│   └──────────────────────────────────┬───────────────────────────────┘ │
+│                                      ▼                                 │
+│                 [Quantum-Resistant Symmetric WireGuard Key]            │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Protocol designers, library authors, and platform engineers who have to implement post-quantum key exchange correctly. Also security architects who want enough technical detail to review a vendor's design. This post assumes familiarity with Diffie-Hellman and with the concept of a key encapsulation mechanism. If you want the concept without the implementation, start with [ML-KEM-768 Explained](/blog/ml-kem-768-explained) first.

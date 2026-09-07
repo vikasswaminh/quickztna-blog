@@ -66,6 +66,30 @@ relatedSlugs:
 
 Three VPN protocols matter in 2026: WireGuard (modern, minimal, in-kernel on Linux), OpenVPN (mature, flexible, userspace), and IPsec (standard, enterprise-entrenched, with hardware offload support). WireGuard is typically fastest and simplest; OpenVPN is the most flexible and has the widest legacy client support; IPsec is the most standardised and has the strongest enterprise-router ecosystem. The correct choice depends on your specific constraints: platform support, existing infrastructure, compliance requirements, and operational complexity budget. This post compares all three on performance, security, code size, configurability, compliance posture, and post-quantum readiness.
 
+| Protocol | Implementation & Codebase | Cryptographic Primitives | Throughput / Latency Overhead | Roaming & NAT Traversal |
+|---|---|---|---|---|
+| **WireGuard** | In-Kernel (~4,000 LOC, easily auditable). | ChaCha20-Poly1305, Curve25519, BLAKE2s, SipHash24. | **Highest (~95% wire speed / sub-2ms overhead).** | Seamless roaming across Wi-Fi/Cellular; UDP-based hole punching. |
+| **OpenVPN** | Userspace daemon (~100k+ LOC + OpenSSL). | Negotiable (AES-256-GCM, RSA, ECDSA via OpenSSL). | Moderate (Userspace context switching adds latency). | Session drops on IP roaming; reconnect required. |
+| **IPsec / IKEv2** | In-Kernel / Hardware ASIC offload. | Negotiable (AES-GCM, HMAC-SHA2, DH Groups). | High (Near-wire speed with dedicated hardware crypto). | Complex NAT-T; MOBIKE protocol required for roaming. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Protocol Execution Plane Comparison                  │
+│                                                                        │
+│   WIREGUARD (In-Kernel Data Plane):                                    │
+│   [Application Socket] ──► [Linux Kernel / WireGuard Module] ──► [NIC]│
+│   (Zero context switching, ~4k LOC, ChaCha20-Poly1305 wire-speed)      │
+│                                                                        │
+│   OPENVPN (Userspace TUN / TAP Proxy):                                 │
+│   [App] ──► [Kernel] ──► [TUN/TAP] ──► [OpenVPN Proc] ──► [Kernel/NIC] │
+│   (Double context switch per packet, heavy CPU utilization)            │
+│                                                                        │
+│   IPSEC / IKEv2 (Hardware Kernel Engine):                              │
+│   [App] ──► [Kernel XFRM / ASIC Crypto Offload] ───────────────► [NIC]│
+│   (Fast in enterprise routers, complex multi-thousand RFC state machine│
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Network engineers and security architects choosing a VPN protocol for a new deployment or evaluating migration from one to another. Assumes familiarity with basic cryptography (AEAD ciphers, Diffie-Hellman) and with VPN concepts.

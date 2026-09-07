@@ -78,6 +78,37 @@ faq:
 
 Traditional post-merger network integration — site-to-site VPN tunnels, IP renumbering, firewall rule reconciliation, and eventual full network merge — is slow because it was designed for a world where "connecting two networks" meant making them one network. That approach forces IT teams into an uncomfortable choice on day one: either block cross-company access entirely and stall the deal's operating synergies, or open broad VPN access between two networks that have never been audited against each other's security posture. Zero trust access breaks that trade-off by replacing network-level connectivity with resource-level, identity-verified access. Deal teams can grant named employees access to named systems within days of close, without merging IP address spaces, without trusting either network as a whole, and without waiting for the infrastructure consolidation project that usually follows 12 to 18 months later.
 
+| Integration Phase | Legacy Site-to-Site VPN Approach | QuickZTNA Zero Trust Day-1 Access |
+|---|---|---|
+| **Timeline to Day-1 Access** | 12 to 18 months (Blocked on IP renumbering & firewall merges). | **48 to 72 hours** (Identity federation + application connectors). |
+| **IP Overlap Handling (e.g. 10.0.0.0/8)** | High friction; requires complex Carrier-Grade NAT (CGNAT). | Zero IP renumbering needed; routed via MagicDNS mesh names. |
+| **Attack Blast Radius** | Flat cross-company subnet bridge exposes acquirer to acquired malware. | Complete network isolation; access granted per application only. |
+| **Identity Management** | Slow forest trust / Active Directory domain migration. | Multi-IdP federation (Okta, Azure AD, Google Workspace in parallel). |
+| **Post-Integration Decommissioning** | Fragile VPN teardown risking unnoticed dependency breaks. | Clean resource catalog removal with zero network downtime. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   M&A Zero Trust Day-1 Network Integration             │
+│                                                                        │
+│   [Acquiring Corp (Company A)]                [Acquired Entity (Co B)] │
+│   ├── IdP: Okta                               ├── IdP: Entra ID        │
+│   └── Subnet: 10.0.0.0/16                     └── Subnet: 10.0.0.0/16  │
+│            │                                           │               │
+│            ▼                                           ▼               │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Unified Multi-IdP Mesh Control Plane                  │ │
+│   │  (No IP Renumbering · Resolves Overlaps via Encrypted Tailnet)   │ │
+│   └────────────────────────────┬─────────────────────────────────────┘ │
+│                                │                                       │
+│                ┌───────────────┴───────────────┐                       │
+│                ▼ (WireGuard Micro-Tunnel)      ▼ (WireGuard Tunnel)    │
+│   ┌──────────────────────────┐    ┌──────────────────────────────────┐ │
+│   │  Company A ERP Core      │    │  Company B Product Database      │ │
+│   │  (Co B Finance Team Only)│    │  (Co A Dev Team JIT Access Only) │ │
+│   └──────────────────────────┘    └──────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ---
 
 ## Key Takeaways

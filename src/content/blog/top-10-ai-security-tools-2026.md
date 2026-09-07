@@ -81,6 +81,37 @@ relatedSlugs:
 
 "AI security tool" covers a wide range in 2026 — from genuine behaviour models that catch attackers hiding behind legitimate credentials, to marketing-badge claims on traditional signature matching. This list focuses on the tools that use AI to provide capabilities that rule-based systems cannot: behaviour baseline detection, natural-language policy generation, policy drift alerting, and access optimisation based on actual usage patterns.
 
+| AI Security Category | Core Mechanism | Enterprise Value | Top 2026 Frameworks |
+|---|---|---|---|
+| **UEBA & Anomaly Detection** | Baselines normal peer behavior; flags statistical outliers. | Catches compromised credentials & malicious insiders. | Exabeam, Securonix, Microsoft Sentinel |
+| **Generative Policy Synthesis** | Converts English security requirements into verified ABAC/Rego rules. | Cuts manual firewall & ACL authoring time by 80%. | QuickZTNA, Palo Alto Strata Copilot |
+| **LLM App Firewalls & DLP** | Inspects prompt embeddings and token streams for data leakage. | Blocks API key and source code exfiltration to external LLMs. | Lakera Guard, Prompt Security, Robust Intelligence |
+| **Policy Drift & Heatmap Analysis** | Continuously compares assigned permissions against real traffic telemetry. | Identifies over-privileged roles and recommends least-privilege cuts. | QuickZTNA AI Insights, Wiz, Orca Security |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   AI-Powered Zero Trust Security Fabric                │
+│                                                                        │
+│   [Telemetry Inputs]                                                   │
+│   ├── User Access Patterns (Time, Geo, Resource Frequency)             │
+│   ├── Network Flow Tuples (Bytes Sent, Port, Protocol)                 │
+│   └── Endpoint Posture Logs (OS Drift, EDR Status, Process Hashes)     │
+│                            │                                           │
+│                            ▼                                           │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  AI / ML Behavioral Baseline & Anomaly Engine (UEBA)             │ │
+│   │  - Evaluates Risk Score per Connection Request                   │ │
+│   └────────────────────────┬─────────────────────────────────────────┘ │
+│                            │                                           │
+│         ┌──────────────────┴──────────────────┐                        │
+│         ▼ [Normal Pattern: Risk < 15]         ▼ [Anomaly: Risk > 80]   │
+│   ┌───────────────────────────────┐     ┌────────────────────────────┐ │
+│   │  Approve WireGuard Session    │     │  Trigger Step-Up MFA       │ │
+│   │  (Direct Least-Privilege Pipe)│     │  or Immediate Quarantine   │ │
+│   └───────────────────────────────┘     └────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## What separates real AI security from marketing
 
 Every security vendor in 2026 claims AI. The meaningful distinction:

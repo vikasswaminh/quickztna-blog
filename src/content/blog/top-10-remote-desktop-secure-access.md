@@ -83,6 +83,34 @@ relatedSlugs:
 
 Every ransomware incident report from 2020 through 2025 lists RDP over the internet in the top three initial access vectors. Secure remote desktop is not optional — raw RDP exposure on the public internet is a near-certain path to compromise. This list compares the nine most important options in 2026, from the VPN-less ZTNA approach to browser-based WebRTC alternatives. Spoiler: any solution that leaves port 3389 open to the internet is not on this list.
 
+| Remote Access Architecture | Port Exposure | Authentication & MFA | Lateral Movement Blast Radius |
+|---|---|---|---|
+| **Direct Internet RDP** | Public TCP 3389 open to Shodan / Censys scans. | Single static password; easily brute-forced. | Unrestricted lateral compromise of Active Directory. |
+| **Legacy Jump Host (Bastion)** | Public SSH/RDP ingress to jump server. | Jump box credential; shared bastion session. | Attacker pivots from bastion across entire internal subnet. |
+| **Zero Trust Remote Desktop** | **Zero open inbound ports (100% Dark).** | OIDC SSO + Hardware MFA (FIDO2) + Posture. | Isolated micro-tunnel strictly to target desktop session. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   Zero Trust Remote Desktop Architecture               │
+│                                                                        │
+│   [Remote Administrator / Teleworker Laptop]                           │
+│                      │                                                 │
+│                      ▼ (MFA + Device Posture Check)                    │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  QuickZTNA Policy Decision Point (PDP)                           │ │
+│   │  - Grants ephemeral 1-to-1 session to target desktop only        │ │
+│   └──────────────────────────┬───────────────────────────────────────┘ │
+│                              │ (Encrypted WireGuard Mesh Tunnel)       │
+│                              ▼                                         │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Target Windows Desktop / Bastionless Server                     │ │
+│   │  ├── Inbound Firewall: DROP ALL (Port 3389 Dark from Internet)   │ │
+│   │  ├── Clipboard & File Transfer DLP Policies Enforced             │ │
+│   │  └── Session Recorded & Audited to SIEM                          │ │
+│   └──────────────────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 > **Adding up your tool bill?** A remote-desktop tool is usually one line item among several — most teams also pay separately for a mesh VPN, a ZTNA gateway and DNS filtering. QuickZTNA folds the network-access side into one agent and one bill; keep your remote-desktop tool for the graphical session. [See what you'd save →](/savings/)
 
 ## Why legacy remote desktop fails

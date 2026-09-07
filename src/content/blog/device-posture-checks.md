@@ -66,6 +66,34 @@ relatedSlugs:
 
 Device posture is the verification that a device meets security expectations before and during access to protected resources. The difference between a posture check that works and one that is a checkbox exercise comes down to which signals you check, how often you check them, and what you do when the check fails. Most deployments check too few signals, only at tunnel establishment, and either deny access entirely or let everything through without an intermediate response. This post describes twelve posture signals that actually catch unmanaged or compromised laptops, shows how to implement continuous re-evaluation, and ends with a practical policy framework. All examples are platform-agnostic — the specific signals available on macOS, Windows, and Linux differ in how they are collected, but the policy model is the same.
 
+| Posture Signal Tier | Checked Attributes | Failure Action & Remediation |
+|---|---|---|
+| **Tier 1: Core OS & Encryption** | FileVault / BitLocker active; OS patch level within N-1 support window. | **Hard Deny:** Immediate isolation from all internal mesh resources. |
+| **Tier 2: Host Firewall & EDR** | System firewall active; CrowdStrike/Defender sensor running & updated. | **Quarantine:** Access restricted strictly to corporate update servers. |
+| **Tier 3: Identity & Biometrics** | Touch ID / Windows Hello active; Screen lock timeout <= 5 min. | **Step-Up MFA:** Mandatory hardware security key (FIDO2) re-prompt. |
+| **Tier 4: Process Integrity** | MDM profile verified; no unsigned kernel extensions or rootkits. | **Revoke JIT:** Drop privileged SSH/RDP/DB sessions within 5 seconds. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│               Continuous Device Posture Evaluation Lifecycle           │
+│                                                                        │
+│   [Remote Endpoint (macOS / Windows / Linux)]                          │
+│                        │                                               │
+│                        ▼ 1. Continuous Local Health Telemetry          │
+│   ┌──────────────────────────────────────────────────────────────────┐ │
+│   │  Local QuickZTNA Daemon (Inspects Disk, EDR, Firewall, OS, MDM)  │ │
+│   └────────────────────────────┬─────────────────────────────────────┘ │
+│                                │                                       │
+│          ┌─────────────────────┴─────────────────────┐                 │
+│          ▼ [PASS: All Posture Signals Healthy]       ▼ [FAIL / DRIFT]  │
+│   ┌────────────────────────────────┐    ┌────────────────────────────┐ │
+│   │  Maintain WireGuard Mesh Path  │    │  Real-Time Auto-Quarantine │ │
+│   │  - Uninterrupted application   │    │  - Sever active tunnels    │ │
+│   │    access per ABAC policy      │    │  - Prompt user remediation │ │
+│   └────────────────────────────────┘    └────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Security engineers and architects designing or reviewing a device-posture policy. IT administrators rolling out a ZTNA product that includes posture features. CISO-team members writing the policy document that the engineers will implement.

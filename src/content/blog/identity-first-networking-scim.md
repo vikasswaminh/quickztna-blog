@@ -91,6 +91,15 @@ Traditional network security architectures rely on a fundamental design flaw: us
 
 Furthermore, enterprise environments rarely operate on a single identity directory. Corporate mergers and acquisitions (M&A), third-party contractor ecosystems, offshore development agencies, and multi-cloud operations demand a **Multi-IdP Bridge** architecture. This enables an organization to simultaneously validate enterprise employees through Microsoft Entra ID or Okta while onboarding external contractors through GitHub OAuth or Google Workspace—without granting cross-tenant directory access, duplicating user accounts, or polluting the primary corporate directory.
 
+| Dimension | Legacy IP-Centric Access | Identity-First Networking (QuickZTNA SCIM 2.0) |
+| :--- | :--- | :--- |
+| **Access Decision Basis** | Source IP address, subnet CIDR, VLAN port | Validated IdP tokens, SCIM groups, device posture |
+| **Deprovisioning Speed** | Hours to days (Waits for tunnel/token expiry) | Sub-second (<1s) via real-time SCIM webhooks |
+| **Multi-Directory / M&A** | High friction; requires manual directory merge | Multi-IdP Bridge connects disparate IdPs seamlessly |
+| **Contractor Onboarding** | Corporate directory account creation required | Partner IdP federation without enterprise directory pollution |
+| **Policy Granularity** | L3/L4 coarse subnet routing rules | Fine-grained ABAC (User metadata, port, time, posture) |
+| **Network Resilience** | Tied to centralized VPN gateway uptime | Distributed peer-to-peer data plane with cached policies |
+
 ---
 
 ## Key Takeaways for IAM and SecOps Architects

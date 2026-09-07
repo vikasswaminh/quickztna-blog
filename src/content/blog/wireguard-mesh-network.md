@@ -63,6 +63,33 @@ relatedSlugs:
 
 A WireGuard mesh is a network where any peer can establish a direct, encrypted tunnel to any other peer. Building one by hand with static configuration files works for a handful of peers and breaks at about ten, because peer configuration grows as O(N²) and NAT traversal requires real-time signalling. A coordination server solves both problems: it distributes peer information and orchestrates NAT traversal. Most mesh VPN products (Tailscale, NetBird, QuickZTNA, Headscale + Tailscale clients) differ in the coordination server, not in the underlying WireGuard data plane. This post explains what breaks at scale, how coordination servers solve it, and how to pick between DIY and a product.
 
+| Architecture Option | Scaling Complexity | NAT Traversal Mechanism | Key Distribution & Policy |
+|---|---|---|---|
+| **Manual Static WireGuard** | $O(N^2)$ manual configs; unmanageable > 10 peers. | Requires port forwarding or static public IPs. | Manual static file editing on every single host. |
+| **Hub-and-Spoke VPN** | $O(N)$ linear configs; central bottleneck. | Clients connect outbound to fixed central hub IP. | Static firewall ACLs on central concentrator. |
+| **Coordinated WireGuard Mesh** | $O(1)$ per node; auto-discovered via control plane. | Automated STUN / ICE / UDP hole punching + DERP relays. | Dynamic ABAC policy pushed by control plane; direct peer-to-peer data plane. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   WireGuard Coordinated Mesh Architecture              │
+│                                                                        │
+│                    ┌────────────────────────────┐                      │
+│                    │  QuickZTNA Control Plane   │                      │
+│                    │  (Signaling & Policy Only) │                      │
+│                    └──────┬──────────────┬──────┘                      │
+│            1. Peer Discovery & ICE │      │ 1. Ephemeral Keys & ACLs   │
+│                           ▼              ▼                             │
+│                    ┌───────────┐    ┌───────────┐                      │
+│                    │  Peer A   │    │  Peer B   │                      │
+│                    │ (Work-Mac)│    │ (Cloud DB)│                      │
+│                    └─────┬─────┘    └─────▲─────┘                      │
+│                          │                │                            │
+│                          └────────────────┘                            │
+│                       2. Direct WireGuard P2P Pipe                     │
+│                       (ChaCha20-Poly1305 Encrypted)                    │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Engineers running WireGuard deployments who are hitting the config-file scaling wall. Homelab builders wondering whether to roll their own or buy a product. Platform teams evaluating the WireGuard-based mesh VPN category.

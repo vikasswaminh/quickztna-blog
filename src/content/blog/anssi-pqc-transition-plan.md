@@ -69,6 +69,28 @@ relatedSlugs:
 
 ANSSI — the Agence nationale de la sécurité des systèmes d'information — is France's national cybersecurity agency. Since 2022 it has published a series of position papers setting out a three-phase plan for the post-quantum cryptographic transition. The agency recommends hybrid classical-plus-post-quantum key establishment, names ML-KEM and ML-DSA as acceptable post-quantum primitives following FIPS 203 and FIPS 204 standardisation, and maintains an explicit preference for FrodoKEM in highest-assurance contexts. For a remote-access deployment in France — in the public sector, for operators of vital importance (OIV), or for entities pursuing NIS2 alignment — conformance with ANSSI guidance is the de facto compliance path. This post explains the three phases, the specific algorithm recommendations, the qualification schemes, and what a concrete ANSSI-aligned ZTNA deployment looks like in 2026.
 
+| Question / Core Concept | Key Insight & Technical Mandate |
+|---|---|
+| **What is ANSSI's PQC Mandate?** | A 3-phase national roadmap requiring hybrid classical + post-quantum key exchange for public administration and vital operators (OIV). |
+| **Which Algorithms are Recommended?** | ML-KEM / ML-DSA (FIPS 203/204) with an explicit preference for FrodoKEM in highest-assurance scenarios. |
+| **What is the Current Phase?** | **Phase 2 (Standardised Hybrid):** Mandatory dual key establishment (X25519 + ML-KEM) to mitigate Harvest Now, Decrypt Later. |
+| **How does QuickZTNA Comply?** | QuickZTNA provides identity-first WireGuard mesh architectures, continuous device posture, ABAC policies, and audit evidence for NIS2. |
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                     ANSSI 3-Phase PQC Transition Plan                   │
+│                                                                         │
+│  Phase 1 (2022-2024): Pre-Standard Hybrid                               │
+│  [Classical ECDH] + [Pre-Standard PQC KEM] ──► Experimental Hybrid      │
+│                                                                         │
+│  Phase 2 (2025-2030): Standardised Hybrid (Current Operational Mandate) │
+│  [X25519 / ECDH] + [FIPS 203 ML-KEM / FrodoKEM] ──► Dual Shared Secret  │
+│                                                                         │
+│  Phase 3 (Post-2030+): Pure Post-Quantum (Contingent on Cryptanalysis)  │
+│  [ML-KEM / ML-DSA Native] ──► Standalone Quantum-Safe Network Access    │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 CISOs, compliance leads, and architects at French public administration, OIV-designated operators, OSE entities under NIS2, and private-sector French firms whose customers or contracts reference ANSSI qualification. Also non-French vendors selling into the French market who need to pursue ANSSI qualification or express alignment with ANSSI PQC guidance. A reading knowledge of French is helpful for the primary sources but not required; ANSSI publishes most material in both French and English.

@@ -59,6 +59,12 @@ relatedSlugs:
 ---
 ## TL;DR
 
+| Framework / Acronym | Scope & Primary Components | Target Organization Size | Typical Buying / Deployment Model |
+| :--- | :--- | :--- | :--- |
+| **SASE (Secure Access Service Edge)** | Converged SD-WAN (Networking) + SSE (Security: ZTNA, SWG, CASB, FWaaS) | Large Enterprise (500+ users, branch offices) | Single-vendor unified suite ($$$$); multi-year rollout |
+| **SSE (Security Service Edge)** | Security-only half of SASE: ZTNA + SWG + CASB + FWaaS (No SD-WAN) | Mid-to-Large Enterprise (100–1000+ users) | Overlay onto existing ISP/SD-WAN network connectivity |
+| **ZTNA (Zero Trust Network Access)** | Granular, identity-aware access to specific private internal apps/servers | All sizes (1 to 10,000+ users; ideal for 50-person teams) | Fast, lightweight agent or browser gateway deployment |
+
 SASE (Secure Access Service Edge) is a Gartner-coined architecture combining SD-WAN networking and four security components: ZTNA, SWG, CASB, and FWaaS. SSE (Security Service Edge) is the security-only subset of SASE, introduced by Gartner in 2021. ZTNA (Zero Trust Network Access) is one of the components of both. In practice, a 50-person team rarely needs full SASE — the cost and complexity are shaped for enterprises. A focused ZTNA product plus a handful of discrete security tools usually covers the real need. This post explains the three terms precisely, shows where they overlap, and recommends what a small team should buy and in what order.
 
 > **Adding up your tool bill?** Buying ZTNA, a mesh VPN, DNS filtering and monitoring as separate products is exactly the sprawl SASE was meant to fix — without enterprise SASE pricing. QuickZTNA folds those into one agent and one bill. [See what you'd save →](/savings/)
@@ -68,6 +74,30 @@ SASE (Secure Access Service Edge) is a Gartner-coined architecture combining SD-
 CIOs, security leads, and engineering managers at mid-sized organisations (30–500 people) trying to figure out which acronym applies to them and whether they need a full SASE platform. Also analysts and buyers writing RFIs who need the taxonomy straight.
 
 ## 1. Origins of each term
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    THE SASE vs SSE vs ZTNA RELATIONSHIP                     │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+ ┌──────────────────────────────────────────────────────────────────────────┐
+ │                     SASE (Secure Access Service Edge)                    │
+ │                                                                          │
+ │  ┌────────────────────────┐    ┌──────────────────────────────────────┐  │
+ │  │        NETWORKING      │    │       SSE (Security Service Edge)    │  │
+ │  │                        │    │                                      │  │
+ │  │  • SD-WAN Routing      │    │  ┌────────────────────────────────┐  │  │
+ │  │  • Multi-Path BGP      │    │  │  ZTNA (Zero Trust Net Access)  │  │  │
+ │  │  • Branch Office MPLS  │    │  │  • Private App Tunnels         │  │  │
+ │  │    Replacement         │    │  │  • Continuous Device Posture   │  │  │
+ │  │  • WAN Optimization    │    │  │  • Identity-First Access (ABAC)│  │  │
+ │  │                        │    │  └────────────────────────────────┘  │  │
+ │  │                        │    │  • SWG (Secure Web Gateway)          │  │  │
+ │  │                        │    │  • CASB (Cloud Access Sec Broker)    │  │  │
+ │  │                        │    │  • FWaaS (Firewall as a Service)     │  │  │
+ │  └────────────────────────┘    └──────────────────────────────────────┘  │
+ └──────────────────────────────────────────────────────────────────────────┘
+```
 
 ### SASE, 2019
 

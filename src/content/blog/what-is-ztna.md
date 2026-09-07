@@ -65,6 +65,33 @@ relatedSlugs:
 
 Zero Trust Network Access (ZTNA) replaces the assumption that "inside the corporate network is trusted" with "every access request is individually verified". Every request — user, device, resource — is authenticated, authorised against a policy that considers identity, device posture, time, and location, and continuously re-evaluated for the life of the session. Classical perimeter security assumes a trusted interior and an untrusted exterior; ZTNA assumes a compromised network and verifies every interaction. The model has roots in Forrester's 2010 Zero Trust papers, Google's 2014 BeyondCorp publications, and is formally defined in [NIST SP 800-207](https://csrc.nist.gov/publications/detail/sp/800-207/final) (August 2020). This post explains ZTNA from first principles, covers the three main architectural patterns, and ends with a practical implementation checklist that works for a 50-person team and scales to 50,000.
 
+| Dimension | Legacy Castle-and-Moat (VPN) | Zero Trust Network Access (ZTNA) |
+|---|---|---|
+| **Access Model** | Network-centric: Grants access to entire Layer 3 subnet. | Resource-centric: Grants access to individual Layer 4/7 applications. |
+| **Trust Assumption** | Inside = Trusted; Outside = Untrusted. | Assume breach: Never trust, continuously verify every packet. |
+| **Policy Enforcement** | Static firewall rules and IP ACLs evaluated at connection. | Dynamic Attribute-Based Access Control (ABAC) evaluated continuously. |
+| **Infrastructure Exposure** | Public listening IP and open ports vulnerable to DDoS and scans. | 100% Dark infrastructure via Single-Packet Authorization (SPA) / WireGuard. |
+| **Blast Radius** | Broad lateral movement across the internal subnet. | Isolated strictly to the authorized application/port; no lateral movement. |
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                   ZTNA vs. Legacy VPN Architectural Comparison         │
+│                                                                        │
+│   LEGACY PERIMETER (VPN):                                              │
+│   [User] ──► [Open VPN Port] ──► [Inside Corporate Subnet]             │
+│                                  ├── App 1 (Authorized)                │
+│                                  ├── DB 2  (❌ Exposed to Lateral Scan) │
+│                                  └── Auth  (❌ Exposed to Lateral Pivot)│
+│                                                                        │
+│   ZERO TRUST (ZTNA / QuickZTNA):                                       │
+│   [User] ──► [Continuous Posture] ──► [PDP Policy] ──► [WireGuard Pipe]│
+│                                                              │         │
+│                                                              ▼         │
+│                                                   [Authorized App Only]│
+│                                                   (Rest of estate DARK)│
+└────────────────────────────────────────────────────────────────────────┘
+```
+
 ## Who this is for
 
 Engineering leads, CIOs, and CISOs who have been hearing "Zero Trust" for years and want a clear, technical, buzzword-free explanation. Also anyone writing a vendor RFI or a board-deck slide who needs the vocabulary and the primary-source references in one place. Assumes general familiarity with networking concepts but no specific ZTNA product experience.
