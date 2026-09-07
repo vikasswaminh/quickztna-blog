@@ -95,7 +95,7 @@ const defaultStyle = {
         const catStyle = categoryStyles[post.data.category] ?? defaultStyle;
 
         return (
-          <article class="group flex flex-col justify-between rounded-2xl border border-[#e2e8f0] bg-white p-6 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#2563eb]/10 hover:border-[#3b82f6]">
+          <article class="group flex flex-col justify-between rounded-2xl border border-[#e2e8f0] bg-white p-6 sm:p-7 shadow-sm transition-all duration-300 ease-out hover:-translate-y-1.5 hover:shadow-xl hover:shadow-[#2563eb]/10 hover:border-[#3b82f6]">
             <div>
               <!-- Top Row: Category Badge (Left) & Read Time (Right) -->
               <div class="flex items-center justify-between gap-2 mb-4">
@@ -115,12 +115,12 @@ const defaultStyle = {
               </h2>
 
               <!-- Description -->
-              <p class="mt-3 text-sm text-[#475467] leading-relaxed line-clamp-2">
+              <p class="mt-3.5 text-sm text-[#475467] leading-relaxed line-clamp-2">
                 {post.data.description}
               </p>
             </div>
 
-            <div class="mt-5">
+            <div class="mt-6 pt-3.5 border-t border-border/40">
               <!-- Tags List -->
               <div class="flex flex-wrap gap-2 text-xs font-mono">
                 {post.data.tags.slice(0, 4).map((t: string) => (

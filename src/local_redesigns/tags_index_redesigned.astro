@@ -7,7 +7,7 @@ const allPosts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
   (a, b) => b.data.publishedAt.valueOf() - a.data.publishedAt.valueOf()
 );
 
-// Extract all tags and count frequencies
+// Extract all tags and count frequencies with full metadata
 const tagMap: Record<string, { count: number; posts: Array<{ title: string; slug: string; date: string; category: string; description: string }> }> = {};
 
 for (const post of allPosts) {
@@ -23,7 +23,7 @@ for (const post of allPosts) {
       title: post.data.title,
       slug,
       date: post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      category: post.data.category,
+      category: post.data.category || "technical",
       description: post.data.description,
     });
   }
@@ -34,10 +34,22 @@ const allUniqueTags = Object.keys(tagMap).sort((a, b) => tagMap[b].count - tagMa
 // Top most explored tags
 const topExploredTags = allUniqueTags.slice(0, 12);
 
+function getTagCategory(tag: string): string {
+  const posts = tagMap[tag]?.posts || [];
+  if (posts.length === 0) return "technical";
+  const counts: Record<string, number> = {};
+  for (const p of posts) {
+    const c = p.category || "technical";
+    counts[c] = (counts[c] || 0) + 1;
+  }
+  return Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0] || "technical";
+}
+
 // Visual Domain Groups mapping existing tags
 const topicGroups = [
   {
     id: "zero-trust",
+    category: "post-quantum",
     name: "Zero Trust & Architecture",
     description: "NIST SP 800-207 principles, SDP, microsegmentation, and network access control.",
     badgeColor: "border-blue-200 bg-blue-50 text-blue-700",
@@ -45,6 +57,7 @@ const topicGroups = [
   },
   {
     id: "wireguard",
+    category: "technical",
     name: "WireGuard & Kernel Networking",
     description: "Noise protocol handshakes, eBPF telemetry, STUN/DERP NAT traversal, and high-speed tunneling.",
     badgeColor: "border-cyan-200 bg-cyan-50 text-cyan-700",
@@ -52,6 +65,7 @@ const topicGroups = [
   },
   {
     id: "post-quantum",
+    category: "post-quantum",
     name: "Post-Quantum Cryptography",
     description: "NIST FIPS 203/204/205 standards, ML-KEM Kyber, hybrid key exchanges, and HNDL defense.",
     badgeColor: "border-purple-200 bg-purple-50 text-purple-700",
@@ -59,6 +73,7 @@ const topicGroups = [
   },
   {
     id: "compliance",
+    category: "compliance",
     name: "Compliance & Regulatory Frameworks",
     description: "Practical technical implementations for SOC 2, HIPAA, EU NIS2, DORA, and ISO 27001.",
     badgeColor: "border-emerald-200 bg-emerald-50 text-emerald-700",
@@ -66,6 +81,7 @@ const topicGroups = [
   },
   {
     id: "identity",
+    category: "fundamentals",
     name: "Identity, ABAC & Posture",
     description: "Attribute-Based Access Control, SCIM 2.0 provisioning, continuous device health checks, and SPIFFE.",
     badgeColor: "border-amber-200 bg-amber-50 text-amber-700",
@@ -73,6 +89,7 @@ const topicGroups = [
   },
   {
     id: "infrastructure",
+    category: "industry",
     name: "Cloud, Kubernetes & DevOps",
     description: "Multi-cloud mesh, ephemeral CI/CD runners, Terraform automation, and database security.",
     badgeColor: "border-indigo-200 bg-indigo-50 text-indigo-700",
@@ -80,6 +97,7 @@ const topicGroups = [
   },
   {
     id: "comparisons",
+    category: "comparison",
     name: "Comparisons & Migration Playbooks",
     description: "Total Cost of Ownership models, Cisco AnyConnect migration, Tailscale/Cloudflare teardowns.",
     badgeColor: "border-rose-200 bg-rose-50 text-rose-700",
@@ -146,66 +164,94 @@ const tagsIndexSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(tagsIndexSchema)} is:inline />
   </Fragment>
 
-  <!-- ── UNIFIED REUSABLE BLOG HERO ────────────────────────────────── -->
-  <BlogHero activePage="tags" />
+  <!-- ── TAGS PAGE HERO (MATCHING HERO SIZE & CLEAN STRUCTURE) ── -->
+  <section class="border-b border-border/70 bg-hero relative overflow-hidden">
+    <div class="absolute inset-0 bg-grid opacity-85 pointer-events-none" aria-hidden="true"></div>
+    <div class="relative mx-auto max-w-[1700px] px-4 py-11 sm:py-13 lg:py-15">
+      <div class="max-w-3xl space-y-3.5">
+        <!-- Main H1 Heading -->
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-[#0f172a] leading-[1.15]">
+          Explore Every <span class="bg-gradient-to-r from-[#0066ff] to-[#00a3c4] bg-clip-text text-transparent">Topic & Tag</span>
+        </h1>
 
-  <div class="mx-auto max-w-[1700px] px-4 py-12 sm:px-6 lg:px-8 space-y-16">
-
-    <!-- ── SECTION 2: EXPLORE BY TOPIC & LIVE SEARCH BAR ───────────── -->
-    <section id="topics" class="rounded-3xl border border-border/80 bg-card p-6 sm:p-10 shadow-xs relative overflow-hidden">
-      <div class="max-w-4xl mx-auto text-center space-y-4">
-        <span class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-3.5 py-1 font-mono text-[11px] font-bold uppercase tracking-wider text-primary">
-          🔎 Topic Explorer
-        </span>
-        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-          Find Exactly What You're Building
-        </h2>
-        <p class="text-sm sm:text-base text-muted-foreground">
-          Filter through 140+ verified engineering topics, standards, and deployment guides.
+        <!-- Subtitle Description -->
+        <p class="text-sm sm:text-base lg:text-lg text-[#475467] leading-relaxed max-w-2xl">
+          Browse 45 engineering articles, architecture deep-dives, compliance frameworks, and tutorials organized by topic.
         </p>
+      </div>
+    </div>
+  </section>
 
-        <!-- Live Instant Search Input -->
-        <div class="relative max-w-2xl mx-auto mt-6">
-          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-muted-foreground">
-            <svg class="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd" />
-            </svg>
-          </div>
-          <input
-            type="search"
-            id="tag-search-input"
-            placeholder="Search Zero Trust, WireGuard, compliance, Kyber, SOC 2..."
-            class="w-full rounded-2xl border border-border/80 bg-muted/30 py-4 pl-12 pr-12 text-sm sm:text-base text-foreground placeholder:text-muted-foreground focus:border-primary focus:bg-background focus:outline-none focus:ring-4 focus:ring-primary/10 shadow-xs transition-all"
-            autocomplete="off"
-          />
-          <button
-            id="tag-search-clear"
-            type="button"
-            class="hidden absolute inset-y-0 right-0 items-center pr-4 text-muted-foreground hover:text-foreground"
-            aria-label="Clear search"
-          >
-            <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" /></svg>
-          </button>
+  <!-- ── STICKY CATEGORY & METRICS BAR (STAYS FIXED ON SCROLL) ──────── -->
+  <div class="sticky top-16 z-30 border-b border-border/70 bg-white/95 backdrop-blur-md shadow-2xs transition-all">
+    <div class="mx-auto max-w-[1700px] px-4 py-3 sm:px-6 lg:px-8 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+      <!-- Left: Category Filter Pills -->
+      <div class="flex flex-wrap items-center gap-2" id="hero-category-bar">
+        <button
+          data-cat-pill="all"
+          class="hero-cat-btn active rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white px-4 py-1.5 text-xs font-bold shadow-sm transition-all duration-200 hover:brightness-105"
+        >
+          All Topics
+        </button>
+        <button
+          data-cat-pill="post-quantum"
+          class="hero-cat-btn rounded-full border border-blue-200 bg-blue-50 text-blue-700 px-3.5 py-1.5 text-xs font-semibold hover:border-blue-300 transition-all"
+        >
+          Architecture
+        </button>
+        <button
+          data-cat-pill="comparison"
+          class="hero-cat-btn rounded-full border border-purple-200 bg-purple-50 text-purple-700 px-3.5 py-1.5 text-xs font-semibold hover:border-purple-300 transition-all"
+        >
+          Comparison
+        </button>
+        <button
+          data-cat-pill="compliance"
+          class="hero-cat-btn rounded-full border border-emerald-200 bg-emerald-50 text-emerald-700 px-3.5 py-1.5 text-xs font-semibold hover:border-emerald-300 transition-all"
+        >
+          Compliance
+        </button>
+        <button
+          data-cat-pill="technical"
+          class="hero-cat-btn rounded-full border border-cyan-200 bg-cyan-50 text-cyan-700 px-3.5 py-1.5 text-xs font-semibold hover:border-cyan-300 transition-all"
+        >
+          Technical
+        </button>
+        <button
+          data-cat-pill="fundamentals"
+          class="hero-cat-btn rounded-full border border-amber-200 bg-amber-50 text-amber-800 px-3.5 py-1.5 text-xs font-semibold hover:border-amber-300 transition-all"
+        >
+          Fundamentals
+        </button>
+        <button
+          data-cat-pill="industry"
+          class="hero-cat-btn rounded-full border border-rose-200 bg-rose-50 text-rose-700 px-3.5 py-1.5 text-xs font-semibold hover:border-rose-300 transition-all"
+        >
+          Industry
+        </button>
+      </div>
+
+      <!-- Right: Metric Count Pills matching screenshot -->
+      <div class="flex items-center gap-2 font-mono text-xs text-muted-foreground shrink-0">
+        <div class="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-white px-3 py-1 shadow-2xs">
+          <span class="font-bold text-[#0066ff]">144</span>
+          <span>Topics</span>
         </div>
-
-        <!-- Fast Category Filters -->
-        <div class="pt-4 flex flex-wrap items-center justify-center gap-2" id="category-filter-bar">
-          <button data-group-filter="all" class="group-filter-btn active rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-4 py-1.5 font-bold text-xs text-white shadow-2xs transition-all">
-            All Domains (144)
-          </button>
-          {topicGroups.map((grp) => (
-            <button
-              data-group-filter={grp.id}
-              class="group-filter-btn rounded-full border border-border bg-card px-3.5 py-1.5 font-semibold text-xs text-[#475467] hover:border-primary/40 hover:text-primary transition-all"
-            >
-              {grp.name.split("&")[0].trim()}
-            </button>
-          ))}
+        <div class="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-white px-3 py-1 shadow-2xs">
+          <span class="font-bold text-[#0066ff]">45</span>
+          <span>Articles</span>
+        </div>
+        <div class="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-white px-3 py-1 shadow-2xs">
+          <span class="font-bold text-[#0066ff]">6</span>
+          <span>Categories</span>
         </div>
       </div>
-    </section>
+    </div>
+  </div>
 
-    <!-- ── SECTION 3: MOST EXPLORED TOPICS (DATA-DRIVEN) ───────────── -->
+  <div class="mx-auto max-w-[1700px] px-4 py-8 sm:px-6 lg:px-8 space-y-10">
+
+    <!-- ── SECTION 3: MOST EXPLORED TOPICS (CLEAN BLACK TAG PILLS) ── -->
     <section class="space-y-4">
       <div class="flex items-center justify-between">
         <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
@@ -217,13 +263,15 @@ const tagsIndexSchema = {
       <div class="flex flex-wrap gap-2.5">
         {topExploredTags.map((tag) => {
           const info = tagMap[tag];
+          const cat = getTagCategory(tag);
           return (
             <a
               href={`/tags/${tag}/`}
-              class="inline-flex items-center gap-2 rounded-xl border border-border/80 bg-card hover:border-primary/50 hover:bg-muted/30 px-4 py-2 text-xs sm:text-sm font-bold text-foreground transition-all duration-150 hover:-translate-y-0.5 shadow-2xs"
+              data-tag-cat={cat}
+              class="top-tag-pill inline-flex items-center gap-2 rounded-xl border border-slate-300/90 bg-white hover:bg-slate-900 hover:border-slate-900 hover:text-white px-4 py-2 text-xs sm:text-sm font-bold text-slate-950 transition-all duration-150 hover:-translate-y-0.5 shadow-sm group"
             >
-              <span>#{tag}</span>
-              <span class="rounded-full bg-primary/10 px-2 py-0.5 font-mono text-[11px] font-semibold text-primary">
+              <span class="text-black group-hover:text-white">#{tag}</span>
+              <span class="rounded-full bg-slate-100 group-hover:bg-slate-800 group-hover:text-white px-2 py-0.5 font-mono text-[11px] font-bold text-slate-700">
                 {info?.count ?? 1}
               </span>
             </a>
@@ -232,23 +280,25 @@ const tagsIndexSchema = {
       </div>
     </section>
 
-    <!-- ── SECTION 4: VISUAL GROUPED TOPIC CARDS ───────────────────── -->
+    <!-- ── SECTION 4: VISUAL GROUPED TOPIC CARDS (SAME POSITION & LAYOUT) ── -->
     <section class="space-y-8" id="topic-groups-container">
       <div class="border-b border-border/60 pb-3 flex items-center justify-between">
         <h3 class="text-2xl font-extrabold tracking-tight text-foreground">
           Curated Topic Domains
         </h3>
-        <span class="text-xs font-mono text-muted-foreground">7 Architecture Hubs</span>
+        <span class="font-mono text-xs text-muted-foreground hidden sm:inline">
+          7 Architectural Focus Areas
+        </span>
       </div>
 
-      <div class="grid gap-8 lg:grid-cols-2 xl:grid-cols-3">
+      <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {topicGroups.map((group) => {
-          // Filter matching tags present in dataset
           const presentTags = group.tags.filter((t) => tagMap[t]);
           return (
             <div
               data-group-card={group.id}
-              class="topic-group-card flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-md transition-all duration-200"
+              data-group-cat={group.category}
+              class="topic-group-card flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-sm hover:border-primary/40 hover:shadow-md transition-all duration-200"
             >
               <div>
                 <div class="flex items-center justify-between gap-2 mb-3">
@@ -260,11 +310,13 @@ const tagsIndexSchema = {
                   </span>
                 </div>
 
+                <h4 class="sr-only">{group.name}</h4>
+
                 <p class="text-xs sm:text-sm text-muted-foreground mb-5 leading-relaxed">
                   {group.description}
                 </p>
 
-                <!-- Tag Pills inside Group Card -->
+                <!-- Tag Pills inside Group Card (Clean Black Style) -->
                 <div class="flex flex-wrap gap-2">
                   {presentTags.map((t) => {
                     const count = tagMap[t]?.count || 1;
@@ -272,10 +324,10 @@ const tagsIndexSchema = {
                       <a
                         href={`/tags/${t}/`}
                         data-tag-name={t}
-                        class="tag-item inline-flex items-center gap-1.5 rounded-lg border border-border/60 bg-muted/40 hover:bg-primary/10 hover:border-primary/30 px-3 py-1 text-xs font-semibold text-foreground hover:text-primary transition-all"
+                        class="tag-item inline-flex items-center gap-1.5 rounded-lg border border-slate-300/90 bg-white hover:bg-slate-900 hover:border-slate-900 hover:text-white px-3 py-1 text-xs font-mono font-semibold text-slate-950 transition-all group"
                       >
-                        <span>#{t}</span>
-                        <span class="font-mono text-[10px] text-muted-foreground font-normal">({count})</span>
+                        <span class="text-black group-hover:text-white">#{t}</span>
+                        <span class="font-mono text-[10px] text-slate-700 bg-slate-100 group-hover:bg-slate-800 group-hover:text-white px-1.5 py-0.2 rounded font-bold">({count})</span>
                       </a>
                     );
                   })}
@@ -312,7 +364,7 @@ const tagsIndexSchema = {
 
       <div class="grid gap-6 md:grid-cols-3">
         {learningPaths.map((path) => (
-          <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 transition-all">
+          <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
             <div>
               <div class="flex items-center justify-between gap-2 mb-2">
                 <span class="font-mono text-[10px] font-bold uppercase text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
@@ -322,7 +374,7 @@ const tagsIndexSchema = {
               <h4 class="text-base font-bold text-foreground mb-2">
                 {path.title}
               </h4>
-              <p class="text-xs text-muted-foreground mb-4">
+              <p class="text-xs text-muted-foreground mb-4 leading-relaxed">
                 {path.description}
               </p>
 
@@ -359,29 +411,34 @@ const tagsIndexSchema = {
       </div>
     </section>
 
-    <!-- ── SECTION 6: COMPLETE A-Z TAG DIRECTORY (100% COVERAGE) ───── -->
+    <!-- ── SECTION 6: COMPLETE A-Z TAG DIRECTORY (CLEAN BLACK STYLING) ── -->
     <section class="space-y-6 pt-6 border-t border-border/70">
-      <div class="flex items-center justify-between">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
         <div>
           <h3 class="text-xl font-bold text-foreground">
             Complete A–Z Tag Index ({allUniqueTags.length} Tags)
           </h3>
-          <p class="text-xs text-muted-foreground">Every active tag across all 45 production articles</p>
+          <p class="text-xs text-muted-foreground">Alphabetical index across all published engineering articles</p>
+        </div>
+        <div class="font-mono text-xs text-muted-foreground bg-muted/40 px-3 py-1 rounded-full border border-border/60">
+          A – Z Directory
         </div>
       </div>
 
-      <div class="rounded-2xl border border-border/80 bg-muted/20 p-6">
+      <div class="rounded-2xl border border-border/80 bg-white p-6 sm:p-7 shadow-sm">
         <div class="flex flex-wrap gap-2" id="all-tags-cloud">
           {allUniqueTags.map((tag) => {
             const count = tagMap[tag]?.count || 1;
+            const cat = getTagCategory(tag);
             return (
               <a
                 href={`/tags/${tag}/`}
                 data-az-tag={tag}
-                class="az-tag-pill inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-card px-2.5 py-1 text-xs font-mono text-muted-foreground hover:border-primary hover:text-primary hover:bg-primary/5 transition-colors"
+                data-az-cat={cat}
+                class="az-tag-pill inline-flex items-center gap-1.5 rounded-lg border border-slate-300/90 bg-white hover:bg-slate-900 hover:border-slate-900 hover:text-white px-2.5 py-1 text-xs font-mono font-semibold text-slate-950 transition-all duration-150 shadow-sm group"
               >
-                <span>#{tag}</span>
-                <span class="text-[10px] text-muted-foreground/80">({count})</span>
+                <span class="text-black group-hover:text-white">#{tag}</span>
+                <span class="text-[10px] font-bold text-slate-700 bg-slate-100 group-hover:bg-slate-800 group-hover:text-white px-1.5 py-0.5 rounded">({count})</span>
               </a>
             );
           })}
@@ -394,74 +451,69 @@ const tagsIndexSchema = {
 
 <script>
   function setupTagFilters() {
-    const searchInput = document.getElementById("tag-search-input") as HTMLInputElement | null;
-    const clearBtn = document.getElementById("tag-search-clear");
+    const heroFilterBtns = document.querySelectorAll(".hero-cat-btn");
     const groupCards = document.querySelectorAll(".topic-group-card");
     const azTags = document.querySelectorAll(".az-tag-pill");
-    const filterBtns = document.querySelectorAll(".group-filter-btn");
+    const topTags = document.querySelectorAll(".top-tag-pill");
 
-    function applyFilter(query: string, activeGroup: string) {
-      const q = query.toLowerCase().trim();
+    const gradientClasses = ["bg-gradient-to-r", "from-[#0066ff]", "via-[#0088dd]", "to-[#00a3c4]", "text-white", "shadow-sm"];
 
-      // Filter Domain Cards
+    function applyCategory(cat: string) {
+      // Filter Topic Group Cards
       groupCards.forEach((card) => {
         const el = card as HTMLElement;
         const groupId = el.getAttribute("data-group-card") || "";
-        const text = el.innerText.toLowerCase();
-        const matchesGroup = activeGroup === "all" || groupId === activeGroup;
-        const matchesQuery = !q || text.includes(q);
-
-        if (matchesGroup && matchesQuery) {
+        const groupCat = el.getAttribute("data-group-cat") || "";
+        if (cat === "all" || groupId === cat || groupCat === cat || (cat === "post-quantum" && groupId === "zero-trust")) {
+          el.style.display = "flex";
+        } else if (cat === "comparison" && groupId === "comparisons") {
+          el.style.display = "flex";
+        } else if (cat === "compliance" && groupId === "compliance") {
+          el.style.display = "flex";
+        } else if (cat === "technical" && (groupId === "wireguard" || groupId === "infrastructure")) {
+          el.style.display = "flex";
+        } else if (cat === "fundamentals" && (groupId === "identity" || groupId === "zero-trust")) {
+          el.style.display = "flex";
+        } else if (cat === "industry" && groupId === "infrastructure") {
           el.style.display = "flex";
         } else {
           el.style.display = "none";
         }
       });
 
-      // Filter AZ Pills
-      azTags.forEach((tagEl) => {
+      // Filter Top Tags
+      topTags.forEach((tagEl) => {
         const el = tagEl as HTMLElement;
-        const tagText = (el.getAttribute("data-az-tag") || "").toLowerCase();
-        if (!q || tagText.includes(q)) {
+        const tagCat = el.getAttribute("data-tag-cat") || "";
+        if (cat === "all" || tagCat === cat) {
           el.style.display = "inline-flex";
         } else {
           el.style.display = "none";
         }
       });
 
-      if (clearBtn) {
-        clearBtn.style.display = q.length > 0 ? "inline-flex" : "none";
-      }
-    }
-
-    let currentGroup = "all";
-
-    if (searchInput) {
-      searchInput.addEventListener("input", (e) => {
-        const val = (e.target as HTMLInputElement).value;
-        applyFilter(val, currentGroup);
+      // Filter A-Z Tag Cloud
+      azTags.forEach((tagEl) => {
+        const el = tagEl as HTMLElement;
+        const tagCat = el.getAttribute("data-az-cat") || "";
+        if (cat === "all" || tagCat === cat) {
+          el.style.display = "inline-flex";
+        } else {
+          el.style.display = "none";
+        }
       });
     }
 
-    if (clearBtn && searchInput) {
-      clearBtn.addEventListener("click", () => {
-        searchInput.value = "";
-        applyFilter("", currentGroup);
-        searchInput.focus();
-      });
-    }
-
-    filterBtns.forEach((btn) => {
+    heroFilterBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
-        filterBtns.forEach((b) => {
-          b.classList.remove("active", "bg-gradient-to-r", "from-[#0066ff]", "via-[#0088dd]", "to-[#00a3c4]", "text-white");
-          b.classList.add("border", "border-border", "bg-card", "text-[#475467]");
+        heroFilterBtns.forEach((b) => {
+          b.classList.remove("active", ...gradientClasses);
+          b.classList.add("border");
         });
-        btn.classList.remove("border", "border-border", "bg-card", "text-[#475467]");
-        btn.classList.add("active", "bg-gradient-to-r", "from-[#0066ff]", "via-[#0088dd]", "to-[#00a3c4]", "text-white");
-
-        currentGroup = btn.getAttribute("data-group-filter") || "all";
-        applyFilter(searchInput?.value || "", currentGroup);
+        btn.classList.add("active", ...gradientClasses);
+        btn.classList.remove("border");
+        const cat = btn.getAttribute("data-cat-pill") || "all";
+        applyCategory(cat);
       });
     });
   }

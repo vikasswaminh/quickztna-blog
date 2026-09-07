@@ -268,7 +268,7 @@ const tagsIndexSchema = {
             <a
               href={`/tags/${tag}/`}
               data-tag-cat={cat}
-              class="top-tag-pill inline-flex items-center gap-2 rounded-xl border border-slate-300/90 bg-white hover:bg-slate-900 hover:border-slate-900 hover:text-white px-4 py-2 text-xs sm:text-sm font-bold text-slate-950 transition-all duration-150 hover:-translate-y-0.5 shadow-2xs group"
+              class="top-tag-pill inline-flex items-center gap-2 rounded-xl border border-slate-300/90 bg-white hover:bg-slate-900 hover:border-slate-900 hover:text-white px-4 py-2 text-xs sm:text-sm font-bold text-slate-950 transition-all duration-150 hover:-translate-y-0.5 shadow-sm group"
             >
               <span class="text-black group-hover:text-white">#{tag}</span>
               <span class="rounded-full bg-slate-100 group-hover:bg-slate-800 group-hover:text-white px-2 py-0.5 font-mono text-[11px] font-bold text-slate-700">
@@ -298,7 +298,7 @@ const tagsIndexSchema = {
             <div
               data-group-card={group.id}
               data-group-cat={group.category}
-              class="topic-group-card flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-md transition-all duration-200"
+              class="topic-group-card flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-sm hover:border-primary/40 hover:shadow-md transition-all duration-200"
             >
               <div>
                 <div class="flex items-center justify-between gap-2 mb-3">
@@ -309,6 +309,8 @@ const tagsIndexSchema = {
                     {presentTags.length} topics
                   </span>
                 </div>
+
+                <h4 class="sr-only">{group.name}</h4>
 
                 <p class="text-xs sm:text-sm text-muted-foreground mb-5 leading-relaxed">
                   {group.description}
@@ -362,7 +364,7 @@ const tagsIndexSchema = {
 
       <div class="grid gap-6 md:grid-cols-3">
         {learningPaths.map((path) => (
-          <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 transition-all">
+          <div class="flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-6 sm:p-7 shadow-sm hover:border-primary/40 hover:shadow-md transition-all">
             <div>
               <div class="flex items-center justify-between gap-2 mb-2">
                 <span class="font-mono text-[10px] font-bold uppercase text-primary bg-primary/10 px-2.5 py-0.5 rounded-full">
@@ -372,7 +374,7 @@ const tagsIndexSchema = {
               <h4 class="text-base font-bold text-foreground mb-2">
                 {path.title}
               </h4>
-              <p class="text-xs text-muted-foreground mb-4">
+              <p class="text-xs text-muted-foreground mb-4 leading-relaxed">
                 {path.description}
               </p>
 
@@ -423,7 +425,7 @@ const tagsIndexSchema = {
         </div>
       </div>
 
-      <div class="rounded-2xl border border-border/80 bg-white p-6 shadow-2xs">
+      <div class="rounded-2xl border border-border/80 bg-white p-6 sm:p-7 shadow-sm">
         <div class="flex flex-wrap gap-2" id="all-tags-cloud">
           {allUniqueTags.map((tag) => {
             const count = tagMap[tag]?.count || 1;
@@ -433,7 +435,7 @@ const tagsIndexSchema = {
                 href={`/tags/${tag}/`}
                 data-az-tag={tag}
                 data-az-cat={cat}
-                class="az-tag-pill inline-flex items-center gap-1.5 rounded-lg border border-slate-300/90 bg-white hover:bg-slate-900 hover:border-slate-900 hover:text-white px-2.5 py-1 text-xs font-mono font-semibold text-slate-950 transition-all duration-150 shadow-2xs group"
+                class="az-tag-pill inline-flex items-center gap-1.5 rounded-lg border border-slate-300/90 bg-white hover:bg-slate-900 hover:border-slate-900 hover:text-white px-2.5 py-1 text-xs font-mono font-semibold text-slate-950 transition-all duration-150 shadow-sm group"
               >
                 <span class="text-black group-hover:text-white">#{tag}</span>
                 <span class="text-[10px] font-bold text-slate-700 bg-slate-100 group-hover:bg-slate-800 group-hover:text-white px-1.5 py-0.5 rounded">({count})</span>
