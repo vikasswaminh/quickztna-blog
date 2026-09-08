@@ -11,6 +11,6 @@ export default defineConfig({
   trailingSlash: 'ignore',
   integrations: [sitemap(), tailwind()],
   markdown: {
-    shikiConfig: { theme: 'github-light', wrap: true },
+    shikiConfig: { theme: 'github-light', wrap: false },
   },
 });
