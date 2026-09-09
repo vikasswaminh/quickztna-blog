@@ -443,17 +443,24 @@ const blogBreadcrumbSchema = {
           </a>
         </div>
 
-        <!-- Cloud Mesh Quick Install Card -->
-        <div class="rounded-2xl bg-primary/5 p-5 border border-primary/15 shadow-xs">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="h-2 w-2 rounded-full bg-success animate-pulse"></span>
-            <span class="font-mono text-[11px] font-bold uppercase tracking-wider text-foreground">Global Mesh</span>
+        <!-- Cloud Mesh Quick Install Card (Sleek Dark Developer Card) -->
+        <div class="rounded-2xl bg-[#0f172a] p-5 border border-[#1e293b] shadow-md relative overflow-hidden group">
+          <div class="absolute -right-8 -top-8 w-28 h-28 bg-[#1d6af3]/10 rounded-full blur-2xl pointer-events-none"></div>
+          
+          <div class="relative z-10 flex items-center justify-between gap-2 mb-2">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.7)] animate-pulse"></span>
+              <span class="font-mono text-[11px] font-bold uppercase tracking-wider text-emerald-400">Global Mesh</span>
+            </div>
+            <span class="font-mono text-[10px] text-slate-400 font-semibold">P2P v2.4</span>
           </div>
-          <p class="text-xs text-muted-foreground leading-relaxed">
+
+          <p class="relative z-10 text-xs text-slate-300 leading-relaxed mb-3">
             Connect servers, databases, and developers in &lt; 2 minutes.
           </p>
-          <div class="mt-3 rounded-xl bg-muted/80 p-3 font-mono text-[11px] text-foreground border border-border/80 select-all overflow-x-auto">
-            curl -fsSL https://login.quickztna.com/install.sh | sh
+
+          <div class="relative z-10 rounded-xl bg-[#020617] p-3 font-mono text-[11px] text-slate-200 border border-slate-800/90 select-all overflow-x-auto shadow-inner">
+            <code class="text-slate-200 text-[11px] select-all whitespace-nowrap">curl -fsSL https://login.quickztna.com/install.sh | sh</code>
           </div>
         </div>
       </aside>
