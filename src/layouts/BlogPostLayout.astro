@@ -156,7 +156,7 @@ const catColor = categoryBadgeColors[data.category] ?? {
     mobile  → single column (article full-width, ToC as <details>)
     desktop → [article 2xl] [sticky sidebar 17rem]
   -->
-  <div class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+  <div class="mx-auto max-w-[1440px] px-4 py-10 sm:px-6 lg:px-8">
     <div class="lg:grid lg:grid-cols-[1fr_17rem] lg:gap-12 xl:gap-16 items-start">
 
       <!-- ── MAIN ARTICLE ─────────────────────────────────────────── -->
@@ -181,12 +181,12 @@ const catColor = categoryBadgeColors[data.category] ?? {
           </div>
 
           <!-- Title -->
-          <h1 class="text-3xl font-extrabold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+          <h1 class="text-3xl font-extrabold leading-tight tracking-[-0.03em] text-foreground sm:text-4xl lg:text-[2.6rem]">
             {data.title}
           </h1>
 
           <!-- Description -->
-          <p class="mt-4 text-lg leading-relaxed text-muted-foreground">{data.description}</p>
+          <p class="mt-4 text-base sm:text-lg leading-relaxed text-muted-foreground">{data.description}</p>
 
           <!-- Author + dates -->
           <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-muted-foreground">
@@ -238,7 +238,7 @@ const catColor = categoryBadgeColors[data.category] ?? {
           id="article-body"
           class="prose prose-slate max-w-none
             prose-headings:scroll-mt-28 prose-headings:font-bold
-            prose-h2:mt-12 prose-h2:text-2xl prose-h2:border-b prose-h2:border-border/50 prose-h2:pb-2
+            prose-h2:mt-12 prose-h2:text-2xl prose-h2:border-l-[3.5px] prose-h2:border-primary prose-h2:pl-3.5 prose-h2:border-b-0 prose-h2:pb-0
             prose-h3:mt-8 prose-h3:text-xl
             prose-p:leading-relaxed prose-p:text-foreground/80
             prose-a:text-primary prose-a:underline-offset-2 prose-a:font-medium
@@ -342,26 +342,32 @@ const catColor = categoryBadgeColors[data.category] ?? {
               {allPosts.length} articles
             </span>
           </div>
-          <div class="space-y-3">
-            {latestPosts.slice(0, 5).map((p) => {
+          <ul class="space-y-2.5">
+            {latestPosts.slice(0, 5).map((p, idx) => {
               const pSlug = p.id.replace(/\.md$/, "");
+              const num = String(idx + 1).padStart(2, "0");
               return (
-                <div class="border-b border-border/50 pb-2.5 last:border-0 last:pb-0">
-                  <a href={`/blog/${pSlug}/`} class="group block">
-                    <h4 class="text-xs font-bold leading-[1.35] line-clamp-2 text-foreground group-hover:text-primary transition-colors">
-                      {p.data.title}
-                    </h4>
-                    <time
-                      datetime={p.data.publishedAt.toISOString()}
-                      class="mt-0.5 block font-sans text-[11px] text-muted-foreground"
-                    >
-                      {p.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </time>
+                <li class="border-b border-border/50 pb-2.5 last:border-0 last:pb-0">
+                  <a href={`/blog/${pSlug}/`} class="group flex items-start gap-2.5 text-decoration-none">
+                    <span class="popular-num pt-0.5">
+                      {num}
+                    </span>
+                    <div class="flex flex-col gap-0.5 min-w-0">
+                      <h4 class="text-xs font-semibold leading-[1.38] line-clamp-2 text-foreground group-hover:text-primary transition-colors">
+                        {p.data.title}
+                      </h4>
+                      <time
+                        datetime={p.data.publishedAt.toISOString()}
+                        class="block font-sans text-[11px] text-muted-foreground"
+                      >
+                        {p.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </time>
+                    </div>
                   </a>
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
         </div>
 
         <!-- 3. Related posts -->

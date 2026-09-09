@@ -15,42 +15,48 @@ const categoryLabel: Record<string, string> = {
   industry: "Industry",
 };
 
-const categoryBadgeColors: Record<string, { bg: string; text: string; border: string; pillBg: string }> = {
+const categoryBadgeColors: Record<string, { bg: string; text: string; border: string; pillBg: string; dot: string }> = {
   "post-quantum": {
     bg: "bg-blue-50",
     text: "text-blue-700",
     border: "border-blue-200",
     pillBg: "bg-blue-50/60 hover:bg-blue-100/70 hover:border-blue-300 hover:text-blue-800",
+    dot: "#2563eb",
   },
   comparison: {
     bg: "bg-purple-50",
     text: "text-purple-700",
     border: "border-purple-200",
     pillBg: "bg-purple-50/60 hover:bg-purple-100/70 hover:border-purple-300 hover:text-purple-800",
+    dot: "#8b5cf6",
   },
   compliance: {
     bg: "bg-emerald-50",
     text: "text-emerald-700",
     border: "border-emerald-200",
     pillBg: "bg-emerald-50/60 hover:bg-emerald-100/70 hover:border-emerald-300 hover:text-emerald-800",
+    dot: "#10b981",
   },
   technical: {
     bg: "bg-cyan-50",
     text: "text-cyan-700",
     border: "border-cyan-200",
     pillBg: "bg-cyan-50/60 hover:bg-cyan-100/70 hover:border-cyan-300 hover:text-cyan-800",
+    dot: "#06b6d4",
   },
   fundamentals: {
     bg: "bg-amber-50",
     text: "text-amber-700",
     border: "border-amber-200",
     pillBg: "bg-amber-50/60 hover:bg-amber-100/70 hover:border-amber-300 hover:text-amber-800",
+    dot: "#f59e0b",
   },
   industry: {
     bg: "bg-rose-50",
     text: "text-rose-700",
     border: "border-rose-200",
     pillBg: "bg-rose-50/60 hover:bg-rose-100/70 hover:border-rose-300 hover:text-rose-800",
+    dot: "#f43f5e",
   },
 };
 
@@ -60,6 +66,7 @@ const getCatColor = (cat: string) =>
     text: "text-primary",
     border: "border-primary/20",
     pillBg: "bg-muted/60 hover:bg-primary/5 hover:border-primary/40 hover:text-primary",
+    dot: "#1d6af3",
   };
 
 const categories = ["post-quantum", "comparison", "compliance", "technical", "fundamentals", "industry"] as const;
@@ -129,63 +136,69 @@ const blogBreadcrumbSchema = {
     <script type="application/ld+json" set:html={JSON.stringify(blogBreadcrumbSchema)} is:inline />
   </Fragment>
 
-  <!-- Main 3-Column Page Layout Container -->
-  <div class="mx-auto max-w-[1750px] px-3 sm:px-5 lg:px-6 py-6 sm:py-8">
-    <div class="grid grid-cols-1 lg:grid-cols-[16rem_1fr] xl:grid-cols-[16.5rem_1fr_17rem] gap-6 items-start">
+  <!-- Main 3-Column Page Layout Container (1440px max width for optimal clarity & reading density) -->
+  <div class="mx-auto max-w-[1440px] px-3 sm:px-5 lg:px-6 py-6 sm:py-8">
+    <div class="grid grid-cols-1 lg:grid-cols-[16rem_1fr] xl:grid-cols-[16.5rem_1fr_17rem] gap-6 sm:gap-7 items-start">
 
-      <!-- ── LEFT SIDEBAR (STICKY ON SCROLL) ───────────────────────── -->
+      <!-- ── LEFT SIDEBAR (STICKY ON SCROLL - OLLAGRAPH FLAGSHIP NUMBERED STYLE) ── -->
       <aside class="w-full lg:w-[16rem] xl:w-[16.5rem] space-y-5 order-2 lg:order-1 lg:sticky lg:top-20 self-start">
-        
-
-
-        <!-- 3. Engineering Essentials (Founder Special Card - Completely Borderless) -->
         <div class="p-1 sm:p-2">
-          <div class="flex items-center justify-between pb-1 mb-2">
-            <span class="rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider">
+          <div class="flex items-center justify-between pb-2 mb-3 border-b border-border/80">
+            <span class="rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-700 px-2.5 py-0.5 font-mono text-[10.5px] font-bold uppercase tracking-wider">
               FOUNDER SPECIAL
             </span>
-            <span class="font-mono text-xs text-muted-foreground">
+            <span class="font-mono text-xs font-semibold text-muted-foreground">
               {founderSpecials.length} articles
             </span>
           </div>
 
-          <p class="mb-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          <p class="mb-3 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
             Core Architectures
           </p>
 
-          <div class="space-y-2">
-            {founderSpecials.map((post) => {
+          <ul class="space-y-2.5">
+            {founderSpecials.map((post, idx) => {
               const slug = post.id.replace(/\.md$/, "");
+              const catCol = getCatColor(post.data.category);
+              const num = String(idx + 1).padStart(2, "0");
               return (
-                <div class="py-1">
-                  <a href={`/blog/${slug}/`} class="group block">
-                    <h4 class="text-xs font-bold leading-[1.35] line-clamp-2 text-foreground group-hover:text-primary transition-colors">
-                      {post.data.title}
-                    </h4>
-                    <div class="mt-1 flex items-center justify-between font-sans text-[11px] text-muted-foreground">
-                      <span>{post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
-                      <span class="font-semibold text-primary group-hover:underline">Read →</span>
+                <li class="border-b border-border/50 pb-2.5 last:border-0 last:pb-0">
+                  <a href={`/blog/${slug}/`} class="group flex items-start gap-2.5 text-decoration-none">
+                    <span class="popular-num pt-0.5">
+                      {num}
+                    </span>
+                    <div class="flex flex-col gap-1 min-w-0">
+                      <h4 class="text-xs font-semibold leading-[1.38] line-clamp-2 text-foreground group-hover:text-primary transition-colors">
+                        {post.data.title}
+                      </h4>
+                      <div class="flex items-center gap-1.5 text-[10.5px] text-muted-foreground">
+                        <span class="h-1.5 w-1.5 rounded-full shrink-0" style={`background-color: ${catCol.dot};`}></span>
+                        <span>{post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+                        <span class="opacity-50">·</span>
+                        <span>{post.data.wordCount ? `${Math.round(post.data.wordCount / 200)}m read` : "8m read"}</span>
+                      </div>
                     </div>
                   </a>
-                </div>
+                </li>
               );
             })}
-          </div>
-          <a href="#posts-grid" class="mt-3 inline-block font-mono text-xs font-bold text-primary hover:underline">
+          </ul>
+
+          <a href="#posts-grid" class="mt-3.5 inline-block font-mono text-xs font-bold text-primary hover:underline">
             View All Specials →
           </a>
         </div>
       </aside>
 
-      <!-- ── CENTER SCROLLING BLOG FEED (NETWORKERSHOME TOPOLOGY) ───── -->
+      <!-- ── CENTER SCROLLING BLOG FEED ─────────────────────────────── -->
       <main class="min-w-0 space-y-6 order-1 lg:order-2">
         
-        <!-- Center Title Header (Clean inline header without large hero) -->
-        <div class="border-b border-border/60 pb-4">
-          <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground">
+        <!-- Center Title Header (Clean, high-clarity typography) -->
+        <div class="border-b border-border/80 pb-4">
+          <h1 class="text-2xl sm:text-3xl lg:text-[2.2rem] font-extrabold tracking-[-0.03em] text-foreground">
             Quick<span class="text-gradient">ZTNA</span> <span class="text-gradient">Blog</span>
           </h1>
-          <p class="mt-1.5 text-xs sm:text-sm text-muted-foreground">
+          <p class="mt-1.5 text-xs sm:text-sm text-muted-foreground max-w-2xl leading-relaxed">
             Guides, architectural teardowns, benchmarks, and product updates from the QuickZTNA team.
           </p>
           
@@ -194,21 +207,21 @@ const blogBreadcrumbSchema = {
               🔥 NEWEST ARTICLES
             </span>
             <span class="text-xs text-muted-foreground font-medium">
-              Latest from our experts
+              Latest from our security architects
             </span>
           </div>
         </div>
 
-        <!-- ── FEATURED TOP HERO CARD (HORIZONTAL 2-COL NETWORKERSHOME STYLE) ── -->
+        <!-- ── FEATURED TOP HERO CARD (HIGH CLARITY 2-COL TOPOLOGY) ──── -->
         {featured && (() => {
           const fSlug = featured.id.replace(/\.md$/, "");
           const fColor = getCatColor(featured.data.category);
           return (
-            <article class="group rounded-2xl border border-border/80 bg-card overflow-hidden shadow-sm hover:shadow-md hover:border-primary/50 transition-all duration-300">
+            <article class="featured-card-nh group overflow-hidden">
               <div class="grid grid-cols-1 md:grid-cols-12 gap-0 items-stretch">
                 <!-- Left Visual Graphic Box -->
-                <div class="md:col-span-5 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px]">
-                  <div class="absolute inset-0 bg-grid opacity-30 pointer-events-none" aria-hidden="true"></div>
+                <div class="md:col-span-5 bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-6 flex flex-col justify-between relative overflow-hidden min-h-[220px]">
+                  <div class="absolute inset-0 bg-grid opacity-25 pointer-events-none" aria-hidden="true"></div>
                   
                   <!-- Top Status Pill -->
                   <div class="relative z-10 flex items-center justify-between">
@@ -222,7 +235,7 @@ const blogBreadcrumbSchema = {
                   <!-- Center Graphic Icon / Topology Display -->
                   <div class="relative z-10 my-4 flex items-center justify-center">
                     <div class="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary to-[#00a3c4] p-0.5 shadow-lg group-hover:scale-105 transition-transform duration-300">
-                      <div class="h-full w-full rounded-[14px] bg-slate-900/90 flex items-center justify-center">
+                      <div class="h-full w-full rounded-[14px] bg-slate-900 flex items-center justify-center">
                         <svg class="h-8 w-8 text-[#00a3c4]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                           <rect x="2" y="2" width="20" height="8" rx="2" stroke-linecap="round"/>
                           <rect x="2" y="14" width="20" height="8" rx="2" stroke-linecap="round"/>
@@ -248,12 +261,12 @@ const blogBreadcrumbSchema = {
                         {categoryLabel[featured.data.category]}
                       </span>
                       <span class="rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400 px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase">
-                        ⚡ NEW
+                        ⚡ FEATURED
                       </span>
                     </div>
 
                     <a href={`/blog/${fSlug}/`} class="block group">
-                      <h2 class="text-lg sm:text-xl font-bold leading-snug text-foreground group-hover:text-primary transition-colors">
+                      <h2 class="text-lg sm:text-xl font-extrabold leading-snug tracking-[-0.02em] text-foreground group-hover:text-primary transition-colors">
                         {featured.data.title}
                       </h2>
                     </a>
@@ -264,9 +277,15 @@ const blogBreadcrumbSchema = {
                   </div>
 
                   <div class="mt-5 pt-3.5 border-t border-border/60 flex items-center justify-between text-xs text-muted-foreground">
-                    <span>{featured.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                    <div class="flex items-center gap-1.5 font-mono text-[11px]">
+                      <svg class="h-3 w-3 text-muted-foreground/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                      <span>{featured.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}</span>
+                      <span class="opacity-40">·</span>
+                      <span>{featured.data.wordCount ? `${Math.round(featured.data.wordCount / 200)} min read` : "8 min read"}</span>
+                    </div>
                     <a href={`/blog/${fSlug}/`} class="font-bold text-primary group-hover:underline inline-flex items-center gap-1">
-                      Read article <span>→</span>
+                      <span>Read article</span>
+                      <span class="card-arrow">→</span>
                     </a>
                   </div>
                 </div>
@@ -275,30 +294,38 @@ const blogBreadcrumbSchema = {
           );
         })()}
 
-        <!-- ── STICKY FULL-WIDTH CATEGORY FILTER TOOLBAR ─────────────── -->
-        <div class="sticky top-16 z-30 -mx-2 px-2 py-3 bg-background/90 backdrop-blur-md border-b border-border/60">
-          <div class="w-full flex flex-wrap sm:flex-nowrap items-center justify-between gap-2" id="pill-filters">
+        <!-- ── STICKY FULL-WIDTH CATEGORY FILTER TOOLBAR (OLLAGRAPH PILL CLARITY) ── -->
+        <div class="sticky top-16 z-30 -mx-2 px-2 py-3 bg-background/95 backdrop-blur-md border-b border-border/80">
+          <div class="filter-pills-bar overflow-x-auto pb-1 sm:pb-0" id="pill-filters" role="tablist" aria-label="Filter by category">
             <button
               data-pill="all"
-              class="pill-btn active flex-1 text-center justify-center rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white border border-transparent px-3 py-1.5 font-bold text-xs shadow-sm transition-all duration-150 hover:brightness-105 whitespace-nowrap"
+              class="filter-pill pill-btn active"
+              role="tab"
+              aria-selected="true"
             >
-              All ({allPosts.length})
+              <span class="pill-dot bg-[#0066ff]"></span>
+              <span>All</span>
+              <span class="pill-badge">{allPosts.length}</span>
             </button>
             {categories.map((c) => {
               const catColor = getCatColor(c);
               return counts[c] > 0 && (
                 <button
                   data-pill={c}
-                  class={`pill-btn flex-1 text-center justify-center rounded-full border ${catColor.border} ${catColor.bg} px-3 py-1.5 font-semibold text-xs ${catColor.text} hover:opacity-90 transition-all duration-150 shadow-sm whitespace-nowrap`}
+                  class="filter-pill pill-btn"
+                  role="tab"
+                  aria-selected="false"
                 >
-                  {categoryLabel[c]} ({counts[c]})
+                  <span class="pill-dot" style={`background-color: ${catColor.dot};`}></span>
+                  <span>{categoryLabel[c]}</span>
+                  <span class="pill-badge">{counts[c]}</span>
                 </button>
               );
             })}
           </div>
         </div>
 
-        <!-- ── MAIN POSTS GRID (2-3 COLUMN NETWORKERSHOME CARD TOPOLOGY) ─ -->
+        <!-- ── MAIN POSTS GRID (CRISP 2-3 COLUMN CARDS) ──────────────── -->
         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5" id="posts-grid">
           {restPosts.map((post) => {
             const slug = post.id.replace(/\.md$/, "");
@@ -306,41 +333,47 @@ const blogBreadcrumbSchema = {
             const tagsStr = (post.data.tags ?? []).join(" ");
             return (
               <article
-                class="post-item group relative flex flex-col justify-between rounded-2xl border border-border/80 bg-card p-5 sm:p-6 shadow-sm transition-all duration-200 hover:-translate-y-1 hover:border-primary/40 hover:shadow-md"
+                class="post-item post-card group p-5 sm:p-5.5"
                 data-post-cat={post.data.category}
                 data-tags={tagsStr}
               >
                 <div>
-                  <!-- Category tag & Date -->
-                  <div class="flex items-center justify-between gap-2 mb-3">
-                    <span class={`rounded-md border ${catColor.border} ${catColor.bg} px-2.5 py-0.5 font-semibold text-[11px] ${catColor.text}`}>
+                  <!-- Category tag & Date with SVG icon -->
+                  <div class="flex items-center justify-between gap-2 mb-2.5">
+                    <span class={`rounded-md border ${catColor.border} ${catColor.bg} px-2 py-0.5 font-semibold text-[11px] ${catColor.text}`}>
                       {categoryLabel[post.data.category]}
                     </span>
-                    <span class="font-mono text-[10px] text-muted-foreground">
-                      {post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                    </span>
+                    <div class="flex items-center gap-1 font-mono text-[10.5px] text-muted-foreground">
+                      <svg class="h-3 w-3 text-muted-foreground/70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                      <time datetime={post.data.publishedAt.toISOString()}>
+                        {post.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                      </time>
+                    </div>
                   </div>
 
-                  <!-- Title -->
+                  <!-- Title with crisp tracking & line-clamp -->
                   <a href={`/blog/${slug}/`} class="block group">
-                    <h3 class="text-sm sm:text-base font-bold leading-snug text-foreground group-hover:text-primary transition-colors line-clamp-2">
+                    <h3 class="post-card-title line-clamp-2">
                       {post.data.title}
                     </h3>
                   </a>
 
                   <!-- Excerpt snippet -->
-                  <p class="mt-2.5 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+                  <p class="post-card-desc mt-2 line-clamp-2">
                     {post.data.description}
                   </p>
                 </div>
 
-                <!-- Footer with read link -->
-                <div class="mt-5 pt-3.5 border-t border-border/50 flex items-center justify-between text-xs">
-                  <span class="font-mono text-[11px] text-muted-foreground">
-                    {post.data.wordCount ? `${Math.round(post.data.wordCount / 200)} min read` : "8 min read"}
+                <!-- Footer with read link & SVG clock -->
+                <div class="post-card-meta">
+                  <span class="inline-flex items-center gap-1">
+                    <svg class="h-3 w-3 text-primary/80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    <span>{post.data.wordCount ? `${Math.round(post.data.wordCount / 200)} min read` : "8 min read"}</span>
                   </span>
-                  <a href={`/blog/${slug}/`} class="font-bold text-primary group-hover:underline inline-flex items-center gap-1">
-                    Read article <span>→</span>
+                  <span class="meta-sep text-border">·</span>
+                  <a href={`/blog/${slug}/`} class="font-bold text-primary group-hover:underline inline-flex items-center gap-1 ml-auto">
+                    <span>Read article</span>
+                    <span class="card-arrow" aria-hidden="true">→</span>
                   </a>
                 </div>
               </article>
@@ -360,50 +393,58 @@ const blogBreadcrumbSchema = {
         </div>
       </main>
 
-      <!-- ── RIGHT SIDEBAR (STICKY ON SCROLL - NEWEST ARTICLES LIST) ─ -->
+      <!-- ── RIGHT SIDEBAR (STICKY ON SCROLL - NEWEST ARTICLES NUMBERED LIST) ─ -->
       <aside class="w-full xl:w-[17rem] space-y-5 order-3 xl:sticky xl:top-20 self-start hidden xl:block">
         
-        <!-- Newest Articles / AI Special Card - Completely Borderless -->
         <div class="p-1 sm:p-2">
-          <div class="flex items-center justify-between pb-1 mb-2">
-            <span class="rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-3 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-white shadow-sm">
+          <div class="flex items-center justify-between pb-2 mb-3 border-b border-border/80">
+            <span class="rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-3 py-0.5 font-mono text-[10px] font-bold uppercase tracking-wider text-white shadow-xs">
               NEWEST ARTICLES
             </span>
-            <span class="font-mono text-xs text-muted-foreground">
+            <span class="font-mono text-xs font-semibold text-muted-foreground">
               {allPosts.length} articles
             </span>
           </div>
 
-          <p class="mb-2.5 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+          <p class="mb-3 font-mono text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
             Recent updates
           </p>
 
-          <div class="space-y-2">
-            {recentUpdates.map((p) => {
+          <ul class="space-y-2.5">
+            {recentUpdates.map((p, idx) => {
               const pSlug = p.id.replace(/\.md$/, "");
+              const pCol = getCatColor(p.data.category);
+              const num = String(idx + 1).padStart(2, "0");
               return (
-                <div class="py-1">
-                  <a href={`/blog/${pSlug}/`} class="group block">
-                    <h4 class="text-xs font-bold leading-[1.35] line-clamp-2 text-foreground group-hover:text-primary transition-colors">
-                      {p.data.title}
-                    </h4>
-                    <div class="mt-1 flex items-center justify-between font-sans text-[11px] text-muted-foreground">
-                      <span>{p.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
-                      <span class="font-semibold text-primary group-hover:underline">Read →</span>
+                <li class="border-b border-border/50 pb-2.5 last:border-0 last:pb-0">
+                  <a href={`/blog/${pSlug}/`} class="group flex items-start gap-2.5 text-decoration-none">
+                    <span class="popular-num pt-0.5">
+                      {num}
+                    </span>
+                    <div class="flex flex-col gap-1 min-w-0">
+                      <h4 class="text-xs font-semibold leading-[1.38] line-clamp-2 text-foreground group-hover:text-primary transition-colors">
+                        {p.data.title}
+                      </h4>
+                      <div class="flex items-center gap-1.5 text-[10.5px] text-muted-foreground">
+                        <span class="h-1.5 w-1.5 rounded-full shrink-0" style={`background-color: ${pCol.dot};`}></span>
+                        <span>{p.data.publishedAt.toLocaleDateString("en-US", { month: "short", day: "numeric" })}</span>
+                        <span class="opacity-50">·</span>
+                        <span class="font-medium text-primary group-hover:underline">Read →</span>
+                      </div>
                     </div>
                   </a>
-                </div>
+                </li>
               );
             })}
-          </div>
+          </ul>
 
-          <a href="#posts-grid" class="mt-3 inline-block font-mono text-xs font-bold text-primary hover:underline">
+          <a href="#posts-grid" class="mt-3.5 inline-block font-mono text-xs font-bold text-primary hover:underline">
             View All Specials →
           </a>
         </div>
 
         <!-- Cloud Mesh Quick Install Card -->
-        <div class="rounded-2xl bg-primary/5 p-5 border border-primary/10 shadow-sm">
+        <div class="rounded-2xl bg-primary/5 p-5 border border-primary/15 shadow-xs">
           <div class="flex items-center gap-2 mb-2">
             <span class="h-2 w-2 rounded-full bg-success animate-pulse"></span>
             <span class="font-mono text-[11px] font-bold uppercase tracking-wider text-foreground">Global Mesh</span>
@@ -411,7 +452,7 @@ const blogBreadcrumbSchema = {
           <p class="text-xs text-muted-foreground leading-relaxed">
             Connect servers, databases, and developers in &lt; 2 minutes.
           </p>
-          <div class="mt-3 rounded-xl bg-muted/80 p-3 font-mono text-[11px] text-foreground border border-border/60 select-all overflow-x-auto">
+          <div class="mt-3 rounded-xl bg-muted/80 p-3 font-mono text-[11px] text-foreground border border-border/80 select-all overflow-x-auto">
             curl -fsSL https://login.quickztna.com/install.sh | sh
           </div>
         </div>
@@ -425,7 +466,7 @@ const blogBreadcrumbSchema = {
   @keyframes fadeIn {
     from {
       opacity: 0;
-      transform: translateY(8px);
+      transform: translateY(6px);
     }
     to {
       opacity: 1;
@@ -434,7 +475,7 @@ const blogBreadcrumbSchema = {
   }
 
   .post-item {
-    animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   }
 </style>
 
@@ -485,22 +526,15 @@ const blogBreadcrumbSchema = {
       topicButtons.forEach((btn) => {
         const cat = btn.dataset.topic;
         const isActive = (type === "category" && cat === val) || (type === "all" && cat === "all");
-        if (isActive) {
-          btn.className = "topic-btn active flex w-full items-center justify-between rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] px-4 py-2 text-xs font-bold text-white shadow-sm transition-all duration-150 text-left";
-        } else {
-          btn.className = "topic-btn flex w-full items-center justify-between rounded-full px-4 py-2 text-xs font-semibold text-foreground/80 hover:bg-primary/5 hover:text-primary transition-all duration-150 text-left group";
-        }
+        btn.classList.toggle("active", isActive);
       });
 
       // Update Middle Pill Buttons
       pillButtons.forEach((btn) => {
         const pillCat = btn.dataset.pill;
         const isActive = (type === "category" && pillCat === val) || (type === "all" && pillCat === "all");
-        if (isActive) {
-          btn.className = "pill-btn active flex-1 text-center justify-center rounded-full bg-gradient-to-r from-[#0066ff] via-[#0088dd] to-[#00a3c4] text-white border border-transparent px-3 py-1.5 font-bold text-xs shadow-sm transition-all duration-150 hover:brightness-105 whitespace-nowrap";
-        } else {
-          btn.className = "pill-btn flex-1 text-center justify-center rounded-full border border-border bg-card px-3 py-1.5 font-semibold text-xs text-foreground/80 hover:border-primary/40 hover:bg-primary/5 hover:text-primary transition-all duration-150 shadow-2xs whitespace-nowrap";
-        }
+        btn.classList.toggle("active", isActive);
+        btn.setAttribute("aria-selected", isActive ? "true" : "false");
       });
 
       filterPosts();
