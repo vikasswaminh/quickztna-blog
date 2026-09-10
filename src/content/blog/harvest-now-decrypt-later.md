@@ -69,28 +69,31 @@ relatedSlugs:
 
 | Threat Dimension | Analysis & Technical Reality |
 |---|---|
-| **What is HNDL?** | Adversaries intercept and store encrypted ciphertext today to decrypt once cryptographically relevant quantum computers (CRQCs) emerge. |
-| **Vulnerable Primitives** | RSA-2048/4096, ECDH (Curve25519, P-256/P-384), and DSA/ECDSA (broken by Shor's algorithm). |
+| **What is HNDL?** | ⚠️ Adversaries intercept and store encrypted ciphertext today to decrypt once cryptographically relevant quantum computers (CRQCs) emerge. |
+| **Vulnerable Primitives** | ❌ RSA-2048/4096, ECDH (Curve25519, P-256/P-384), and DSA/ECDSA (broken by Shor's algorithm). |
 | **Safe Primitives** | AES-256, ChaCha20-Poly1305, SHA-384, SHA-512 (resistant against Grover's algorithm). |
 | **High-Risk Data** | Classified defense intel (25-50 yr horizon), medical histories (lifetime), trade secrets, and financial ledgers. |
 | **Architectural Fix** | Immediate deployment of hybrid post-quantum key exchange (X25519 + ML-KEM-768) at the transport layer. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│               Harvest Now, Decrypt Later (HNDL) Attack Flow            │
-│                                                                        │
-│   TODAY (2026):                                                        │
-│   [Client] ──► [Encrypted Session: TLS/VPN (ECDH)] ──► [Server]        │
-│                         │                                              │
-│                         ▼ (Passive Egress Tap / In-Transit Intercept)  │
-│               [Adversary Storage Farm]                                 │
-│               (Petabytes of raw encrypted ciphertext archived)         │
-│                                                                        │
-│   FUTURE (2030s+):                                                     │
-│   [Adversary Storage] ──► [CRQC (Shor's Algorithm)] ──► [Plaintext PII]│
-│   (Derives Session Keys from captured ECDH transcripts retroactively)  │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Threat Model: Harvest Now, Decrypt Later (HNDL) Threat Mitigation](/images/diagrams/harvest-now-decrypt-later-flow.svg)
+*Figure 1.1: Attack Vector Threat Model & Zero Trust Interception Gate — Harvest Now, Decrypt Later (HNDL) Threat Mitigation.*
+
+### Attack Surface, Interception Barrier & Cryptographic Enclave Analysis
+
+The threat model above diagrams the exploit vectors, inline interception gates, and protected workloads for **Harvest Now, Decrypt Later (HNDL) Threat Mitigation**:
+
+1. **Threat Vector & Infiltration Origin (Adversarial Nation-State Actor):** Passive Fiber Taps & ISP Intercepts; Exabytes of encrypted traffic recorded. Identified entry points:
+   - Taps undersea / WAN cables
+   - Stores encrypted classical TLS/IPsec
+   - Awaits Cryptographically Relevant QC
+2. **Zero Trust Enforcement Gate (Hybrid Post-Quantum Boundary):** Intercepts traffic at the operating system kernel before network egress:
+   - **Dual-Key Exchange (X25519 + ML-KEM-768):** Classical ECDH + Lattice Module-LWE
+   - **Ephemeral Sub-Hourly Rekeying:** Keys destroyed immediately post-session
+3. **Protected Workload Enclave (High-Value Enterprise Secrets):** Validated sessions terminate inside isolated execution boundaries:
+   - Healthcare PHI & Medical Records
+   - Financial Ledgers & Banking Data
+   - Government Intellectual Property
+4. **SIEM Telemetry & Forensic Audit (Quantum Forward Secrecy Guarantee):** Even if a future quantum computer breaks X25519 via Shor's algorithm, ML-KEM-768 remains unbreakable. HNDL attack ROI is reduced to absolute zero; stored ciphertext cannot be decrypted.
 
 ## Who this is for
 

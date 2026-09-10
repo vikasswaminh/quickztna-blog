@@ -70,39 +70,29 @@ A zero trust mesh network managed by hand—clicking through a dashboard to add 
 
 | Dimension | Manual Dashboard ClickOps | Infrastructure as Code (Terraform + GitOps) |
 |---|---|---|
-| **Change Review & Approval** | Ad-hoc dashboard toggles with zero peer review. | Multi-approver GitHub PR with dry-run policy linting. |
-| **Rollback Capability** | Manual scramble through logs to undo broken ACLs. | Single-command `git revert` followed by `terraform apply`. |
-| **Configuration Drift** | Untracked policy drift between staging and prod. | Declarative state reconciliation detects and alerts on drift. |
-| **Auditability (SOC 2 / ISO)** | Ephemeral UI audit logs that expire after 30 days. | Immutable Git commit history documenting author, reviewer, timestamp. |
-| **Multi-Environment Replication** | Re-creating complex policies manually across regions. | Reusable Terraform modules applied across Dev, Staging, and Prod. |
+| **Change Review & Approval** | ❌ Ad-hoc dashboard toggles with zero peer review. | ✅ Multi-approver GitHub PR with dry-run policy linting. |
+| **Rollback Capability** | ❌ Manual scramble through logs to undo broken ACLs. | ✅ Single-command `git revert` followed by `terraform apply`. |
+| **Configuration Drift** | ❌ Untracked policy drift between staging and prod. | ✅ Declarative state reconciliation detects and alerts on drift. |
+| **Auditability (SOC 2 / ISO)** | ❌ Ephemeral UI audit logs that expire after 30 days. | ✅ Immutable Git commit history documenting author, reviewer, timestamp. |
+| **Multi-Environment Replication** | ❌ Re-creating complex policies manually across regions. | ✅ Reusable Terraform modules applied across Dev, Staging, and Prod. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Zero Trust Policy-as-Code (GitOps) Pipeline          │
-│                                                                        │
-│   [Developer / Security Engineer]                                      │
-│                │                                                       │
-│                ▼ 1. Author ABAC ACL / Tag Rules in HCL                 │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  GitHub Pull Request (`policies.tf` / `main.tf`)                 │ │
-│   │  ├── Automated OPA / Rego Policy Linting                         │ │
-│   │  ├── Dry-Run Lockout Analysis (`quickztna policy lint`)          │ │
-│   │  └── Mandatory Peer Security Approvals                           │ │
-│   └────────────────────────────┬─────────────────────────────────────┘ │
-│                                │ 2. Merge to `main`                    │
-│                                ▼                                       │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  GitHub Actions / Atlantis CI/CD Runner                          │ │
-│   │  └── `terraform apply -auto-approve`                             │ │
-│   └────────────────────────────┬─────────────────────────────────────┘ │
-│                                │ 3. Reconcile Network State via API   │
-│                                ▼                                       │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Cloud Control Plane                                   │ │
-│   │  └── Pushes microsegmented WireGuard rules to all connected nodes│ │
-│   └──────────────────────────────────────────────────────────────────┘ │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Decision Flowchart: GitOps Policy-as-Code Verification & Apply Pipeline](/images/diagrams/infrastructure-as-code-zero-trust-flow.svg)
+*Figure 1.1: Multi-Stage Policy Decision Flowchart & Gating Logic — GitOps Policy-as-Code Verification & Apply Pipeline.*
+
+### Multi-Stage Gating Logic & Policy Evaluation Flow
+
+The decision flowchart above illustrates the sequential verification pipeline enforced by **GitOps Policy-as-Code Verification & Apply Pipeline**:
+
+- **STAGE 1: GITHUB PR — Terraform Pull Request:** Security engineer defines declarative ABAC rules in HCL.
+  - **Verification Rules:** Peer tags & port definitions; Reviewer peer approval required
+  - **Branch Outcome:** Passes to *Trigger CI/CD Runner*; non-compliant requests trigger *PR Blocked*.
+- **STAGE 2: DRY-RUN LINT — Out-of-Band AST Solver:** Simulates reachability matrix against real-world traffic telemetry.
+  - **Verification Rules:** Self-lockout rule detection; Syntax & schema verification
+  - **Branch Outcome:** Passes to *Pass Pre-Flight Check*; non-compliant requests trigger *Lint Error Flagged*.
+- **STAGE 3: ATOMIC APPLY — Control Plane Push:** Pushes compiled binary policy directly to distributed control planes.
+  - **Verification Rules:** Atomic commit with rollback; Zero live data plane interruption
+  - **Branch Outcome:** Passes to *Policy Live in <100ms*; non-compliant requests trigger *Automated Git Revert*.
+
 
 ---
 
@@ -315,7 +305,7 @@ Terraform-managed zero trust policy has no runtime performance impact on the net
 
 | Approach | Review Before Change | Drift Detection | Rollback Method | Scales Past 50+ Devices |
 | :--- | :--- | :--- | :--- | :--- |
-| **Dashboard (Manual)** | No | None | Manual reconstruction from memory | Poorly |
+| **Dashboard (Manual)** | ❌ No | ❌ None | Manual reconstruction from memory | Poorly |
 | **Custom API Scripts** | Optional / Team-dependent | Custom-built (if any) | Script-dependent | Moderately |
 | **Terraform (IaC)** | **Yes, via Pull Request** | **Built-in via Scheduled Plan** | **`git revert` + `terraform apply`** | **Well** |
 | **Other IaC (Pulumi/CDK)** | Yes, via Pull Request | Tool-dependent | Version control revert + apply | Well |

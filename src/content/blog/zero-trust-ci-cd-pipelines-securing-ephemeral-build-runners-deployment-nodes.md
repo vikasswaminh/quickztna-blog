@@ -78,35 +78,20 @@ The solution is not merely adding "more secrets." It requires treating every eph
 
 Consider the typical sequence of a modern software supply-chain breach:
 
-```
-┌─────────────────┐       ┌─────────────────┐       ┌────────────────────────┐       ┌──────────────────┐
-│  Developer PR   │ ────► │ Ephemeral Build │ ────► │  Malicious Dependency  │ ────► │ Lateral Movement │
-│ (Untrusted Dep) │       │ Runner Spawned  │       │  Executes in Container │       │ to Prod Database │
-└─────────────────┘       └─────────────────┘       └────────────────────────┘       └──────────────────┘
-                                                                                               │
-                                                                                               ▼
-┌─────────────────┐       ┌─────────────────┐       ┌────────────────────────┐       ┌──────────────────┐
-│ Job Terminated  │ ◄──── │  Data Exfiltrated│ ◄──── │ Production Credentials │ ◄──── │ Production Node  │
-│ (Logs Destroyed)│       │  via DNS/HTTPS   │       │ Stolen from Env Vars   │       │ Compromised      │
-└─────────────────┘       └─────────────────┘       └────────────────────────┘       └──────────────────┘
-```
+![Protocol Sequence: CI/CD Ephemeral Runner Workload Attestation Sequence](/images/diagrams/zero-trust-ci-cd-pipelines-securing-ephemeral-build-runners-deployment-nodes-flow.svg)
+*Figure 1.1: Protocol Handshake Sequence & Lifeline Verification Flow — CI/CD Ephemeral Runner Workload Attestation Sequence.*
 
-1. A developer submits a pull request updating a third-party open-source dependency or build script.
-2. The CI/CD engine automatically provisions an ephemeral container or VM to run the test suite.
-3. The runner is injected with an environment token granting broad read/write access to internal registries, repositories, and cloud resources.
-4. During the build phase, untrusted code (such as a compromised package payload) executes with the full privileges of the runner.
-5. The attacker pivots through the runner's unrestricted network connection to scan internal subnets, connect to databases, or exfiltrate production secrets.
-6. The CI job finishes, the container is destroyed, and the audit trail vanishes, leaving security teams completely unaware of the lateral breach.
+### Protocol Handshake & Verification Sequence
 
-High-profile security incidents—such as the **XZ Utils backdoor**, the **SolarWinds supply-chain breach**, and widespread **GitHub Actions workflow compromises**—share this exact root cause: build runners granted excessive network reachability and long-lived credentials. 
+The sequence diagram above traces the chronological protocol transactions across participating lifelines for **CI/CD Ephemeral Runner Workload Attestation Sequence**:
 
-Deployment nodes suffer from the opposite problem: static long-lived SSH keys or AWS IAM credentials remain embedded in servers for years without rotation, turning forgotten staging or build nodes into persistent backdoors.
+1. **1. Request OIDC Token (actions.id.token) (Ephemeral Runner → IdP / OIDC Provider):** Claims: repo, branch, commit hash
+2. **2. Authenticate to Mesh with OIDC JWT (Ephemeral Runner → QuickZTNA Controller):** Zero static AWS/SSH secrets needed
+3. **3. Issue Ephemeral WireGuard Key Pair (QuickZTNA Controller → Ephemeral Runner):** TTL strictly bounded to CI job (15m)
+4. **4. Outbound P2P Encrypted Mesh Tunnel (Ephemeral Runner → Mesh Gateway):** Authorized strictly for deploy command
+5. **5. Deploy Artifact to Production Target (Mesh Gateway → Production Target):** Full commit-attributed audit logging
+6. **6. Job Completes -> Instant Cryptographic Key Shred (Ephemeral Runner → QuickZTNA Controller):** Runner destroyed; zero standing access
 
-A defensible Zero Trust CI/CD architecture mandates:
-* **Zero Standing Reachability:** Runners cannot reach production environments, internal VPCs, or databases unless an explicit [outbound-only zero trust policy](/blog/outbound-only-zero-trust/) is granted for a specific job.
-* **Cryptographically Scoped Ephemeral Tokens:** Workload Identity Federation replaces static API tokens with single-job credentials.
-* **JIT-Gated Deployments:** Production deployment targets remain unreachable until an authorized approver issues a time-bounded grant that automatically revokes.
-* **Immutable Audit Streams:** Every connection, handshake, and policy decision is streamed off-node to enterprise SIEM platforms.
 
 ---
 
@@ -114,15 +99,11 @@ A defensible Zero Trust CI/CD architecture mandates:
 
 CI/CD security has undergone three major evolutionary phases:
 
-```
-┌────────────────────────────────┐    ┌────────────────────────────────┐    ┌────────────────────────────────┐
-│ Phase 1: Static Build Server   │    │ Phase 2: Cloud-Native Runner   │    │ Phase 3: Zero Trust Data Plane │
-│ (Pre-2015)                     │    │ (2015–2022)                    │    │ (2023–Present)                 │
-│ • Long-lived bare-metal server │ ──►│ • Ephemeral cloud containers   │ ──►│ • Workload Identity (OIDC)     │
-│ • Static SSH keys to prod      │    │ • Static long-lived API tokens │    │ • WireGuard peer-to-peer mesh  │
-│ • Flat internal network trust  │    │ • Over-permissive VPC subnets  │    │ • JIT elevation & auto-revoke  │
-└────────────────────────────────┘    └────────────────────────────────┘    └────────────────────────────────┘
-```
+| Pipeline Evolution Phase | Compute & Host Model | Credential & Identity Strategy | Network Reachability & Trust Boundary |
+|---|---|---|---|
+| **Phase 1: Static Build Server (Pre-2015)** | Long-lived bare-metal server (Jenkins) | Static SSH keys authorized on production hosts | Flat internal network trust behind firewall |
+| **Phase 2: Cloud-Native Runner (2015–2022)** | Ephemeral cloud containers (GitHub Actions / GitLab CI) | Long-lived repo API tokens & service accounts | Over-permissive VPC subnets & flat peering |
+| **Phase 3: Zero Trust Data Plane (Present)** | Ephemeral build containers spawned on-demand | Short-lived OIDC Workload Identity Federation | Peer-to-peer WireGuard mesh with JIT elevation |
 
 * **Phase 1: The Trusted Build Server (Pre-2015):** Centralized Jenkins servers sat inside the corporate perimeter. Because the machine lived behind the firewall, it was implicitly trusted and provisioned with root SSH keys to production.
 * **Phase 2: The Cloud-Native Pipeline (2015–2022):** Infrastructure migrated to GitHub Actions, GitLab CI, and CircleCI. While runners became ephemeral, security models remained static: pipelines used shared service account secrets stored in repo settings and flat VPC peering.
@@ -134,22 +115,15 @@ CI/CD security has undergone three major evolutionary phases:
 
 Applying **NIST SP 800-207** to CI/CD pipelines requires re-evaluating foundational network assumptions:
 
-```
-        ┌─────────────────────────────────────────────────────────────┐
-        │                 NIST SP 800-207 FOR CI/CD                   │
-        └──────────────────────────────┬──────────────────────────────┘
-                                       │
-         ┌─────────────────────────────┼─────────────────────────────┐
-         ▼                             ▼                             ▼
-┌───────────────────┐        ┌───────────────────┐        ┌───────────────────┐
-│ Never Trust,      │        │ Least Privilege   │        │ Assume Breach     │
-│ Always Verify     │        │ Enforcement       │        │ Architecture      │
-│ Every runner must │        │ Ephemeral tokens  │        │ Blast radius      │
-│ authenticate per  │        │ scoped strictly   │        │ restricted by     │
-│ connection with   │        │ to specific jobs  │        │ cryptographic     │
-│ posture checks.   │        │ and repos.        │        │ ABAC policies.    │
-└───────────────────┘        └───────────────────┘        └───────────────────┘
-```
+| NIST SP 800-207 FOR CI/CD |
+| --- |
+|  |
+| Never Trust, |  | Least Privilege |  | Assume Breach |
+| Always Verify |  | Enforcement |  | Architecture |
+| Every runner must |  | Ephemeral tokens |  | Blast radius |
+| authenticate per |  | scoped strictly |  | restricted by |
+| connection with |  | to specific jobs |  | cryptographic |
+| posture checks. |  | and repos. |  | ABAC policies. |
 
 * **Never Trust, Always Verify:** Every build container and deployment target must authenticate cryptographically using ephemeral keys and pass device posture verification before network access is provisioned.
 * **Least Privilege Enforcement:** Runners receive the absolute minimum network reachability needed to compile code (e.g., reaching an internal Artifactory mirror over port 443, but blocked from all internal databases).
@@ -160,32 +134,6 @@ Applying **NIST SP 800-207** to CI/CD pipelines requires re-evaluating foundatio
 ## 4. Architecture: The Runner as an Untrusted Peer
 
 In a zero-trust mesh topology, ephemeral runners do not inherit subnet-level network privileges. Instead, each runner enrols as an isolated peer on a software-defined coordination mesh:
-
-```
-                             ┌──────────────────────────────────────┐
-                             │       QuickZTNA Control Plane        │
-                             │  • OIDC Workload Identity Validation │
-                             │  • ABAC Policy Evaluation Engine     │
-                             │  • JIT Deployment Approvals & Audit  │
-                             └──────────────────┬───────────────────┘
-                                                │
-                 ┌──────────────────────────────┴──────────────────────────────┐
-                 │ Policy & Key Exchange                                       │ Policy & Key Exchange
-                 ▼                                                             ▼
-┌──────────────────────────────────┐                         ┌──────────────────────────────────┐
-│   Ephemeral Build Runner #482    │ ═══════════════════════ │    Internal Artifact Registry    │
-│   • Tag: `tag:ci`                │    Encrypted WireGuard  │    • Tag: `tag:artifact-registry`│
-│   • Identity: GitHub Actions OIDC│    P2P Tunnel (Port 443)│    • Zero Public Ingress         │
-└──────────────────────────────────┘                         └──────────────────────────────────┘
-                 │
-                 │ ❌ BLOCKED: ABAC Deny Policy
-                 ▼
-┌──────────────────────────────────┐
-│   Production Database / Host     │
-│   • Tag: `tag:prod-server`       │
-│   • Reachable ONLY via JIT Grant │
-└──────────────────────────────────┘
-```
 
 The architecture separates the **Control Plane** from the **Data Plane**:
 * **Control Plane:** Validates OIDC JWT tokens from GitHub/GitLab, evaluates ABAC rules, checks node posture, and logs events.
@@ -393,29 +341,24 @@ A frequent concern among platform engineers is that Zero Trust verification degr
 
 | Operation | Legacy VPN / Bastion Host | QuickZTNA Zero Trust Mesh | Performance Impact |
 |---|---|---|---|
-| **Initial Connection Handshake** | 1,200ms – 2,800ms (TLS + OpenVPN negotiation) | **8ms – 22ms** (WireGuard Noise_IK Handshake) | ⚡ **95% Faster** |
-| **OIDC Identity Exchange** | N/A (Static API Tokens) | **120ms** (Single token verification) | Negligible |
-| **Data Plane Throughput (10Gbps)** | ~1.8 Gbps (User-space proxy bottleneck) | **9.4 Gbps** (Linux Kernel WireGuard) | ⚡ **5.2x Higher Throughput** |
-| **JIT Access Revocation** | Manual cleanup (Often forgotten) | **Instant (< 100ms)** at TTL Expiry | 🔒 **Zero Lingering Risk** |
+| **Initial Connection Handshake** | ❌ 1,200ms – 2,800ms (TLS + OpenVPN negotiation) | ✅ **8ms – 22ms** (WireGuard Noise_IK Handshake) | ⚡ **95% Faster** |
+| **OIDC Identity Exchange** | ❌ N/A (Static API Tokens) | ✅ **120ms** (Single token verification) | Negligible |
+| **Data Plane Throughput (10Gbps)** | ❌ ~1.8 Gbps (User-space proxy bottleneck) | ✅ **9.4 Gbps** (Linux Kernel WireGuard) | ⚡ **5.2x Higher Throughput** |
+| **JIT Access Revocation** | ❌ Manual cleanup (Often forgotten) | ✅ **Instant (< 100ms)** at TTL Expiry | 🔒 **Zero Lingering Risk** |
 
 ---
 
 ## 10. Threat Modeling: CI/CD Attack Vectors vs. Zero Trust Defenses
 
-```
-┌──────────────────────────────────────────────────────────────────────────────────────────────┐
-│                                 CI/CD THREAT MITIGATION MATRIX                               │
-├──────────────────────────────────────┬───────────────────────────────────────────────────────┤
-│ Attack Vector                        │ Zero Trust Defense Mechanism                          │
-├──────────────────────────────────────┼───────────────────────────────────────────────────────┤
-│ Malicious npm/PyPI dependency        │ ABAC microsegmentation blocks all lateral subnets.    │
-│ Stolen GitHub Actions runner token   │ OIDC workload tokens expire when the build job ends.  │
-│ Compromised self-hosted VM           │ Device posture engine auto-quarantines unpatched hosts│
-│ Standing production access abuse     │ JIT approval required for all production deployments. │
-│ Lateral movement from staging to prod│ Independent WireGuard cryptographic tags isolate envs │
-│ Compliance audit failure             │ Immutable, real-time SIEM audit stream for all events.│
-└──────────────────────────────────────┴───────────────────────────────────────────────────────┘
-```
+| CI/CD THREAT MITIGATION MATRIX |
+| --- |
+| Attack Vector | Zero Trust Defense Mechanism |
+| Malicious npm/PyPI dependency | ABAC microsegmentation blocks all lateral subnets. |
+| Stolen GitHub Actions runner token | OIDC workload tokens expire when the build job ends. |
+| Compromised self-hosted VM | Device posture engine auto-quarantines unpatched hosts |
+| Standing production access abuse | JIT approval required for all production deployments. |
+| Lateral movement from staging to prod | Independent WireGuard cryptographic tags isolate envs |
+| Compliance audit failure | Immutable, real-time SIEM audit stream for all events. |
 
 ---
 

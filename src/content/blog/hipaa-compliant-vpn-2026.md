@@ -74,34 +74,23 @@ The HIPAA Security Rule (45 CFR Part 164, Subpart C) governs the technical safeg
 
 | HIPAA Safeguard (45 CFR § 164) | Regulatory Requirement | QuickZTNA Technical Implementation |
 |---|---|---|
-| **Transmission Security (§ 164.312(e))** | End-to-end encryption of ePHI in transit over public/untrusted networks. | Kernel WireGuard tunnels with ChaCha20-Poly1305 and Noise protocol. |
-| **Access Control (§ 164.312(a))** | Unique user identification, emergency access, and auto-logoff. | Scoped workload identities, MFA/SSO integration, and JIT session TTLs. |
-| **Audit Controls (§ 164.312(b))** | Record and examine activity in information systems containing ePHI. | Immutable per-packet flow logs capturing user, timestamp, target, and byte counts. |
-| **Integrity Controls (§ 164.312(c))** | Protect ePHI from improper alteration or destruction. | Cryptographic packet authentication via ChaCha20-Poly1305 AEAD. |
-| **Business Associate Agreement (BAA)** | Mandatory contract for third-party access providers processing ePHI. | Zero-knowledge mesh architecture—control plane never decrypts or stores payload data. |
+| **Transmission Security (§ 164.312(e))** | End-to-end encryption of ePHI in transit over public/untrusted networks. | ✅ Kernel WireGuard tunnels with ChaCha20-Poly1305 and Noise protocol. |
+| **Access Control (§ 164.312(a))** | Unique user identification, emergency access, and auto-logoff. | ✅ Scoped workload identities, MFA/SSO integration, and JIT session TTLs. |
+| **Audit Controls (§ 164.312(b))** | Record and examine activity in information systems containing ePHI. | ✅ Immutable per-packet flow logs capturing user, timestamp, target, and byte counts. |
+| **Integrity Controls (§ 164.312(c))** | Protect ePHI from improper alteration or destruction. | ✅ Cryptographic packet authentication via ChaCha20-Poly1305 AEAD. |
+| **Business Associate Agreement (BAA)** | Mandatory contract for third-party access providers processing ePHI. | ✅ Zero-knowledge mesh architecture—control plane never decrypts or stores payload data. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   HIPAA Technical Safeguards Architecture              │
-│                                                                        │
-│   [Healthcare Clinician / Telehealth Laptop]                           │
-│              │                                                         │
-│              ▼ (Continuous Device Posture & BitLocker/FileVault Check) │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Decoupled Control Plane (MFA / RBAC / IdP Federated)  │ │
-│   └──────────────────────────────┬───────────────────────────────────┘ │
-│                                  │ (Encrypted WireGuard Peer-to-Peer)  │
-│                                  ▼                                     │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Microsegmented EHR / PACS Medical System                        │ │
-│   │  ├── EHR Web Portal (Port 443 - Authorized Medical Staff)        │ │
-│   │  ├── DICOM Imaging Archive (Port 104 - Radiology Only)           │ │
-│   │  └── Patient Core SQL DB (Blocked from Direct Client Access)     │ │
-│   └──────────────────────────────┬───────────────────────────────────┘ │
-│                                  ▼                                     │
-│   [HIPAA Audit Log Stream ──► SIEM Pipeline (6-Year Retention)]        │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Defense in Depth: HIPAA Zero Trust Healthcare Defense-in-Depth Ring](/images/diagrams/hipaa-compliant-vpn-2026-flow.svg)
+*Figure 1.1: Concentric Defense-in-Depth Layered Security Architecture — HIPAA Zero Trust Healthcare Defense-in-Depth Ring.*
+
+### Concentric Defense-in-Depth Layer Breakdown
+
+The layered security model above outlines concentric defensive controls spanning from the hardware perimeter to the data core for **HIPAA Zero Trust Healthcare Defense-in-Depth Ring**:
+
+- **RING 1: ENDPOINT — Clinical Workstation & COW Device Posture:** Verifies full-disk encryption (BitLocker/FileVault) and active EDR before any network socket opens. *Enforced Controls:* Continuous TPM 2.0 attestation, FIDO2 badge tap, 5-minute screen lock
+- **RING 2: IDENTITY — Unique User ID & Ephemeral JIT Tokens:** Eliminates shared passwords at nursing stations; issues short-lived session credentials tied to IdP. *Enforced Controls:* SSO/OIDC federation, Just-in-Time privilege elevation, automated session termination
+- **RING 3: NETWORK — Outbound-Only WireGuard Micro-Tunnels:** No listening ports on hospital or clinic servers; traffic isolated to specific EHR application ports. *Enforced Controls:* End-to-End ChaCha20-Poly1305 encryption, 100% dark private subnets, zero lateral LAN pivoting
+- **RING 4: AUDIT — Immutable Cryptographic Audit Trail:** Logs every access decision and packet flow immutably for HIPAA §164.312(b) audit reviews. *Enforced Controls:* WORM encrypted storage, HMAC signature chains, SIEM streaming
 
 ## Who this is for
 

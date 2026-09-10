@@ -71,25 +71,33 @@ ANSSI — the Agence nationale de la sécurité des systèmes d'information — 
 
 | Question / Core Concept | Key Insight & Technical Mandate |
 |---|---|
-| **What is ANSSI's PQC Mandate?** | A 3-phase national roadmap requiring hybrid classical + post-quantum key exchange for public administration and vital operators (OIV). |
+| **What is ANSSI's PQC Mandate?** | 🛡️ A 3-phase national roadmap requiring hybrid classical + post-quantum key exchange for public administration and vital operators (OIV). |
 | **Which Algorithms are Recommended?** | ML-KEM / ML-DSA (FIPS 203/204) with an explicit preference for FrodoKEM in highest-assurance scenarios. |
 | **What is the Current Phase?** | **Phase 2 (Standardised Hybrid):** Mandatory dual key establishment (X25519 + ML-KEM) to mitigate Harvest Now, Decrypt Later. |
 | **How does QuickZTNA Comply?** | QuickZTNA provides identity-first WireGuard mesh architectures, continuous device posture, ABAC policies, and audit evidence for NIS2. |
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                     ANSSI 3-Phase PQC Transition Plan                   │
-│                                                                         │
-│  Phase 1 (2022-2024): Pre-Standard Hybrid                               │
-│  [Classical ECDH] + [Pre-Standard PQC KEM] ──► Experimental Hybrid      │
-│                                                                         │
-│  Phase 2 (2025-2030): Standardised Hybrid (Current Operational Mandate) │
-│  [X25519 / ECDH] + [FIPS 203 ML-KEM / FrodoKEM] ──► Dual Shared Secret  │
-│                                                                         │
-│  Phase 3 (Post-2030+): Pure Post-Quantum (Contingent on Cryptanalysis)  │
-│  [ML-KEM / ML-DSA Native] ──► Standalone Quantum-Safe Network Access    │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+![Regulatory Roadmap: ANSSI 3-Phase Post-Quantum Cryptographic Migration](/images/diagrams/anssi-pqc-transition-plan-flow.svg)
+*Figure 1.1: Regulatory Milestones & Compliance Migration Roadmap — ANSSI 3-Phase Post-Quantum Cryptographic Migration.*
+
+### Regulatory Mandates & Phased Migration Milestones
+
+The timeline roadmap above charts the statutory compliance gates and cryptographic migration milestones for **ANSSI 3-Phase Post-Quantum Cryptographic Migration**:
+
+- **PHASE 1 (2022 – 2025) — Hybrid Deployment & Beta:** Introduction of post-quantum key exchange alongside classical ECDH algorithms.
+  - **Requirement 1:** Deploy hybrid KEM (X25519 + ML-KEM)
+  - **Requirement 2:** Retain classical ECDH as security backstop
+  - **Requirement 3:** Prohibit pure post-quantum algorithms
+  - **Audit Deliverable:** `Cryptographic Inventory (CBOM)` (Transitional Testing — Lab testing & non-critical OIV pilot links)
+- **PHASE 2 (2026 – 2030) — Mandatory Hybridization:** Hard requirement for all French public administration and critical infrastructure.
+  - **Requirement 1:** Enforce hybrid key exchange on all external WANs
+  - **Requirement 2:** Quantum-safe firmware and software signing
+  - **Requirement 3:** SecNumCloud & CSPN qualification mandate
+  - **Audit Deliverable:** `Audited Hybrid WireGuard/TLS Configs` (Mandatory Compliance — Full enforcement across vital operators)
+- **PHASE 3 (2030+) — Pure Post-Quantum Sunset:** Classical cryptography deprecated. Full transition to standalone PQC primitives.
+  - **Requirement 1:** Complete sunset of RSA, DH, and ECC
+  - **Requirement 2:** FIPS 203/204 algorithms (ML-KEM / ML-DSA)
+  - **Requirement 3:** Pure PQC permitted for qualified equipment
+  - **Audit Deliverable:** `National Quantum Defense Certificate` (Full PQC Era — Complete classical deprecation across France)
 
 ## Who this is for
 

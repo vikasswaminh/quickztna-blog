@@ -69,29 +69,39 @@ The post-quantum cryptographic migration is driven by multiple independent timel
 
 | Jurisdiction / Sector | Near-Term Target (2025–2028) | Full Mandate / Deprecation (2030–2035) | Primary Reference |
 |---|---|---|---|
-| **US Defence & NSS** | 2025: Software & firmware signing begins | 2030 (Software exclusive) → 2035 (NSS-wide) | NSA CNSA 2.0 Advisory |
-| **EU Critical Infrastructure** | 2026: Hybrid key exchange recommended | 2030: Mandatory PQC for critical sectors | EU Coordinated PQC Roadmap & NIS2 |
+| **US Defence & NSS** | ⏳ 2025: Software & firmware signing begins | 🎯 2030 (Software exclusive) → 2035 (NSS-wide) | NSA CNSA 2.0 Advisory |
+| **EU Critical Infrastructure** | ⏳ 2026: Hybrid key exchange recommended | 🎯 2030: Mandatory PQC for critical sectors | EU Coordinated PQC Roadmap & NIS2 |
 | **Germany (BSI)** | 2024–2026: Hybrid deployment baseline | 2030+: Phase-out of classical-only crypto | BSI TR-02102-1 |
 | **France (ANSSI)** | Phase 1 & 2: Standardised Hybrid (ML-KEM) | Phase 3: Pure PQC contingent on maturity | ANSSI PQC Views |
 | **Global Browsers & CDNs** | 2024–2026: Default X25519MLKEM768 in TLS 1.3 | Deprecation of pure classical ECDH groups | IETF / Chromium / Cloudflare |
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                 Global Post-Quantum Migration Master Timeline           │
-│                                                                         │
-│  2024: NIST FIPS Standardization (FIPS 203, 204, 205 finalized)         │
-│                                                                         │
-│  2025: US NSA CNSA 2.0 software/firmware signing transition begins      │
-│                                                                         │
-│  2026: Hybrid X25519+ML-KEM adopted across browsers, CDNs, and ZTNA     │
-│                                                                         │
-│  2030: EU Critical Systems deadline & NSA firmware exclusive PQC        │
-│                                                                         │
-│  2033: NSA Networking & Operating Systems exclusively post-quantum      │
-│                                                                         │
-│  2035: 100% US National Security Systems Cutover Complete               │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+![Regulatory Roadmap: Global Post-Quantum Migration Regulatory Horizon](/images/diagrams/post-quantum-migration-timeline-flow.svg)
+*Figure 1.1: Regulatory Milestones & Compliance Migration Roadmap — Global Post-Quantum Migration Regulatory Horizon.*
+
+### Regulatory Mandates & Phased Migration Milestones
+
+The timeline roadmap above charts the statutory compliance gates and cryptographic migration milestones for **Global Post-Quantum Migration Regulatory Horizon**:
+
+- **PHASE 1: STANDARDS (2024 – 2025) — Standardization & CBOM:** NIST finalizes FIPS 203, 204, 205. Organizations conduct cryptographic inventory.
+  - **Requirement 1:** NIST FIPS 203 (ML-KEM) published
+  - **Requirement 2:** Cryptographic Bill of Materials (CBOM)
+  - **Requirement 3:** Identify Harvest Now Decrypt Later risks
+  - **Audit Deliverable:** `Enterprise CBOM Audit` (Standards Active — Global standards locked into law)
+- **PHASE 2: HYBRID DEPLOY (2026 – 2028) — Hybrid VPN & Edge Migration:** Deployment of dual-key classical + post-quantum algorithms on external ingress.
+  - **Requirement 1:** Deploy hybrid X25519 + ML-KEM-768
+  - **Requirement 2:** CNSA 2.0 software signing mandate
+  - **Requirement 3:** EU BSI/ANSSI critical sector rollout
+  - **Audit Deliverable:** `Hybrid WireGuard / TLS Validated` (Production Mandate — External networks hardened)
+- **PHASE 3: SUNSET BEGINS (2030 – 2033) — Classical Deprecation Gate:** Mandatory deprecation of classical-only public key algorithms across critical infrastructure.
+  - **Requirement 1:** RSA-2048 & ECC prohibited by NSA
+  - **Requirement 2:** Web, cloud, and OS must use PQC
+  - **Requirement 3:** Financial banking standards cutover
+  - **Audit Deliverable:** `Elimination of Legacy Ciphers` (Mandatory Sunset — Classical crypto illegal in defense)
+- **PHASE 4: FULL PQC ERA (2035+) — 100% Quantum Resistance:** All National Security Systems and global critical infrastructure fully quantum-safe.
+  - **Requirement 1:** Total elimination of classical public keys
+  - **Requirement 2:** Legacy equipment hardware refresh complete
+  - **Requirement 3:** Pure PQC formal verification enforced
+  - **Audit Deliverable:** `Zero Legacy Cryptography Attested` (Complete Quantum Safety — Global critical infrastructure secure)
 
 ## Who this is for
 
@@ -124,6 +134,9 @@ A coherent post-quantum plan addresses all four. An organisation-specific plan i
 NIST standards are the foundation. Everything downstream (FIPS 140-3 module validation, vendor implementations, compliance regimes) builds on them.
 
 ## 3. US National Security Systems (NSA CNSA 2.0)
+
+![Global Post-Quantum Migration Master Timeline](/images/diagrams/post-quantum-timeline-chart.svg)
+*Figure 1.3: Multi-Jurisdiction PQC Cutover Roadmap — NIST FIPS, NSA CNSA 2.0, and BSI TR-02102-1 Deadlines (2024–2035).*
 
 From the [September 2022 NSA Cybersecurity Advisory](https://media.defense.gov/2022/Sep/07/2003071834/-1/-1/0/CSA_CNSA_2.0_ALGORITHMS_.PDF). See [our CNSA 2.0 deadlines post](/blog/cnsa-2-0-deadlines) for the detail.
 

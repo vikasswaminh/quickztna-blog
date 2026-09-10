@@ -61,9 +61,11 @@ relatedSlugs:
 
 | Framework / Acronym | Scope & Primary Components | Target Organization Size | Typical Buying / Deployment Model |
 | :--- | :--- | :--- | :--- |
-| **SASE (Secure Access Service Edge)** | Converged SD-WAN (Networking) + SSE (Security: ZTNA, SWG, CASB, FWaaS) | Large Enterprise (500+ users, branch offices) | Single-vendor unified suite ($$$$); multi-year rollout |
-| **SSE (Security Service Edge)** | Security-only half of SASE: ZTNA + SWG + CASB + FWaaS (No SD-WAN) | Mid-to-Large Enterprise (100–1000+ users) | Overlay onto existing ISP/SD-WAN network connectivity |
+| **SASE (Secure Access Service Edge)** | 🌐 Converged SD-WAN (Networking) + SSE (Security: ZTNA, SWG, CASB, FWaaS) | Large Enterprise (500+ users, branch offices) | Single-vendor unified suite ($$$$); multi-year rollout |
+| **SSE (Security Service Edge)** | 🛡️ Security-only half of SASE: ZTNA + SWG + CASB + FWaaS (No SD-WAN) | Mid-to-Large Enterprise (100–1000+ users) | Overlay onto existing ISP/SD-WAN network connectivity |
 | **ZTNA (Zero Trust Network Access)** | Granular, identity-aware access to specific private internal apps/servers | All sizes (1 to 10,000+ users; ideal for 50-person teams) | Fast, lightweight agent or browser gateway deployment |
+
+
 
 SASE (Secure Access Service Edge) is a Gartner-coined architecture combining SD-WAN networking and four security components: ZTNA, SWG, CASB, and FWaaS. SSE (Security Service Edge) is the security-only subset of SASE, introduced by Gartner in 2021. ZTNA (Zero Trust Network Access) is one of the components of both. In practice, a 50-person team rarely needs full SASE — the cost and complexity are shaped for enterprises. A focused ZTNA product plus a handful of discrete security tools usually covers the real need. This post explains the three terms precisely, shows where they overlap, and recommends what a small team should buy and in what order.
 
@@ -75,43 +77,16 @@ CIOs, security leads, and engineering managers at mid-sized organisations (30–
 
 ## 1. Origins of each term
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                    THE SASE vs SSE vs ZTNA RELATIONSHIP                     │
-└─────────────────────────────────────────────────────────────────────────────┘
+![Scope Analysis: SASE vs. SSE vs. ZTNA Architectural Scope Matrix](/images/diagrams/sase-vs-ztna-vs-sse-flow.svg)
+*Figure 1.1: Architectural Scope & Convergence Analysis — SASE vs. SSE vs. ZTNA Architectural Scope Matrix.*
 
- ┌──────────────────────────────────────────────────────────────────────────┐
- │                     SASE (Secure Access Service Edge)                    │
- │                                                                          │
- │  ┌────────────────────────┐    ┌──────────────────────────────────────┐  │
- │  │        NETWORKING      │    │       SSE (Security Service Edge)    │  │
- │  │                        │    │                                      │  │
- │  │  • SD-WAN Routing      │    │  ┌────────────────────────────────┐  │  │
- │  │  • Multi-Path BGP      │    │  │  ZTNA (Zero Trust Net Access)  │  │  │
- │  │  • Branch Office MPLS  │    │  │  • Private App Tunnels         │  │  │
- │  │    Replacement         │    │  │  • Continuous Device Posture   │  │  │
- │  │  • WAN Optimization    │    │  │  • Identity-First Access (ABAC)│  │  │
- │  │                        │    │  └────────────────────────────────┘  │  │
- │  │                        │    │  • SWG (Secure Web Gateway)          │  │  │
- │  │                        │    │  • CASB (Cloud Access Sec Broker)    │  │  │
- │  │                        │    │  • FWaaS (Firewall as a Service)     │  │  │
- │  └────────────────────────┘    └──────────────────────────────────────┘  │
- └──────────────────────────────────────────────────────────────────────────┘
-```
+### Architectural Scope & Boundary Overlap Analysis
 
-### SASE, 2019
+The Venn diagram above models the distinct responsibilities and convergence points across SASE, SSE, and ZTNA for **SASE vs. SSE vs. ZTNA Architectural Scope Matrix**:
 
-Gartner published "The Future of Network Security Is in the Cloud" in August 2019, coining SASE. The argument: as applications and users moved to the cloud, the WAN and security stack had to follow. The paper described a converged architecture combining SD-WAN and cloud-delivered security services.
-
-### ZTNA, 2019
-
-Gartner's "Market Guide for Zero Trust Network Access" defined ZTNA as a product category. It formalised the architectural principles popularised by [Google BeyondCorp](https://cloud.google.com/beyondcorp) and Forrester's Zero Trust framing into a market-research-level product category.
-
-### SSE, 2021
-
-Gartner introduced SSE in early 2021 to describe the pattern of buying SASE's security components separately from the networking components. Many organisations already had SD-WAN or MPLS networking; they wanted to add the security half without replacing the networking half.
-
-Timing matters: SSE is the more recent term and reflects how the buying decision evolved over the two years since SASE was introduced.
+- **SASE (Secure Access Service Edge):** Encompasses wide-area networking (SD-WAN) and cloud-delivered security services into a comprehensive global architecture.
+- **SSE (Security Service Edge):** Focuses specifically on the unified security service stack (SWG, CASB, and DLP) delivered from the cloud edge.
+- **ZTNA (Zero Trust Network Access):** Forms the foundational, identity-bound, dark-endpoint connectivity layer providing direct, least-privilege tunnels to private enterprise workloads.
 
 ## 2. SASE — the Gartner definition, unpacked
 
@@ -158,23 +133,8 @@ For teams that do not need full SASE (or full SSE), buying only ZTNA is a valid 
 
 ## 5. How the three relate, visually
 
-```
-                    ┌──────────────────────────────────────────┐
-                    │                   SASE                   │
-                    │  ┌───────────────────────────────────┐   │
-                    │  │              SSE                   │   │
-                    │  │  ┌─────────┐  ┌─────┐  ┌─────┐     │   │
-                    │  │  │  ZTNA   │  │ SWG │  │CASB │     │   │
-                    │  │  └─────────┘  └─────┘  └─────┘     │   │
-                    │  │  ┌─────────┐                       │   │
-                    │  │  │ FWaaS   │                       │   │
-                    │  │  └─────────┘                       │   │
-                    │  └───────────────────────────────────┘   │
-                    │  ┌───────────────────────────────────┐   │
-                    │  │              SD-WAN                │   │
-                    │  └───────────────────────────────────┘   │
-                    └──────────────────────────────────────────┘
-```
+![SASE vs SSE vs ZTNA Venn Architecture](/images/diagrams/sase-sse-ztna-relationship.svg)
+*Figure 1.3: Architectural Scope Hierarchy — ZTNA as the Core Foundation of SSE and Converged SASE.*
 
 ZTNA is inside SSE is inside SASE. You can buy just the inner box (ZTNA), the middle box (SSE), or the full outer box (SASE). Most vendors sell one or two, not all three cleanly.
 

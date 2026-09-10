@@ -70,30 +70,39 @@ CNSA 2.0 is the United States National Security Agency's Commercial National Sec
 
 | Requirement / Scope | CNSA 2.0 Specification |
 |---|---|
-| **Governing Authority & Scope** | US National Security Agency (NSA); mandatory for all US National Security Systems (NSS) up to TOP SECRET. |
+| **Governing Authority & Scope** | 🏛️ US National Security Agency (NSA); mandatory for all US National Security Systems (NSS) up to TOP SECRET. |
 | **Mandatory PQC Algorithms** | ML-KEM-1024 (Key Exchange), ML-DSA-87 (Digital Signatures), LMS / XMSS (Stateful Firmware Signing). |
 | **Symmetric Baseline** | AES-256 (Encryption) and SHA-384 / SHA-512 (Hashing) remain compliant without changes. |
 | **Transition Milestones** | 2025 (Firmware signing begins) → 2030 (Firmware exclusive) → 2033 (Network/OS) → 2035 (Complete NSS-wide). |
 | **Zero Trust Layering** | Enforce continuous device posture, ABAC microsegmentation, and JIT elevation alongside compliant tunnels via QuickZTNA. |
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    NSA CNSA 2.0 Transition Timeline                     │
-│                                                                         │
-│  2025: Software & Firmware Signing Transition Begins                    │
-│  ├── LMS / HSS / XMSS stateful hash-based signatures introduced         │
-│                                                                         │
-│  2030: Software / Firmware Mandatory & Web / Cloud Support Begins       │
-│  ├── Software signing exclusively PQC                                   │
-│  ├── Web browsers, servers, and cloud services support ML-KEM-1024      │
-│                                                                         │
-│  2033: Networking Equipment & Operating Systems Exclusively PQC         │
-│  ├── Routers, VPNs, ZTNA gateways, and OS kernels mandate ML-KEM / DSA  │
-│                                                                         │
-│  2035: Full NSS Cutover (Complete Classical Deprecation)                │
-│  └── 100% of US National Security Systems operating on CNSA 2.0 suite   │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+![Regulatory Roadmap: NSA Commercial National Security Algorithm (CNSA 2.0) Roadmap](/images/diagrams/cnsa-2-0-deadlines-flow.svg)
+*Figure 1.1: Regulatory Milestones & Compliance Migration Roadmap — NSA Commercial National Security Algorithm (CNSA 2.0) Roadmap.*
+
+### Regulatory Mandates & Phased Migration Milestones
+
+The timeline roadmap above charts the statutory compliance gates and cryptographic migration milestones for **NSA Commercial National Security Algorithm (CNSA 2.0) Roadmap**:
+
+- **MILESTONE 1 (2025 – 2030) — Software & Firmware Signing:** Initial mandate focusing on software supply chain, OS boot, and code signing.
+  - **Requirement 1:** Begin ML-DSA / LMS / XMSS signing in 2025
+  - **Requirement 2:** Exclusive use mandatory by 2030
+  - **Requirement 3:** RSA/ECDSA signatures prohibited post-2030
+  - **Audit Deliverable:** `CNSA 2.0 Supply Chain Attestation` (In Progress (2025) — Firmware, OS bootloaders, and code signers)
+- **MILESTONE 2 (2025 – 2033) — Web Browsers & Cloud Ingress:** Protection of external web traffic, cloud services, and client TLS endpoints.
+  - **Requirement 1:** Begin hybrid TLS 1.3 key exchange in 2025
+  - **Requirement 2:** ML-KEM-1024 or ML-KEM-768 standard
+  - **Requirement 3:** Exclusive post-quantum TLS by 2033
+  - **Audit Deliverable:** `FIPS 203 Validated Ingress` (Cloud Mandate — Browsers, servers, and ingress proxies)
+- **MILESTONE 3 (2026 – 2030) — Networking Equipment & VPNs:** Routers, firewalls, site-to-site VPNs, and Zero Trust gateways.
+  - **Requirement 1:** Begin PQC VPN deployment in 2026
+  - **Requirement 2:** Exclusive PQC VPN enforcement by 2030
+  - **Requirement 3:** Classical IKEv2 / IPsec / OpenVPN phased out
+  - **Audit Deliverable:** `Quantum-Resistant Overlay Mesh` (Critical Infrastructure — All gateway and tunnel infrastructure)
+- **MILESTONE 4 (2031 – 2035) — Total Sunset: Legacy Hardware:** Full deprecation of custom ASICs, legacy equipment, and all NSS hardware.
+  - **Requirement 1:** Legacy hardware upgrade beginning in 2031
+  - **Requirement 2:** 100% quantum-safe across entire US NSS by 2035
+  - **Requirement 3:** Zero classical public-key cryptography permitted
+  - **Audit Deliverable:** `NSS Complete PQC Compliance` (Final Sunset — Absolute deadline for all US defense systems)
 
 ## Who this is for
 

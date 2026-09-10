@@ -91,25 +91,21 @@ And even after you solve reachability, the third problem remains: **identity**. 
 
 This is the gap this post is about. Serverless is the fastest-growing compute model in the industry, and it is also the place where the "trusted network location" model is most obviously wrong. The fix is not a bigger NAT gateway. It is treating the function as an untrusted peer with an identity, a policy, and a private path.
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                           Managed Cloud Island                          │
-│                                                                         │
-│   ┌────────────────────────┐         ❌ Direct Path Blocked              │
-│   │ AWS Lambda / Cloud Run │ ───────────────────────────────────────┐   │
-│   └────────────────────────┘                                        │   │
-└─────────────────────────────────────────────────────────────────────┼───┘
-                                                                      │
-                                                                      ▼
-┌─────────────────────────────────────────────────────────────────────────┐
-│                           Private Corporate VPC                         │
-│                                                                         │
-│                    ┌──────────────────────────────┐                     │
-│                    │   Private Subnet (Postgres)  │                     │
-│                    │     Host: 10.0.4.15:5432     │                     │
-│                    └──────────────────────────────┘                     │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+![Mesh Topology: Serverless Zero Trust Mesh: Ephemeral Lambda to Dark Aurora](/images/diagrams/serverless-zero-trust-aws-lambda-cloud-functions-flow.svg)
+*Figure 1.1: Distributed Mesh Topology & Multi-Cloud Peering Matrix — Serverless Zero Trust Mesh: Ephemeral Lambda to Dark Aurora.*
+
+### Distributed Mesh Topology & Multi-Cloud Peering Matrix
+
+The network topology above maps the peer-to-peer overlay and encrypted data plane for **Serverless Zero Trust Mesh: Ephemeral Lambda to Dark Aurora**:
+
+- **Coordination Layer (QuickZTNA In-Memory Serverless Policy Broker):** Provides sub-50ms ephemeral identity attestation for serverless compute runtimes without VPC routing table locks
+- **Distributed Mesh Nodes:**
+  - **AWS Serverless (us-east-1) (AWS Lambda Runtime):** 100.64.50.1 (ztna0). Ephemeral Micro-WireGuard Connector; Sub-50ms Cold Start / Zero VPC ENI.
+  - **Private Database VPC (Amazon RDS Aurora Postgres):** 100.64.50.10 (ztna0). 100% Dark in Private Subnet; 0.0.0.0/0 INGRESS: DROP ALL.
+  - **GCP Cloud Functions (GCP Cloud Run Service):** 100.64.50.20 (ztna0). Cross-Cloud Microservice Mesh; Zero Public IP / Zero NAT Gateway.
+  - **DevOps Monitoring (Datadog / SIEM Collector):** 100.64.50.30 (ztna0). Cryptographic Event Auditing; Per-Invocation Invocation Telemetry.
+- **Direct Point-to-Point Transit:** Endpoints negotiate direct UDP sockets via STUN/DERP hole-punching, entirely bypassing centralized VPN concentrator bottlenecks.
+
 
 ---
 
@@ -148,17 +144,17 @@ There are four ways to connect a serverless function to a private resource. Each
 |  [Lambda] -> (ENI) -> [VPC Subnet] -> [NAT Gateway] -> [Internet/DB]    |
 |  Drawback: High cold start (1-3s), per-GB NAT egress, location trust.   |
 +-------------------------------------------------------------------------+
-|                  2. VPC Endpoints (AWS PrivateLink)                     |
-|  [Lambda] -> [PrivateLink Interface] -> [Managed AWS Service Only]      |
-|  Drawback: Limited to supported cloud services; no custom servers.      |
+| ❌ 2. VPC Endpoints (AWS PrivateLink) |
+| ❌ [Lambda] -> [PrivateLink Interface] -> [Managed AWS Service Only] |
+| ❌ Drawback: Limited to supported cloud services; no custom servers. |
 +-------------------------------------------------------------------------+
 |                  3. Private Service Connect (GCP)                       |
 |  [Cloud Run] -> [PSC Forwarding Rule] -> [Managed GCP Service Only]     |
 |  Drawback: GCP-only; cannot reach on-prem or arbitrary legacy apps.     |
 +-------------------------------------------------------------------------+
-|                  4. Encrypted WireGuard Mesh + ABAC                     |
-|  [Function] -> (Workload Identity) -> [WireGuard Tunnel] -> [Node/DB]  |
-|  Benefit: Least-privilege ABAC, no NAT bill, multi-cloud, zero public IP|
+| ❌ 4. Encrypted WireGuard Mesh + ABAC |
+| ❌ [Function] -> (Workload Identity) -> [WireGuard Tunnel] -> [Node/DB] |
+| ❌ Benefit: Least-privilege ABAC, no NAT bill, multi-cloud, zero public IP |
 +-------------------------------------------------------------------------+
 ```
 
@@ -241,22 +237,12 @@ Because evaluation is per connection, a policy change is immediate. Denying acce
 6. The connection is logged: who, what, when, allowed or denied.
 7. The function completes, the credential expires, and the connection closes.
 
-```
-┌──────────────┐     1. Trigger     ┌──────────────────┐
-│ Event Source │ ─────────────────► │ Lambda Function  │
-└──────────────┘                    └─────────┬────────┘
-                                              │ 2. OIDC Workload Auth
-                                              ▼
-                                    ┌──────────────────┐
-                                    │ QuickZTNA Auth   │
-                                    └─────────┬────────┘
-                                              │ 3. Policy & Route
-                                              ▼
-┌──────────────────┐   4. WireGuard ┌──────────────────┐
-│ Private Postgres │ ◄───────────── │ QuickZTNA Mesh   │
-│ 10.0.4.15:5432   │   (Port 5432)  │ (Encrypted Pipe) │
-└──────────────────┘                └──────────────────┘
-```
+> [!NOTE]
+> **Serverless Zero-Trust Invocation Sequence:**
+> 1. **Event Trigger:** Client / EventBridge triggers serverless function.
+> 2. **OIDC Workload Auth:** Function issues ephemeral JWT token via Workload Identity.
+> 3. **WireGuard Micro-Tunnel:** Kernel extension establishes authenticated tunnel to target backend.
+> 4. **Resource Access:** Scoped SQL / internal API request executed; zero lateral network exposure.
 
 ### The Cold-Start Reality: In-Process Client vs. Gateway Pattern
 
@@ -365,19 +351,13 @@ Consider a function with 10 million invocations/month, each transferring 50 KB t
 
 ## 11. Security Threat Model & Attack Blast Radius
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│ VPC-Attached Model (Location Trust):                                   │
-│ [Compromised Lambda] ──► Subnet Scan ──► Access to ANY subnet host     │
-│ Blast Radius: ENTIRE SUBNET / VPC                                      │
-└────────────────────────────────────────────────────────────────────────┘
-
-┌────────────────────────────────────────────────────────────────────────┐
-│ Mesh + ABAC Model (Zero Trust):                                        │
-│ [Compromised Lambda] ──► Blocked by ABAC ──► Only reached DB port 5432 │
-│ Blast Radius: BOUNDED STRICTLY TO AUTHORIZED TARGET PORT               │
-└────────────────────────────────────────────────────────────────────────┘
-```
+> [!NOTE]
+> • VPCAttached Model (Location Trust):
+> • [Compromised Lambda] ► Subnet Scan ► Access to ANY subnet host
+> • Blast Radius: ENTIRE SUBNET / VPC
+> • Mesh  ABAC Model (Zero Trust):
+> • [Compromised Lambda] ► Blocked by ABAC ► Only reached DB port 5432
+> • Blast Radius: BOUNDED STRICTLY TO AUTHORIZED TARGET PORT
 
 The most realistic serverless compromise is a **malicious dependency** (e.g. from npm or PyPI). In a VPC-attached model, the compromised package inherits the Lambda's network placement and can pivot to any subnet resource. In a Zero Trust mesh model, the attacker inherits only the function's narrow ABAC policy (e.g. TCP port 5432 on a single DB host). Lateral movement across the VPC is blocked.
 
@@ -418,21 +398,21 @@ The most realistic serverless compromise is a **malicious dependency** (e.g. fro
 
 | Option | Reaches Arbitrary Private Resources | Identity-Based Policy | No NAT Cost | Multi-Cloud | On-Prem |
 |---|---|---|---|---|---|
-| **VPC Attachment + NAT** | Yes | No | No | No | No |
-| **VPC Endpoints (PrivateLink)** | No (Managed services only) | Partial | Yes | No | No |
-| **Private Service Connect (GCP)** | No (Managed services only) | Partial | Yes | No | No |
+| **VPC Attachment + NAT** | ✅ Yes | ❌ No | ❌ No | ❌ No | ❌ No |
+| **VPC Endpoints (PrivateLink)** | ❌ No (Managed services only) | ⚠️ Partial | ✅ Yes | ❌ No | ❌ No |
+| **Private Service Connect (GCP)** | ❌ No (Managed services only) | ⚠️ Partial | ✅ Yes | ❌ No | ❌ No |
 | **WireGuard Mesh + ABAC** | **Yes** | **Yes** | **Yes** | **Yes** | **Yes** |
 
 ### Zero-Trust Layer vs. VPC Attachment
 
 | Attribute | VPC Attachment | Mesh + ABAC (QuickZTNA) |
 |---|---|---|
-| **Trust Model** | By location (subnet) | By cryptographic identity |
-| **Cold-Start Impact** | 1–3s ENI attachment latency | Minimal / sub-50ms |
-| **NAT Egress Cost** | Yes (per-GB + hourly) | None ($0) |
-| **Public IP on Resource** | No | No |
-| **Multi-Cloud Support** | No (single VPC locked) | Yes (AWS, GCP, Azure, on-prem) |
-| **Blast Radius on Compromise** | The entire subnet | Strictly the policy rule |
+| **Trust Model** | ❌ By location (subnet) | ✅ By cryptographic identity |
+| **Cold-Start Impact** | ❌ 1–3s ENI attachment latency | ✅ Minimal / sub-50ms |
+| **NAT Egress Cost** | ❌ Yes (per-GB + hourly) | ✅ None ($0) |
+| **Public IP on Resource** | ❌ No | ✅ No |
+| **Multi-Cloud Support** | ❌ No (single VPC locked) | ✅ Yes (AWS, GCP, Azure, on-prem) |
+| **Blast Radius on Compromise** | ❌ The entire subnet | ✅ Strictly the policy rule |
 
 ---
 

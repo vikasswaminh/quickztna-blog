@@ -70,32 +70,25 @@ ML-KEM-768 is the NIST-standardised post-quantum key encapsulation mechanism pub
 
 | Parameter | FIPS 203 Specification (ML-KEM-768) |
 |---|---|
-| **Hardness Assumption** | Module Learning With Errors (M-LWE) over polynomial rings. |
-| **NIST Security Level** | Category 3 (Equivalent to the security strength of AES-192). |
+| **Hardness Assumption** | 🛡️ Module Learning With Errors (M-LWE) over polynomial rings. |
+| **NIST Security Level** | ✅ Category 3 (Equivalent to the security strength of AES-192). |
 | **Public Key Size ($pk$)** | 1,184 Bytes |
 | **Ciphertext Size ($ct$)** | 1,088 Bytes |
 | **Shared Secret Size ($ss$)** | 32 Bytes (256-bit symmetric entropy) |
 | **Computation Speed** | Encapsulation and decapsulation execute in under 100 microseconds on modern x86/ARM cores. |
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                      ML-KEM-768 Key Encapsulation Flow                  │
-│                                                                         │
-│   [Receiver / Server]                               [Sender / Client]   │
-│            │                                                │           │
-│   1. KeyGen()                                               │           │
-│      ├── Public Key (pk: 1,184 B) ─────────────────────────►│           │
-│      └── Secret Key (sk: 2,400 B)                           │           │
-│                                                     2. Encap(pk)        │
-│                                                        ├── Shared Secret│
-│            │◄────── Ciphertext (ct: 1,088 B) ──────────┤   (SS: 32 B)   │
-│            │                                           └── ct           │
-│   3. Decap(ct, sk)                                                      │
-│      └── Derived Shared Secret (SS: 32 B)                               │
-│                                                                         │
-│   Result: Identical 256-bit symmetric key established without ECDH      │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+![Benchmark Comparison: ML-KEM-768 (FIPS 203) Cryptographic Wire Size Budget](/images/diagrams/ml-kem-768-explained-flow.svg)
+*Figure 1.1: Empirical Benchmark Comparison & Overhead Metrics — ML-KEM-768 (FIPS 203) Cryptographic Wire Size Budget.*
+
+### Empirical Benchmark Analysis & Comparative Metrics
+
+The benchmark chart above quantifies **Cryptographic Material Size on Wire (Bytes)** across evaluated architectures for **ML-KEM-768 (FIPS 203) Cryptographic Wire Size Budget**:
+
+- **ML-KEM Secret Key (Private Decapsulation Key (sk)):** `2,400 Bytes`
+- **ML-KEM Public Key (Client Public Encapsulation Key (pk)):** `1,184 Bytes`
+- **ML-KEM Ciphertext (Encapsulated Ciphertext Payload (ct)):** `1,088 Bytes`
+- **ML-KEM Shared Secret (Derived Symmetric Entropy (K)):** `32 Bytes` (*AES-192 Strength*)
+- **Classical X25519 Key (Standard Curve25519 Public Key):** `32 Bytes`
 
 ## Who this is for
 
@@ -137,6 +130,9 @@ There is one subtle but important property: ML-KEM is IND-CCA2 secure. That mean
 
 ## 4. Size budget: bytes on the wire
 
+![Key Encapsulation Wire Size Budget Comparison](/images/diagrams/ml-kem-768-wire-size-comparison.svg)
+*Figure 1.3: Size Budget Comparison — Public Key ($pk$) vs Ciphertext ($ct$) Wire Overhead for X25519, ML-KEM-768, and FrodoKEM-976.*
+
 For ML-KEM-768, the byte sizes are fixed by the standard.
 
 | Artefact | Bytes |
@@ -164,9 +160,9 @@ NIST defined five security categories for the post-quantum competition, anchored
 
 | Category | Classical strength reference | ML-KEM parameter |
 |---|---|---|
-| 1 | At least as hard to break as AES-128 via exhaustive key search | ML-KEM-512 |
-| 3 | At least as hard to break as AES-192 via exhaustive key search | ML-KEM-768 |
-| 5 | At least as hard to break as AES-256 via exhaustive key search | ML-KEM-1024 |
+| 1 | ✅ At least as hard to break as AES-128 via exhaustive key search | ML-KEM-512 |
+| 3 | ✅ At least as hard to break as AES-192 via exhaustive key search | ML-KEM-768 |
+| 5 | ✅ At least as hard to break as AES-256 via exhaustive key search | ML-KEM-1024 |
 
 You rarely have to agonise over the choice.
 

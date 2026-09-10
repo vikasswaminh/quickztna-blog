@@ -80,34 +80,35 @@ Traditional post-merger network integration — site-to-site VPN tunnels, IP ren
 
 | Integration Phase | Legacy Site-to-Site VPN Approach | QuickZTNA Zero Trust Day-1 Access |
 |---|---|---|
-| **Timeline to Day-1 Access** | 12 to 18 months (Blocked on IP renumbering & firewall merges). | **48 to 72 hours** (Identity federation + application connectors). |
-| **IP Overlap Handling (e.g. 10.0.0.0/8)** | High friction; requires complex Carrier-Grade NAT (CGNAT). | Zero IP renumbering needed; routed via MagicDNS mesh names. |
-| **Attack Blast Radius** | Flat cross-company subnet bridge exposes acquirer to acquired malware. | Complete network isolation; access granted per application only. |
-| **Identity Management** | Slow forest trust / Active Directory domain migration. | Multi-IdP federation (Okta, Azure AD, Google Workspace in parallel). |
-| **Post-Integration Decommissioning** | Fragile VPN teardown risking unnoticed dependency breaks. | Clean resource catalog removal with zero network downtime. |
+| **Timeline to Day-1 Access** | ❌ 12 to 18 months (Blocked on IP renumbering & firewall merges). | ✅ **48 to 72 hours** (Identity federation + application connectors). |
+| **IP Overlap Handling (e.g. 10.0.0.0/8)** | ❌ High friction; requires complex Carrier-Grade NAT (CGNAT). | ✅ Zero IP renumbering needed; routed via MagicDNS mesh names. |
+| **Attack Blast Radius** | ❌ Flat cross-company subnet bridge exposes acquirer to acquired malware. | ✅ Complete network isolation; access granted per application only. |
+| **Identity Management** | ❌ Slow forest trust / Active Directory domain migration. | ✅ Multi-IdP federation (Okta, Azure AD, Google Workspace in parallel). |
+| **Post-Integration Decommissioning** | ❌ Fragile VPN teardown risking unnoticed dependency breaks. | ✅ Clean resource catalog removal with zero network downtime. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   M&A Zero Trust Day-1 Network Integration             │
-│                                                                        │
-│   [Acquiring Corp (Company A)]                [Acquired Entity (Co B)] │
-│   ├── IdP: Okta                               ├── IdP: Entra ID        │
-│   └── Subnet: 10.0.0.0/16                     └── Subnet: 10.0.0.0/16  │
-│            │                                           │               │
-│            ▼                                           ▼               │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Unified Multi-IdP Mesh Control Plane                  │ │
-│   │  (No IP Renumbering · Resolves Overlaps via Encrypted Tailnet)   │ │
-│   └────────────────────────────┬─────────────────────────────────────┘ │
-│                                │                                       │
-│                ┌───────────────┴───────────────┐                       │
-│                ▼ (WireGuard Micro-Tunnel)      ▼ (WireGuard Tunnel)    │
-│   ┌──────────────────────────┐    ┌──────────────────────────────────┐ │
-│   │  Company A ERP Core      │    │  Company B Product Database      │ │
-│   │  (Co B Finance Team Only)│    │  (Co A Dev Team JIT Access Only) │ │
-│   └──────────────────────────┘    └──────────────────────────────────┘ │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Regulatory Roadmap: M&A Network Integration: Day-0 to Day-30 Rapid Access](/images/diagrams/zero-trust-ma-integration-flow.svg)
+*Figure 1.1: Regulatory Milestones & Compliance Migration Roadmap — M&A Network Integration: Day-0 to Day-30 Rapid Access.*
+
+### Regulatory Mandates & Phased Migration Milestones
+
+The timeline roadmap above charts the statutory compliance gates and cryptographic migration milestones for **M&A Network Integration: Day-0 to Day-30 Rapid Access**:
+
+- **DAY 0 – 3 (Hours 0 – 72) — Identity Federation & Discovery:** Connect acquirer and target IdPs (Okta + Entra ID) without AD forest trusts.
+  - **Requirement 1:** Federate Identity Providers via OIDC
+  - **Requirement 2:** Deploy QuickZTNA Subnet Connectors
+  - **Requirement 3:** Zero network renumbering required
+  - **Audit Deliverable:** `Catalog of Shared Business Apps` (Day-1 Access Ready — Target ERP accessible in 48 hours)
+- **DAY 4 – 14 (Weeks 1 – 2) — MagicDNS Mesh & Overlap Resolution:** Resolve overlapping 10.0.0.0/8 and 192.168.1.0/24 subnets via Carrier-Grade NAT.
+  - **Requirement 1:** Route via unique MagicDNS hostnames
+  - **Requirement 2:** Isolate target corporate subnet
+  - **Requirement 3:** Prevent cross-company malware spread
+  - **Audit Deliverable:** `Dual-Company Routing Matrix` (Subnet Overlap Resolved — Both companies use 10.0.0.0/8 safely)
+- **DAY 15 – 30 (Month 1) — Least-Privilege ABAC Lockdown:** Restrict cross-company access strictly to approved role-based applications.
+  - **Requirement 1:** Apply fine-grained ABAC policies
+  - **Requirement 2:** Enable continuous device posture
+  - **Requirement 3:** Integrate joint SIEM compliance logs
+  - **Audit Deliverable:** `SOC 2 Merged Audit Attestation` (Zero Trust Enforced — Standing subnet access eliminated)
+
 
 ---
 
@@ -285,10 +286,10 @@ Zero trust access during an integration period introduces less network overhead 
 | :--- | :--- | :--- | :--- | :--- |
 | **Site-to-Site VPN** | Hours to Days | **Yes (Full Subnet Reachability)** | Poor (Tunnels Persist) | Weak (Firewall Logs Only) |
 | **Full Network Merge** | 6 to 18 Months | **Yes (End-State Trust)** | Very Poor (Irreversible) | Absent During Transition |
-| **Manual Per-User RDP/VPN** | Days (Doesn't Scale) | Partial (Broad Once In) | Moderate | Inconsistent Across Teams |
+| **Manual Per-User RDP/VPN** | Days (Doesn't Scale) | ⚠️ Partial (Broad Once In) | Moderate | Inconsistent Across Teams |
 | **SD-WAN Interconnect** | Days to Weeks | **Yes (Network-Level)** | Moderate | Moderate |
 | **QuickZTNA Resource Mesh** | **48–72 Hours (Pilot)** | **No (Named Resources Only)** | **Excellent (Instant Decommission)** | **Strong (Unified Identity Logs)** |
-| **No Connectivity Until Merge**| N/A | No | N/A | N/A |
+| **No Connectivity Until Merge**| N/A | ❌ No | N/A | N/A |
 
 ---
 

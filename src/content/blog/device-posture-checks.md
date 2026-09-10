@@ -68,31 +68,27 @@ Device posture is the verification that a device meets security expectations bef
 
 | Posture Signal Tier | Checked Attributes | Failure Action & Remediation |
 |---|---|---|
-| **Tier 1: Core OS & Encryption** | FileVault / BitLocker active; OS patch level within N-1 support window. | **Hard Deny:** Immediate isolation from all internal mesh resources. |
-| **Tier 2: Host Firewall & EDR** | System firewall active; CrowdStrike/Defender sensor running & updated. | **Quarantine:** Access restricted strictly to corporate update servers. |
-| **Tier 3: Identity & Biometrics** | Touch ID / Windows Hello active; Screen lock timeout <= 5 min. | **Step-Up MFA:** Mandatory hardware security key (FIDO2) re-prompt. |
-| **Tier 4: Process Integrity** | MDM profile verified; no unsigned kernel extensions or rootkits. | **Revoke JIT:** Drop privileged SSH/RDP/DB sessions within 5 seconds. |
+| **Tier 1: Core OS & Encryption** | FileVault / BitLocker active; OS patch level within N-1 support window. | ⛔ **Hard Deny:** Immediate isolation from all internal mesh resources. |
+| **Tier 2: Host Firewall & EDR** | System firewall active; CrowdStrike/Defender sensor running & updated. | ⚠️ **Quarantine:** Access restricted strictly to corporate update servers. |
+| **Tier 3: Identity & Biometrics** | Touch ID / Windows Hello active; Screen lock timeout <= 5 min. | 🔄 **Step-Up MFA:** Mandatory hardware security key (FIDO2) re-prompt. |
+| **Tier 4: Process Integrity** | MDM profile verified; no unsigned kernel extensions or rootkits. | 🛑 **Revoke JIT:** Drop privileged SSH/RDP/DB sessions within 5 seconds. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│               Continuous Device Posture Evaluation Lifecycle           │
-│                                                                        │
-│   [Remote Endpoint (macOS / Windows / Linux)]                          │
-│                        │                                               │
-│                        ▼ 1. Continuous Local Health Telemetry          │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Local QuickZTNA Daemon (Inspects Disk, EDR, Firewall, OS, MDM)  │ │
-│   └────────────────────────────┬─────────────────────────────────────┘ │
-│                                │                                       │
-│          ┌─────────────────────┴─────────────────────┐                 │
-│          ▼ [PASS: All Posture Signals Healthy]       ▼ [FAIL / DRIFT]  │
-│   ┌────────────────────────────────┐    ┌────────────────────────────┐ │
-│   │  Maintain WireGuard Mesh Path  │    │  Real-Time Auto-Quarantine │ │
-│   │  - Uninterrupted application   │    │  - Sever active tunnels    │ │
-│   │    access per ABAC policy      │    │  - Prompt user remediation │ │
-│   └────────────────────────────────┘    └────────────────────────────┘ │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Decision Flowchart: Continuous Multi-Signal Device Posture Engine](/images/diagrams/device-posture-checks-flow.svg)
+*Figure 1.1: Multi-Stage Policy Decision Flowchart & Gating Logic — Continuous Multi-Signal Device Posture Engine.*
+
+### Multi-Stage Gating Logic & Policy Evaluation Flow
+
+The decision flowchart above illustrates the sequential verification pipeline enforced by **Continuous Multi-Signal Device Posture Engine**:
+
+- **TIER 1: OS INTEGRITY — Hardware & Disk Security:** Evaluates physical security chips and filesystem encryption.
+  - **Verification Rules:** FileVault / BitLocker active; Secure Boot & OS patch <= N-1
+  - **Branch Outcome:** Passes to *Proceed to EDR Health*; non-compliant requests trigger *⛔ HARD DENY: Revoke WireGuard key*.
+- **TIER 2: EDR TELEMETRY — Host Protection Health:** Checks running EDR agent status and recent zero-day threat scores.
+  - **Verification Rules:** CrowdStrike/Defender running; Zero active high-severity detections
+  - **Branch Outcome:** Passes to *Proceed to Biometrics*; non-compliant requests trigger *⚠️ QUARANTINE: Allow patch server only*.
+- **TIER 3: AUTH & JIT — Identity & Screen Lock:** Validates active user presence and session idle timeout.
+  - **Verification Rules:** Screen lock timeout <= 5 min; FIDO2 Touch ID / Hello active
+  - **Branch Outcome:** Passes to *✅ GRANT ACCESS: Scoped L4 port*; non-compliant requests trigger *🔄 STEP-UP: Prompt hardware MFA*.
 
 ## Who this is for
 

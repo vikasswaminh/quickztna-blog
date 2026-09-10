@@ -66,34 +66,26 @@ Healthcare networks have unusual properties — hundreds of distributed clinics,
 
 | Clinical Challenge | Legacy VPN Vulnerability | QuickZTNA Zero Trust Solution |
 |---|---|---|
-| **Legacy Medical IoT / IoMT Devices** | Cannot run endpoint agents; exposed on flat clinic subnets. | Embedded subnet gateways place IoMT behind encrypted, isolated microsegments. |
-| **Distributed Multi-Clinic WAN** | Central VPN hub hairpinning adds latency and single point of failure. | Direct peer-to-peer WireGuard mesh connecting clinics without central chokepoints. |
-| **Emergency Clinical Access (Break-Glass)** | Rigid access controls risk patient care during critical outages. | Dynamic JIT elevation with automated approver override and immediate audit logging. |
-| **Shared Nurse Workstations (COWs)** | Shared Windows logins obscure individual session accountability. | Fast badge tap / OIDC re-authentication tied to cryptographic ephemeral session tokens. |
-| **HIPAA Security Rule Evidence** | Manual review of raw IP connection logs across disparate firewalls. | Unified structured audit logging with per-decision and per-packet telemetry. |
+| **Legacy Medical IoT / IoMT Devices** | ❌ Cannot run endpoint agents; exposed on flat clinic subnets. | ✅ Embedded subnet gateways place IoMT behind encrypted, isolated microsegments. |
+| **Distributed Multi-Clinic WAN** | ❌ Central VPN hub hairpinning adds latency and single point of failure. | ✅ Direct peer-to-peer WireGuard mesh connecting clinics without central chokepoints. |
+| **Emergency Clinical Access (Break-Glass)** | ❌ Rigid access controls risk patient care during critical outages. | ✅ Dynamic JIT elevation with automated approver override and immediate audit logging. |
+| **Shared Nurse Workstations (COWs)** | ❌ Shared Windows logins obscure individual session accountability. | ✅ Fast badge tap / OIDC re-authentication tied to cryptographic ephemeral session tokens. |
+| **HIPAA Security Rule Evidence** | ❌ Manual review of raw IP connection logs across disparate firewalls. | ✅ Unified structured audit logging with per-decision and per-packet telemetry. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Healthcare Zero Trust Mesh Architecture              │
-│                                                                        │
-│   [Remote Radiologist / Traveling Physician]                           │
-│                      │                                                 │
-│                      ▼ (MFA + Continuous Endpoint Posture Check)       │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Cloud Control Plane (Role-Based ABAC & JIT Access)    │ │
-│   └──────────────────────────┬───────────────────────────────────────┘ │
-│                              │ (Encrypted WireGuard Peer-to-Peer)      │
-│                              ▼                                         │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Hospital On-Premise Gateway (Dark Ingress / Zero Exposed Ports) │ │
-│   │  ├── PACS DICOM Image Server (Radiology Clinicians Only)         │ │
-│   │  ├── Epic / Cerner EHR Database (Physicians & Nurses Role)       │ │
-│   │  └── Legacy Infusion Pumps / MRI (Quarantined Medical Enclave)   │ │
-│   └──────────────────────────┬───────────────────────────────────────┘ │
-│                              ▼                                         │
-│   [HIPAA Audit Stream ──► SIEM (Complete Audit Trail of PHI Access)]   │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Mesh Topology: Distributed Healthcare Zero Trust Mesh & IoMT Shield](/images/diagrams/zero-trust-healthcare-flow.svg)
+*Figure 1.1: Distributed Mesh Topology & Multi-Cloud Peering Matrix — Distributed Healthcare Zero Trust Mesh & IoMT Shield.*
+
+### Distributed Mesh Topology & Multi-Cloud Peering Matrix
+
+The network topology above maps the peer-to-peer overlay and encrypted data plane for **Distributed Healthcare Zero Trust Mesh & IoMT Shield**:
+
+- **Coordination Layer (HIPAA-Compliant Healthcare Coordination Plane):** Enforces continuous per-packet ABAC, emergency break-glass procedures, and immutable audit logs
+- **Distributed Mesh Nodes:**
+  - **Remote Radiologist (Home) (PACS Diagnostic Workstation):** 100.64.200.5 (ztna0). FIDO2 Badge + Device Posture; Sub-5ms High-Res DICOM Transfer.
+  - **Regional Clinic Branch (Nurse Station & Workstations):** 100.64.200.10 (ztna0). Shared COW Fast User Switching; Outbound-Only WireGuard Connector.
+  - **Medical IoT Subnet Enclave (Infusion Pumps & MRI Devices):** 100.64.200.20 (ztna0). Legacy Agentless IoMT Gateway; Isolated Behind Dark Subnet Router.
+  - **Hospital Core EHR Cloud (Epic / Cerner EHR Database):** 100.64.200.30 (ztna0). 100% Dark in Private AWS/Azure; 0.0.0.0/0 INGRESS: DROP ALL.
+- **Direct Point-to-Point Transit:** Endpoints negotiate direct UDP sockets via STUN/DERP hole-punching, entirely bypassing centralized VPN concentrator bottlenecks.
 
 ## Who this is for
 
@@ -222,14 +214,14 @@ How ZTNA features map to HIPAA Security Rule technical safeguards (see [our HIPA
 
 | Security Rule section | ZTNA feature |
 |---|---|
-| §164.312(a) Access control — unique user ID | SSO-bound peer identity |
-| §164.312(a) Emergency access | Break-glass procedure, audit-logged |
-| §164.312(a) Automatic logoff | Configurable idle timeout per policy |
-| §164.312(a) Encryption (addressable) | WireGuard + hybrid PQ by default |
-| §164.312(b) Audit controls | Per-session log export to SIEM |
-| §164.312(c) Integrity | Tunnel AEAD authentication |
-| §164.312(d) Authentication | SSO + MFA, continuous posture |
-| §164.312(e) Transmission security | Encrypted tunnels, PQ-hybrid default |
+| §164.312(a) Access control — unique user ID | ✅ SSO-bound peer identity |
+| §164.312(a) Emergency access | ✅ Break-glass procedure, audit-logged |
+| §164.312(a) Automatic logoff | ✅ Configurable idle timeout per policy |
+| §164.312(a) Encryption (addressable) | ✅ WireGuard + hybrid PQ by default |
+| §164.312(b) Audit controls | ✅ Per-session log export to SIEM |
+| §164.312(c) Integrity | ✅ Tunnel AEAD authentication |
+| §164.312(d) Authentication | ✅ SSO + MFA, continuous posture |
+| §164.312(e) Transmission security | ✅ Encrypted tunnels, PQ-hybrid default |
 
 The deployment is a partial answer to HIPAA compliance. Organisational controls — policies, training, incident response, BAAs — remain the organisation's responsibility.
 

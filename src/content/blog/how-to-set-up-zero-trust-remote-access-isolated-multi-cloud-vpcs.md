@@ -68,41 +68,26 @@ With [QuickZTNA](https://quickztna.com/), developers query private databases and
 
 | Access Architecture | Inbound Ports Required | Public IPs Needed | Overlapping Subnet Support | Latency Profile | Identity & Posture Check |
 |---|---|---|---|---|---|
-| **Bastion Jump Hosts** | TCP 22 / 443 Open to Public | Yes (Per Bastion) | ❌ Broken without complex proxying | High (Hop overhead) | ❌ Static SSH keys only |
-| **IPSec Site-to-Site VPN** | UDP 500 / 4500 (IKE) | Yes (Per Gateway) | ❌ Routing collisions on overlap | Variable (Hairpinning) | ❌ L3 Subnet trust only |
+| **Bastion Jump Hosts** | TCP 22 / 443 Open to Public | ✅ Yes (Per Bastion) | ❌ Broken without complex proxying | High (Hop overhead) | ❌ Static SSH keys only |
+| **IPSec Site-to-Site VPN** | UDP 500 / 4500 (IKE) | ✅ Yes (Per Gateway) | ❌ Routing collisions on overlap | Variable (Hairpinning) | ❌ L3 Subnet trust only |
 | **Cloud Transit Gateways** | Proprietary L3 routing | Cloud-locked | ❌ Requires costly NAT translation | Medium (Cloud-hop pricing) | ❌ No user identity context |
 | **QuickZTNA Overlay Mesh** | **0 Inbound Ports (Dark)** | **0 Public IPs** | **✅ Seamless (MagicDNS + CGNAT)** | **Near Zero (Direct P2P UDP)** | **✅ Continuous ABAC + Device Posture** |
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                   Multi-Cloud Zero Trust Remote Access Overlay Mesh                   │
-│                                                                                        │
-│                          ┌────────────────────────────┐                                │
-│                          │   QuickZTNA Control Plane  │                                │
-│                          │  (Metadata, OIDC, ABAC)    │                                │
-│                          └──────┬──────────────┬──────┘                                │
-│                     Outbound    │              │    Outbound                           │
-│                     Signaling   ▼              ▼    Signaling                          │
-│     ┌──────────────────────────────┐        ┌──────────────────────────────┐           │
-│     │ Developer Workstation        │        │ DevOps / CI/CD Runner        │           │
-│     │ (ztna0: 100.64.0.5)          │        │ (ztna0: 100.64.0.6)          │           │
-│     └───────┬──────────────┬───────┘        └───────┬──────────────┬───────┘           │
-│             │              │                        │              │                   │
-│             │ Direct P2P   │ Direct P2P             │ Direct P2P   │ Direct P2P        │
-│             │ WireGuard    │ WireGuard              │ WireGuard    │ WireGuard         │
-│             ▼              ▼                        ▼              ▼                   │
-│   ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐                   │
-│   │ AWS us-east-1    │   │ GCP europe-west1 │   │ Azure East US    │                   │
-│   │ Connector VM     │   │ Connector VM     │   │ Connector VM     │                   │
-│   │ (10.0.1.0/24)    │   │ (10.10.0.0/24)   │   │ (172.16.4.0/24)  │                   │
-│   │ 0 Inbound Ports  │   │ 0 Inbound Ports  │   │ 0 Inbound Ports  │                   │
-│   └────────┬─────────┘   └────────┬─────────┘   └────────┬─────────┘                   │
-│            │ Local ARP            │ Local ARP            │ Local ARP                   │
-│            ▼                      ▼                      ▼                             │
-│     [RDS Postgres]         [GKE Microservices]     [Internal API]                      │
-│     (10.0.1.42:5432)       (10.10.0.15:8080)       (172.16.4.12:443)                   │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
+![Mesh Topology: Multi-Cloud Isolated VPC Zero Trust Mesh Overlay](/images/diagrams/how-to-set-up-zero-trust-remote-access-isolated-multi-cloud-vpcs-flow.svg)
+*Figure 1.1: Distributed Mesh Topology & Multi-Cloud Peering Matrix — Multi-Cloud Isolated VPC Zero Trust Mesh Overlay.*
+
+### Distributed Mesh Topology & Multi-Cloud Peering Matrix
+
+The network topology above maps the peer-to-peer overlay and encrypted data plane for **Multi-Cloud Isolated VPC Zero Trust Mesh Overlay**:
+
+- **Coordination Layer (QuickZTNA Out-of-Band Multi-Cloud Coordination Plane):** Distributes MagicDNS records, STUN endpoints, and ABAC policies out-of-band without touching data payloads
+- **Distributed Mesh Nodes:**
+  - **AWS Private VPC (AWS us-east-1 Connector):** 100.64.1.10 (ztna0). Production RDS Postgres & EKS; 0.0.0.0/0 INGRESS: DROP ALL.
+  - **GCP Isolated VNet (GCP europe-west1 Connector):** 100.64.2.20 (ztna0). GKE Analytics Cluster; Zero Public IPv4 Addresses.
+  - **Azure Private Cloud (Azure westeurope Connector):** 100.64.3.30 (ztna0). Internal Financial ERP & DB; Overlapping 10.0.0.0/16 Resolved.
+  - **Remote Engineer (Developer Laptop Client):** 100.64.0.5 (ztna0). Direct P2P UDP Hole Punching; Reaches postgres.aws.zt.net via MagicDNS.
+- **Direct Point-to-Point Transit:** Endpoints negotiate direct UDP sockets via STUN/DERP hole-punching, entirely bypassing centralized VPN concentrator bottlenecks.
+
 
 ---
 
@@ -791,12 +776,12 @@ When deploying multi-cloud mesh networks, infrastructure teams frequently encoun
 | Evaluation Criteria | AWS Transit Gateway + IPSec | Cloudflare One (Tunnel) | Tailscale Enterprise | QuickZTNA |
 |---|---|---|---|---|
 | **Data Plane Protocol** | IPSec / BGP | HTTP/2 or QUIC Reverse Proxy | WireGuard | **WireGuard** |
-| **Peer-to-Peer Data Plane** | No | No | Yes | **Yes** |
-| **Non-HTTP Protocols** | Yes | Requires `cloudflared` client wrapping | Yes | **Yes (Full L4 support)** |
-| **Cloud Transit Cost** | High ($$ per attachment + data transfer) | Bundled in enterprise plans | Free tier / Per-user enterprise | **Zero cloud routing tax; Flat pricing** |
-| **Free Tier Availability** | None | Limited free tier | Free up to 3 users | **Free forever up to 5 users** |
-| **Continuous Posture Checks** | None | Requires Warp client + IdP | Requires Enterprise add-on | **Included natively on all plans** |
-| **Deployment Time** | Weeks | 15–30 minutes | 5–10 minutes | **< 3 minutes via single curl command** |
+| **Peer-to-Peer Data Plane** | ❌ No | ❌ No | ✅ Yes | ✅ **Yes** |
+| **Non-HTTP Protocols** | ✅ Yes | ⚠️ Requires `cloudflared` client wrapping | ✅ Yes | ✅ **Yes (Full L4 support)** |
+| **Cloud Transit Cost** | ❌ High ($ per attachment + data transfer) | ⚠️ Bundled in enterprise plans | ⚠️ Free tier / Per-user enterprise | ✅ **Zero cloud routing tax; Flat pricing** |
+| **Free Tier Availability** | ❌ None | ⚠️ Limited free tier | ⚠️ Free up to 3 users | ✅ **Free forever up to 5 users** |
+| **Continuous Posture Checks** | ❌ None | ⚠️ Requires Warp client + IdP | ⚠️ Requires Enterprise add-on | ✅ **Included natively on all plans** |
+| **Deployment Time** | ❌ Weeks | ⚠️ 15–30 minutes | ⚠️ 5–10 minutes | ⚡ **< 3 minutes via single curl command** |
 
 ---
 

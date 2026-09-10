@@ -67,30 +67,30 @@ Zero Trust Network Access (ZTNA) replaces the assumption that "inside the corpor
 
 | Dimension | Legacy Castle-and-Moat (VPN) | Zero Trust Network Access (ZTNA) |
 |---|---|---|
-| **Access Model** | Network-centric: Grants access to entire Layer 3 subnet. | Resource-centric: Grants access to individual Layer 4/7 applications. |
-| **Trust Assumption** | Inside = Trusted; Outside = Untrusted. | Assume breach: Never trust, continuously verify every packet. |
-| **Policy Enforcement** | Static firewall rules and IP ACLs evaluated at connection. | Dynamic Attribute-Based Access Control (ABAC) evaluated continuously. |
-| **Infrastructure Exposure** | Public listening IP and open ports vulnerable to DDoS and scans. | 100% Dark infrastructure via Single-Packet Authorization (SPA) / WireGuard. |
-| **Blast Radius** | Broad lateral movement across the internal subnet. | Isolated strictly to the authorized application/port; no lateral movement. |
+| **Access Model** | ❌ Network-centric: Grants access to entire Layer 3 subnet. | ✅ Resource-centric: Grants access to individual Layer 4/7 applications. |
+| **Trust Assumption** | ❌ Inside = Trusted; Outside = Untrusted. | ✅ Assume breach: Never trust, continuously verify every packet. |
+| **Policy Enforcement** | ❌ Static firewall rules and IP ACLs evaluated at connection. | ✅ Dynamic Attribute-Based Access Control (ABAC) evaluated continuously. |
+| **Infrastructure Exposure** | ❌ Public listening IP and open ports vulnerable to DDoS and scans. | ✅ 100% Dark infrastructure via Single-Packet Authorization (SPA) / WireGuard. |
+| **Blast Radius** | ❌ Broad lateral movement across the internal subnet. | ✅ Isolated strictly to the authorized application/port; no lateral movement. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   ZTNA vs. Legacy VPN Architectural Comparison         │
-│                                                                        │
-│   LEGACY PERIMETER (VPN):                                              │
-│   [User] ──► [Open VPN Port] ──► [Inside Corporate Subnet]             │
-│                                  ├── App 1 (Authorized)                │
-│                                  ├── DB 2  (❌ Exposed to Lateral Scan) │
-│                                  └── Auth  (❌ Exposed to Lateral Pivot)│
-│                                                                        │
-│   ZERO TRUST (ZTNA / QuickZTNA):                                       │
-│   [User] ──► [Continuous Posture] ──► [PDP Policy] ──► [WireGuard Pipe]│
-│                                                              │         │
-│                                                              ▼         │
-│                                                   [Authorized App Only]│
-│                                                   (Rest of estate DARK)│
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Architecture Comparison: Perimeter Castle-and-Moat vs. NIST SP 800-207 Zero Trust](/images/diagrams/what-is-ztna-flow.svg)
+*Figure 1.1: Architectural Comparison & Failure Mode Analysis — Perimeter Castle-and-Moat vs. NIST SP 800-207 Zero Trust.*
+
+### Architectural Divergence & Failure Mode Analysis
+
+The architectural contrast above details the structural differences between legacy approaches and modern Zero Trust for **Perimeter Castle-and-Moat vs. NIST SP 800-207 Zero Trust**:
+
+#### 1. Legacy Limitations: Perimeter Security (Castle-and-Moat)
+- **Implicit Trust on Internal Network:** Assumes anyone inside the corporate LAN or VPN is trusted. Single authentication check at login; blind for remainder of session.
+- **Broad Layer 3 Subnet Routing:** Grants remote laptop access to entire /16 or /24 subnet. Infected workstation can scan, probe, and pivot laterally to all hosts.
+- **Public Ingress IP & Open Ports:** VPN concentrators expose public IPs with listening ports (443/1194). Continuously scanned by botnets and targeted for zero-day RCE.
+- **Coarse Static Firewall ACLs:** Security rules defined by fragile IP addresses and port numbers. Fails in modern dynamic cloud and remote workforce environments.
+
+#### 2. Modern Zero Trust Guarantees: Zero Trust Network Access (QuickZTNA)
+- **Assume Breach: Continuous Verification:** Never trust, always verify every packet flow explicitly. Continuous re-evaluation of user identity, posture, and context.
+- **Granular Layer 4/7 Microsegmentation:** Grants access strictly to individual applications and ports. Peer isolation by default; lateral movement mathematically blocked.
+- **100% Dark Infrastructure:** Zero open listening ports; Single-Packet Authorization (SPA). Workloads initiate outbound-only tunnels; invisible to Shodan.
+- **Dynamic Attribute-Based Policies (ABAC):** Rules defined by cryptographic identity, EDR health, and JIT state. Adapts in real time to employee role changes and security signals.
 
 ## Who this is for
 

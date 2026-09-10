@@ -87,37 +87,26 @@ MSPs face a zero trust challenge that no enterprise playbook covers: managing ze
 
 | Strategy Area | Legacy MSP Operational Risk | Modern Zero Trust MSP Architecture |
 |---|---|---|
-| **Multi-Tenant Isolation** | Technician VPN can cross-route between client networks. | Strict cryptographic tenant boundary; zero cross-tenant lateral movement. |
-| **Technician Privilege** | Standing 24/7 admin credentials on every client server. | JIT access elevation tied to approved client support tickets (ConnectWise/Autotask). |
-| **RMM / Remote Control** | Unrestricted agent listening for inbound commands. | Outbound-only WireGuard control channel with mandatory MFA per session. |
-| **Client Audit & Evidence** | Shared MSP service account masks technician identity. | Per-technician attribution with immutable session audit exportable to client SIEM. |
-| **Client Offboarding** | Manual hunt to remove credentials, SSH keys, and tunnels. | Single-click tenant de-federation automatically revoking all technician mesh paths. |
+| **Multi-Tenant Isolation** | ❌ Technician VPN can cross-route between client networks. | ✅ Strict cryptographic tenant boundary; zero cross-tenant lateral movement. |
+| **Technician Privilege** | ❌ Standing 24/7 admin credentials on every client server. | ✅ JIT access elevation tied to approved client support tickets (ConnectWise/Autotask). |
+| **RMM / Remote Control** | ❌ Unrestricted agent listening for inbound commands. | ✅ Outbound-only WireGuard control channel with mandatory MFA per session. |
+| **Client Audit & Evidence** | ❌ Shared MSP service account masks technician identity. | ✅ Per-technician attribution with immutable session audit exportable to client SIEM. |
+| **Client Offboarding** | ❌ Manual hunt to remove credentials, SSH keys, and tunnels. | ✅ Single-click tenant de-federation automatically revoking all technician mesh paths. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Multi-Tenant MSP Zero Trust Architecture             │
-│                                                                        │
-│   [MSP Technician Pool]                                                │
-│            │                                                           │
-│            ▼ 1. Ticket-Gated JIT Elevation (Autotask / ConnectWise)    │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Multi-Tenant Control Plane                            │ │
-│   │  ├── Tenant A Partition: Strict Policy & Audit                   │ │
-│   │  ├── Tenant B Partition: Strict Policy & Audit                   │ │
-│   │  └── Tenant C Partition: Strict Policy & Audit                   │ │
-│   └────────┬─────────────────────────┬─────────────────────────┬─────┘ │
-│            │                         │                         │       │
-│            ▼ (WireGuard Tunnel A)    ▼ (WireGuard Tunnel B)    ▼ (WG C)│
-│   ┌───────────────────┐     ┌───────────────────┐    ┌───────────────┐ │
-│   │ Client A (Legal)  │     │ Client B (Health) │    │ Client C (Fin)│ │
-│   │ [Dark Gateway]    │     │ [Dark Gateway]    │    │ [Dark Gateway]│ │
-│   │ - No Cross-Tenant │     │ - No Cross-Tenant │    │ - No Cross-Ten│ │
-│   │   Communication   │     │   Communication   │    │   Communicatio│ │
-│   └───────────────────┘     └───────────────────┘    └───────────────┘ │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Mesh Topology: Multi-Tenant MSP Zero Trust Isolation Mesh](/images/diagrams/top-10-msp-zero-trust-strategies-flow.svg)
+*Figure 1.1: Distributed Mesh Topology & Multi-Cloud Peering Matrix — Multi-Tenant MSP Zero Trust Isolation Mesh.*
 
-> **Adding up your per-client tool bill?** MSPs stack a mesh VPN, a ZTNA gateway, DNS filtering and monitoring across every client. QuickZTNA folds those into one agent and one bill per seat; keep your RMM for remote support. [See what you'd save →](/savings/)
+### Distributed Mesh Topology & Multi-Cloud Peering Matrix
+
+The network topology above maps the peer-to-peer overlay and encrypted data plane for **Multi-Tenant MSP Zero Trust Isolation Mesh**:
+
+- **Coordination Layer (MSP Multi-Tenant Zero Trust Orchestrator):** Maintains strict cryptographic tenant isolation, PSA/RMM ticket bindings, and per-client audit silos
+- **Distributed Mesh Nodes:**
+  - **MSP Operations Hub (Technician Workstation):** 100.64.100.1 (ztna0). JIT Elevation tied to PSA Ticket; PAW Verified + FIDO2 Key.
+  - **Client A (Healthcare) (Clinic Network Connector):** 100.64.101.1 (ztna0). Isolated HIPAA Tenant Enclave; Zero Lateral Route to Client B.
+  - **Client B (Financial) (FinTech Private VPC):** 100.64.102.1 (ztna0). Encrypted WireGuard Gateway; Client-Owned Cryptographic Keys.
+  - **SIEM & Evidence Lake (Client Audit Export):** 100.64.100.50 (ztna0). Per-Technician Attribution; Immutable Splunk / Sentinel Feed.
+- **Direct Point-to-Point Transit:** Endpoints negotiate direct UDP sockets via STUN/DERP hole-punching, entirely bypassing centralized VPN concentrator bottlenecks.
 
 ## The unique MSP threat model
 

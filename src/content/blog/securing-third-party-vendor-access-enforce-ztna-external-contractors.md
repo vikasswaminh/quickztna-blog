@@ -71,29 +71,26 @@ Third-party vendors and external contractors represent the single most under-con
 
 Every security program has a blind spot: the users who are almost inside. Employees undergo background checks, MDM enrollment, and automated offboarding. Contractors, vendors, auditors, and support engineers get a shared username and a prayer.
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        Legacy Vendor Access Flaw                       │
-│                                                                        │
-│   [Contractor Laptop]                                                  │
-│   (Unmanaged / BYOD) ──► [Legacy VPN] ──► Entire Corporate Subnet       │
-│                                           ├── Production Database      │
-│                                           ├── Internal Code Repos      │
-│                                           └── Customer PII             │
-│                                                                        │
-│   ❌ Unbounded Subnet Access  ❌ No Time Limits  ❌ No Posture Checks   │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Threat Model: Third-Party Vendor Access: Granular Port-Scoped Micro-Tunnels](/images/diagrams/securing-third-party-vendor-access-enforce-ztna-external-contractors-flow.svg)
+*Figure 1.1: Attack Vector Threat Model & Zero Trust Interception Gate — Third-Party Vendor Access: Granular Port-Scoped Micro-Tunnels.*
 
-The fundamental failure modes include:
+### Attack Surface, Interception Barrier & Cryptographic Enclave Analysis
 
-1. **Standing Access:** A contractor receives credentials "for the project." The project concludes, but the account remains active indefinitely.
-2. **Broad Network Access:** A VPN authenticates a user to the network, not to a single resource. Once connected, contractors can scan subnets and move laterally.
-3. **Shared Credentials:** Support teams routinely share accounts, destroying individual accountability.
-4. **Unmanaged Endpoints:** Vendor laptops lack corporate MDM, leaving them vulnerable to malware, missing patches, and disabled disk encryption.
-5. **Absence of Time Boundaries:** Access has no automatic expiration date.
+The threat model above diagrams the exploit vectors, inline interception gates, and protected workloads for **Third-Party Vendor Access: Granular Port-Scoped Micro-Tunnels**:
 
-Zero Trust does not eliminate third-party collaborations—it transforms the model: **"Never trust, always verify every request."**
+1. **Threat Vector & Infiltration Origin (Compromised Contractor Laptop):** Unmanaged BYOD with unknown malware; Phished credentials / infostealer trojan. Identified entry points:
+   - Contractor authenticates via Partner IdP
+   - Malware attempts scanning local /24 subnet
+   - Attempts pivoting to internal servers
+2. **Zero Trust Enforcement Gate (QuickZTNA JIT Resource Broker):** Intercepts traffic at the operating system kernel before network egress:
+   - **Ephemeral Just-in-Time Grant (2h TTL):** Access scoped strictly to single TCP port (e.g. 5432)
+   - **Zero Subnet Reachability (Default-Deny):** Blocks all peer-to-peer and lateral LAN traffic
+3. **Protected Workload Enclave (Target Staging Workload):** Validated sessions terminate inside isolated execution boundaries:
+   - Contractor-assigned VM only
+   - Production environment completely invisible
+   - Zero open inbound firewall ports
+4. **SIEM Telemetry & Forensic Audit (Immutable Vendor Session Audit & Recording):** Records every TCP connection, command, and file transfer attributed to specific contractor identity. Session terminates automatically when support ticket or JIT TTL expires.
+
 
 ---
 
@@ -101,31 +98,19 @@ Zero Trust does not eliminate third-party collaborations—it transforms the mod
 
 Zero Trust Network Access decouples access from network location. Connecting from an office, home, or external coffee shop does not confer trust. Every request is independently evaluated against contextual attributes: user identity, endpoint health, target resource, and time of day.
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        ZTNA Vendor Access Model                        │
-│                                                                        │
-│   [Contractor Device]                                                  │
-│   (Posture Checked) ──► [QuickZTNA Control] ──► [WireGuard Tunnel]     │
-│                                                         │              │
-│                                                         ▼              │
-│                                            [Target App Only: DB:5432]  │
-│                                            (Rest of network is dark)   │
-│                                                                        │
-│   ✅ Scoped to 1 Resource  ✅ JIT Auto-Revoke  ✅ Continuous Posture   │
-└────────────────────────────────────────────────────────────────────────┘
-```
+> [!NOTE]
+> **ZTNA Vendor Access Model:** The external contractor device undergoes continuous posture verification before establishing an authenticated WireGuard tunnel. Access is strictly scoped to the authorized application port (e.g. `DB:5432`), leaving the remainder of corporate infrastructure completely dark with automated JIT session revocation.
 
 ### Key Differences Across Access Models
 
 | Dimension | Traditional VPN | PAM (Privileged Access Mgmt) | ZTNA (QuickZTNA) |
 |---|---|---|---|
-| **What is granted** | Full network subnet | A privileged session | A specific resource/port |
-| **Default posture** | Allow once connected | Allow for admin accounts | Deny by default |
-| **Time boundary** | Typically none (standing) | Session-scoped | Grant-scoped (JIT TTL) |
-| **Device control** | None | Limited | Continuous posture check |
-| **Audit fidelity** | Connection-level IP logs | Session screen recording | Per-decision packet audit |
-| **Target user** | Corporate employees | Root/System administrators | Everyone (including vendors) |
+| **What is granted** | ❌ Full network subnet | ⚠️ A privileged session | ✅ A specific resource/port |
+| **Default posture** | ❌ Allow once connected | ⚠️ Allow for admin accounts | ✅ Deny by default |
+| **Time boundary** | ❌ Typically none (standing) | ⚠️ Session-scoped | ✅ Grant-scoped (JIT TTL) |
+| **Device control** | ❌ None | ⚠️ Limited | ✅ Continuous posture check |
+| **Audit fidelity** | ❌ Connection-level IP logs | ⚠️ Session screen recording | ✅ Per-decision packet audit |
+| **Target user** | ❌ Corporate employees | ⚠️ Root/System administrators | ✅ Everyone (including vendors) |
 
 ---
 
@@ -133,12 +118,9 @@ Zero Trust Network Access decouples access from network location. Connecting fro
 
 Securing vendor access requires fixing every stage of the lifecycle:
 
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  Onboarding  │ ──► │ Access Grant │ ──► │  Active Use  │ ──► │ Offboarding  │
-│ Policy-first │     │ JIT Scoped   │     │ Audited Live │     │ Auto-Revoked │
-└──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
-```
+> [!NOTE]
+> **Vendor Access Lifecycle Flow:**
+> `1. Onboarding (Policy-first)` ──► `2. Access Grant (JIT Scoped)` ──► `3. Active Use (Audited Live)` ──► `4. Offboarding (Auto-Revoked)`
 
 1. **Onboarding:** Make onboarding a policy event rather than an ad-hoc ticket. Define identity, target resource, business justification, and grant expiration before issuing credentials.
 2. **Access Granting:** Apply least-privilege ABAC rules. Issue Just-in-Time (JIT) grants that expire automatically after hours or days.
@@ -163,17 +145,15 @@ Because third-party laptops cannot be managed via corporate MDM, posture checkin
 
 ## 5. How to Run a Vendor Access Program
 
-```
-┌───────────────────────────────────────────────────────────────┐
-│ 1. Classify Vendor Risk (Low / Medium / High)                 │
-│ 2. Define Explicit Access Contracts per Engagement            │
-│ 3. Federate Identity via Enterprise IdP (OIDC / SCIM)         │
-│ 4. Author Deny-by-Default ABAC Rules                          │
-│ 5. Mandate JIT Approvals for Sensitive Workloads              │
-│ 6. Schedule Recurring Access Review Campaigns                 │
-│ 7. Automate Instant Single-Action Offboarding                 │
-└───────────────────────────────────────────────────────────────┘
-```
+| Phase | Program Implementation Step | Security Governance Control |
+|---|---|---|
+| **1. Classification** | Classify Vendor Risk (Low / Medium / High) | Match regulatory scope to contractor profile. |
+| **2. Contract** | Define Explicit Access Contracts per Engagement | Limit reachability strictly to required applications. |
+| **3. Federation** | Federate Identity via Enterprise IdP (OIDC / SCIM) | Enforce single source of truth for vendor credentials. |
+| **4. Policy** | Author Deny-by-Default ABAC Rules | Restrict access to specific Layer 4/7 endpoints. |
+| **5. JIT Elevation** | Mandate JIT Approvals for Sensitive Workloads | Enforce ephemeral, time-bounded session grants. |
+| **6. Review** | Schedule Recurring Access Review Campaigns | Verify continuing business justification. |
+| **7. Deprovision** | Automate Instant Single-Action Offboarding | Revoke all cryptographic peer keys simultaneously. |
 
 1. **Classify Relationships:** Categorize vendors into Low (read-only CMS), Medium (internal staging tools), and High (production servers, financial databases).
 2. **Define Access Contracts:** Detail exact protocols, destination hostnames, and expiration schedules.

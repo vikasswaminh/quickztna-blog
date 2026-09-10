@@ -1,0 +1,98 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="100%" height="auto" style="background:#0B1120;border-radius:12px;border:1px solid #1E293B;">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#BE123C" />
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#06B6D4" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F43F5E" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="960" height="68" fill="#0F172A" />
+  <rect x="24" y="18" width="164" height="26" rx="5" fill="#8B5CF6" />
+  <text x="106" y="35" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif" letter-spacing="1">DEFENSE IN DEPTH</text>
+  <text x="214" y="35" fill="#F8FAFC" font-size="16" font-weight="700" font-family="system-ui, sans-serif">HIPAA Zero Trust Healthcare Defense-in-Depth Ring</text>
+  <text x="214" y="52" fill="#94A3B8" font-size="11.5" font-family="system-ui, sans-serif">45 CFR § 164 Compliance: Cryptographic Microsegmentation &amp; PHI Protection</text>
+  <line x1="0" y1="68" x2="960" y2="68" stroke="#1E293B" stroke-width="1.5" />
+  
+      <g transform="translate(70, 105)">
+        <rect x="0" y="0" width="820" height="80" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="130" height="80" rx="8" fill="#0284C7" />
+        <text x="65" y="35" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">RING 1: ENDPOINT</text>
+        <text x="65" y="52" fill="#E0F2FE" font-size="9" text-anchor="middle" font-family="system-ui, sans-serif">Physical Security</text>
+
+        <text x="150" y="28" fill="#F8FAFC" font-size="13" font-weight="700" font-family="system-ui, sans-serif">Clinical Workstation &amp; COW Device Posture</text>
+        <text x="150" y="48" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Verifies full-disk encryption (BitLocker/FileVault) and active EDR before any network socket opens.</text>
+        <text x="150" y="65" fill="#38BDF8" font-size="9.5" font-weight="600" font-family="system-ui, sans-serif">Enforced Controls: Continuous TPM 2.0 attestation, FIDO2 badge tap, 5-minute screen lock</text>
+      </g>
+    
+      <g transform="translate(70, 200)">
+        <rect x="0" y="0" width="820" height="80" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="130" height="80" rx="8" fill="#059669" />
+        <text x="65" y="35" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">RING 2: IDENTITY</text>
+        <text x="65" y="52" fill="#E0F2FE" font-size="9" text-anchor="middle" font-family="system-ui, sans-serif">Access Control</text>
+
+        <text x="150" y="28" fill="#F8FAFC" font-size="13" font-weight="700" font-family="system-ui, sans-serif">Unique User ID &amp; Ephemeral JIT Tokens</text>
+        <text x="150" y="48" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Eliminates shared passwords at nursing stations; issues short-lived session credentials tied to IdP.</text>
+        <text x="150" y="65" fill="#10B981" font-size="9.5" font-weight="600" font-family="system-ui, sans-serif">Enforced Controls: SSO/OIDC federation, Just-in-Time privilege elevation, automated session termination</text>
+      </g>
+    
+      <g transform="translate(70, 295)">
+        <rect x="0" y="0" width="820" height="80" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="130" height="80" rx="8" fill="#D97706" />
+        <text x="65" y="35" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">RING 3: NETWORK</text>
+        <text x="65" y="52" fill="#E0F2FE" font-size="9" text-anchor="middle" font-family="system-ui, sans-serif">Transmission</text>
+
+        <text x="150" y="28" fill="#F8FAFC" font-size="13" font-weight="700" font-family="system-ui, sans-serif">Outbound-Only WireGuard Micro-Tunnels</text>
+        <text x="150" y="48" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">No listening ports on hospital or clinic servers; traffic isolated to specific EHR application ports.</text>
+        <text x="150" y="65" fill="#F59E0B" font-size="9.5" font-weight="600" font-family="system-ui, sans-serif">Enforced Controls: End-to-End ChaCha20-Poly1305 encryption, 100% dark private subnets, zero lateral LAN pivoting</text>
+      </g>
+    
+      <g transform="translate(70, 390)">
+        <rect x="0" y="0" width="820" height="80" rx="8" fill="#1E293B" stroke="#A855F7" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="130" height="80" rx="8" fill="#7E22CE" />
+        <text x="65" y="35" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">RING 4: AUDIT</text>
+        <text x="65" y="52" fill="#E0F2FE" font-size="9" text-anchor="middle" font-family="system-ui, sans-serif">Evidence &amp; Logs</text>
+
+        <text x="150" y="28" fill="#F8FAFC" font-size="13" font-weight="700" font-family="system-ui, sans-serif">Immutable Cryptographic Audit Trail</text>
+        <text x="150" y="48" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Logs every access decision and packet flow immutably for HIPAA §164.312(b) audit reviews.</text>
+        <text x="150" y="65" fill="#A855F7" font-size="9.5" font-weight="600" font-family="system-ui, sans-serif">Enforced Controls: WORM encrypted storage, HMAC signature chains, SIEM streaming</text>
+      </g>
+    
+  <!-- Footer -->
+  <line x1="20" y1="552" x2="940" y2="552" stroke="#1E293B" stroke-width="1" />
+  <text x="24" y="568" fill="#64748B" font-size="10" font-family="system-ui, sans-serif">QuickZTNA Technical Architecture Reference</text>
+  <text x="936" y="568" fill="#38BDF8" font-size="10" font-weight="600" text-anchor="end" font-family="system-ui, sans-serif">Zero Trust Verified Blueprint</text>
+</svg>
+  

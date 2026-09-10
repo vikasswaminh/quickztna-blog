@@ -61,11 +61,13 @@ relatedSlugs:
 | Dimension | Tailscale | NetBird | QuickZTNA |
 | :--- | :--- | :--- | :--- |
 | **Licensing & Codebase** | Proprietary control plane (Open clients) | Permissive BSD-3-Clause Open Source | Managed SaaS (Proprietary control plane) |
-| **Self-Hosting** | Via 3rd-party Headscale only | Native 1st-party self-hosting (Docker/K8s) | Fully managed SaaS cloud service |
+| **Self-Hosting** | ⚠️ Via 3rd-party Headscale only | ✅ Native 1st-party self-hosting (Docker/K8s) | ❌ Fully managed SaaS cloud service |
 | **Data-Plane Protocol** | WireGuard (Kernel TUN / Userspace Go) | WireGuard (Kernel / Userspace Go) | WireGuard (Kernel TUN optimization) |
 | **Access Policy Engine** | Tag-based JSON ACLs & Grants | Group & Tag-based Policy Rules | Full ABAC with real-time Device Posture & JIT |
 | **Workforce Governance** | Device approval & MagicDNS | Peer routing & basic posture | JIT requests, Access reviews, Edge firewall, DNS filters |
 | **Relay Infrastructure** | Global DERP relay mesh | Custom NetBird Relays | Bangalore & Frankfurt relay infrastructure |
+
+
 
 NetBird, Tailscale, and QuickZTNA all build on WireGuard as the data-plane protocol and all deliver a mesh-VPN experience with centralised coordination. They differ in three important axes: licensing (BSD-3-Clause for NetBird, proprietary for Tailscale and QuickZTNA), self-host capability (NetBird fully, Tailscale not directly but Headscale exists, QuickZTNA managed cloud only), and the feature layer on top. Tailscale has the most mature developer ergonomics after multiple years of product iteration, NetBird has the strongest open-source story, and QuickZTNA goes deepest on access governance: ABAC with device posture, JIT access requests with approvals, access-review campaigns, policy version rollback, DNS threat filtering, a per-org edge firewall, and signed compliance evidence — with remote shell included on the free tier. This post is a developer-focused comparison, meaning we prioritise the practical engineering evaluation over marketing claims.
 
@@ -90,55 +92,32 @@ Where they diverge starts in the coordination plane and moves outward from there
 
 ## 2. Architecture differences
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│               COORDINATION & DATA PLANE ARCHITECTURE COMPARISON             │
-└─────────────────────────────────────────────────────────────────────────────┘
+![Architecture Comparison: Tailscale vs. NetBird vs. QuickZTNA Architecture](/images/diagrams/netbird-vs-tailscale-vs-quickztna-flow.svg)
+*Figure 1.1: Architectural Comparison & Failure Mode Analysis — Tailscale vs. NetBird vs. QuickZTNA Architecture.*
 
- [ TAILSCALE ]                    [ NETBIRD ]                    [ QUICKZTNA ]
-┌─────────────────────────┐     ┌─────────────────────────┐    ┌─────────────────────────┐
-│ Tailscale Control Plane │     │ NetBird Management/Sgnl │    │ QuickZTNA ABAC Engine   │
-│ (Proprietary SaaS /     │     │ (Open-Source BSD-3      │    │ (Managed Cloud + JIT    │
-│  Community Headscale)   │     │  Self-Host or Cloud)    │    │  + Device Posture)      │
-└───────────┬─────────────┘     └───────────┬─────────────┘    └───────────┬─────────────┘
-            │ Distribute                    │ Distribute                   │ Distribute
-            │ JSON ACLs                     │ Group Rules                  │ ABAC + Posture
-            ▼                               ▼                              ▼
-┌─────────────────────────┐     ┌─────────────────────────┐    ┌─────────────────────────┐
-│ Client Node (Tailscale) │     │ Client Node (NetBird)   │    │ Client Node (QuickZTNA) │
-│ • MagicDNS resolver     │     │ • Peer routing engine   │    │ • Kernel WireGuard TUN  │
-│ • Userspace/Kernel WG   │     │ • WireGuard Go / Kernel │    │ • Continuous posture chk│
-└───────────┬─────────────┘     └───────────┬─────────────┘    └───────────┬─────────────┘
-            │                               │                              │
-            │ Direct P2P WireGuard Tunnel   │ Direct P2P WireGuard Tunnel  │ Direct P2P WireGuard Tunnel
-            │ (or Global DERP Relays)       │ (or NetBird Relays)          │ (or Regional Relays)
-            ▼                               ▼                              ▼
-┌─────────────────────────┐     ┌─────────────────────────┐    ┌─────────────────────────┐
-│ Target Resource / Peer  │     │ Target Resource / Peer  │    │ Target Server / Gateway │
-└─────────────────────────┘     └─────────────────────────┘    └─────────────────────────┘
-```
+### Architectural Divergence & Failure Mode Analysis
 
-### Tailscale
+The architectural contrast above details the structural differences between legacy approaches and modern Zero Trust for **Tailscale vs. NetBird vs. QuickZTNA Architecture**:
 
-[Tailscale](https://tailscale.com/) runs a proprietary coordination server. Clients authenticate via OAuth to the Tailscale control plane, which distributes peer lists and ACL rules. DERP relay servers (open-sourced by Tailscale) provide relay fallback for NAT-blocked peers; DERP regions are globally distributed. Tailscale also runs its own identity layer on top of the IdP for node-key management.
+#### 1. Legacy Limitations: Developer Mesh (Tailscale / NetBird)
+- **Point-in-Time Access Control:** Access granted permanently until manual ACL update. Lacks automated Just-in-Time approval workflows.
+- **Basic Device Posture:** Simple OS version and client verification. Limited real-time integration with corporate EDRs.
+- **No Built-In DNS Threat Filter:** Requires third-party NextDNS or Pi-hole integration. No out-of-the-box NRD / C2 domain blocking.
+- **Separate Tooling Billing:** VPN, ZTNA gateway, and compliance purchased separately. Fragmented admin dashboards for security teams.
 
-### NetBird
-
-[NetBird](https://netbird.io/) runs a coordination server (the "Management" component) and Signal server for negotiation. The code is open source under BSD-3-Clause and published on [GitHub](https://github.com/netbirdio/netbird). NetBird Cloud is the managed SaaS tier; self-hosting uses the same code. NetBird uses its own relay infrastructure for fallback.
-
-### QuickZTNA
-
-QuickZTNA runs a proprietary coordination server with managed regional deployments. The data plane is classical WireGuard (Curve25519 + ChaCha20-Poly1305); post-quantum key exchange is not implemented and not planned (see [our ML-KEM-768 post](/blog/ml-kem-768-explained) for the background). DERP-style relays in two regions (Bangalore and Frankfurt) provide relay fallback.
-
-**Key takeaway.** All three are architecturally similar at a high level. The visible differences are in what sits on top of the WireGuard data plane — the workforce-security layer in QuickZTNA, the open-source coordination in NetBird, the multi-year-refined developer ergonomics in Tailscale.
+#### 2. Modern Zero Trust Guarantees: QuickZTNA (Workforce Security OS)
+- **Continuous ABAC + JIT Access:** Dynamic privilege elevation with Slack/Teams approval. Ephemeral tokens with automated TTL revocation.
+- **Deep Real-Time Posture Engine:** Continuous inspection of BitLocker, FileVault, and CrowdStrike. Sub-second quarantine on any posture policy violation.
+- **Built-In MagicDNS Threat Shield:** Automated 6-hour threat feed refresh with NRD blocking. Intercepts DNS tunneling and exfiltration covert channels.
+- **Unified Enterprise Governance:** All-in-one mesh, ZTNA, DNS shield, and SOC 2 evidence. Generous free tier up to 5 users with full enterprise features.
 
 ## 3. Licensing and self-host
 
 | Product | Licence | Self-host option |
 |---|---|---|
-| Tailscale | Proprietary | Not first-party. Headscale is a third-party open-source coordination server compatible with Tailscale clients. |
-| NetBird | BSD-3-Clause | Yes — same code as managed. |
-| QuickZTNA | Proprietary | No — managed cloud service today. |
+| Tailscale | Proprietary | ⚠️ Not first-party (Headscale community project) |
+| NetBird | BSD-3-Clause | ✅ Yes — same code as managed |
+| QuickZTNA | Proprietary | ❌ No — managed cloud service today |
 
 For teams where "open source under a permissive licence with full self-host" is a hard requirement, NetBird is the direct fit. For teams that want Tailscale's client ergonomics with a self-hosted control plane, Headscale is the path. For teams comfortable with a managed proprietary service in exchange for a deeper ZTNA + workforce-security feature set, QuickZTNA works.
 

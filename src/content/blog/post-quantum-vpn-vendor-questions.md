@@ -66,35 +66,29 @@ Every major VPN and ZTNA vendor has at least a "post-quantum" press release in 2
 
 | Evaluation Dimension | Passing Vendor Answer | Red Flag / Marketing Evasion |
 |---|---|---|
-| **1. Concrete Algorithm & Parameter Set** | Explicitly names `ML-KEM-768` or `ML-KEM-1024` from FIPS 203. | Vague terms ("military-grade quantum safe", "proprietary lattice"). |
-| **2. Hybrid vs. Pure Post-Quantum** | Dual-key hybrid (`X25519 + ML-KEM`) preserving classical forward secrecy. | Pure PQ only without classical defense or proprietary combiners. |
-| **3. Ephemeral Rekeying Cadence** | Rekeying derives fresh ephemeral PQ keys periodically (e.g. every 2–10 min). | Static PSK configured once at provision time and never rotated. |
-| **4. Telemetry & Protocol Visibility** | CLI and audit logs show the negotiated cipher suite per active session. | Opaque client with no user or SIEM visibility into active crypto groups. |
-| **5. Default-On vs. Lab Flag** | Enabled by default in production client builds without hidden flags. | Requires special beta builds or contact-sales feature toggles. |
-| **6. Open Implementation & Audited Code** | Standard open cryptographic libraries (e.g., Go `crypto/mlkem`, Circl, OpenSSL 3.5). | Closed-source unverified custom crypto implementations. |
+| **1. Concrete Algorithm & Parameter Set** | ✅ Explicitly names `ML-KEM-768` or `ML-KEM-1024` from FIPS 203. | ❌ Vague terms ("military-grade quantum safe", "proprietary lattice"). |
+| **2. Hybrid vs. Pure Post-Quantum** | ✅ Dual-key hybrid (`X25519 + ML-KEM`) preserving classical forward secrecy. | ❌ Pure PQ only without classical defense or proprietary combiners. |
+| **3. Ephemeral Rekeying Cadence** | ✅ Rekeying derives fresh ephemeral PQ keys periodically (e.g. every 2–10 min). | ❌ Static PSK configured once at provision time and never rotated. |
+| **4. Telemetry & Protocol Visibility** | ✅ CLI and audit logs show the negotiated cipher suite per active session. | ❌ Opaque client with no user or SIEM visibility into active crypto groups. |
+| **5. Default-On vs. Lab Flag** | ✅ Enabled by default in production client builds without hidden flags. | ❌ Requires special beta builds or contact-sales feature toggles. |
+| **6. Open Implementation & Audited Code** | ✅ Standard open cryptographic libraries (e.g., Go `crypto/mlkem`, Circl, OpenSSL 3.5). | ❌ Closed-source unverified custom crypto implementations. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Post-Quantum Vendor Vetting Pipeline                 │
-│                                                                        │
-│   [Vendor Claim: "Quantum-Safe"]                                       │
-│                 │                                                      │
-│                 ▼                                                      │
-│   [Q1: FIPS 203 Standard Algorithm?] ──► NO  ──► [DISQUALIFY]          │
-│                 │ YES                                                  │
-│                 ▼                                                      │
-│   [Q2: Hybrid Dual-Key (X25519+ML-KEM)?] ──► NO ──► [SECURITY RISK]    │
-│                 │ YES                                                  │
-│                 ▼                                                      │
-│   [Q3: Ephemeral Rekeying & Rotation?] ──► NO ──► [STATIC PSK FLAW]   │
-│                 │ YES                                                  │
-│                 ▼                                                      │
-│   [Q4-Q6: Audited Open Libraries & Default-On?] ──► NO ──► [NOT PROD]  │
-│                 │ YES                                                  │
-│                 ▼                                                      │
-│   [APPROVED PRODUCTION PQC ARCHITECTURE]                               │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Decision Flowchart: Post-Quantum VPN Vendor Procurement Decision Tree](/images/diagrams/post-quantum-vpn-vendor-questions-flow.svg)
+*Figure 1.1: Multi-Stage Policy Decision Flowchart & Gating Logic — Post-Quantum VPN Vendor Procurement Decision Tree.*
+
+### Multi-Stage Gating Logic & Policy Evaluation Flow
+
+The decision flowchart above illustrates the sequential verification pipeline enforced by **Post-Quantum VPN Vendor Procurement Decision Tree**:
+
+- **Q1: ALGORITHM — FIPS 203 Compliance:** Does the vendor explicitly name standardized ML-KEM-768 / 1024?
+  - **Verification Rules:** Names FIPS 203 parameters; Rejects vague 'quantum-safe' claims
+  - **Branch Outcome:** Passes to *Proceed to Hybrid Check*; non-compliant requests trigger *🚩 Red Flag: Proprietary Crypto*.
+- **Q2: HYBRID COMBINER — Classical Fallback:** Does protocol combine ECDH (X25519) with lattice mathematics?
+  - **Verification Rules:** Dual-key hybrid design; Preserves classical forward secrecy
+  - **Branch Outcome:** Passes to *Proceed to Rekey Cadence*; non-compliant requests trigger *🚩 Red Flag: Unverified Pure PQC*.
+- **Q3: DEFAULT-ON — Production Deployment:** Is PQC enabled by default in GA client builds without hidden beta flags?
+  - **Verification Rules:** Enabled in production client; Active cipher visible in CLI logs
+  - **Branch Outcome:** Passes to *✅ Approved for Procurement*; non-compliant requests trigger *🚩 Red Flag: Lab Flag Only*.
 
 ## Who this is for
 
@@ -244,8 +238,8 @@ This table reflects what is publicly documented as of April 2026. Always verify 
 
 | Vendor | PQ key exchange | Hybrid | On by default | Visible mode |
 |---|---|---|---|---|
-| QuickZTNA | None — not implemented | No | No | N/A (classical WireGuard) |
-| Cloudflare Access | TLS 1.3 hybrid with ML-KEM-768 on edge | Yes | Yes on edge | Partial (HTTP headers) |
+| QuickZTNA | None — not implemented | ❌ No | ❌ No | N/A (classical WireGuard) |
+| Cloudflare Access | TLS 1.3 hybrid with ML-KEM-768 on edge | ✅ Yes | Yes on edge | ⚠️ Partial (HTTP headers) |
 | AWS site-to-site VPN | Post-quantum IKE modes on several services | Check current docs | Check current docs | Check current docs |
 | Tailscale | Check current docs | Check current docs | Check current docs | Check current docs |
 | Twingate | Check current docs | Check current docs | Check current docs | Check current docs |

@@ -68,32 +68,30 @@ Headscale is an open-source, Tailscale-compatible coordination server. It is a r
 
 | Evaluation Vector | Self-Hosted Headscale | Managed Coordination (QuickZTNA / Tailscale) |
 |---|---|---|
-| **Data Sovereignty** | 100% On-Premises / Private VPC; no external control plane. | Multi-tenant SaaS control plane (zero payload data decrypted). |
-| **Total Cost of Ownership (TCO)** | Software is $0, but requires ~4–8 hours/mo SRE maintenance + VM hosting. | Predictable flat per-user pricing (QuickZTNA is free up to 5 users). |
-| **High Availability & Relay** | Single-point of failure unless custom HA PostgreSQL & DERP deployed. | Globally distributed active-active control plane + multi-region relays. |
-| **Feature Lag & Compatibility** | Community reverse-engineered; lags new client features by months. | Native feature parity across desktop, mobile, CLI, and kernel agents. |
-| **Compliance & Attestations** | DIY: Must produce and defend own SOC 2, HIPAA, and ISO evidence. | Turnkey SOC 2 Type II, BAA, ISO 27001 evidence ready out-of-the-box. |
+| **Data Sovereignty** | 100% On-Premises / Private VPC; no external control plane. | ✅ Multi-tenant SaaS control plane (zero payload data decrypted). |
+| **Total Cost of Ownership (TCO)** | Software is $0, but requires ~4–8 hours/mo SRE maintenance + VM hosting. | ✅ Predictable flat per-user pricing (QuickZTNA is free up to 5 users). |
+| **High Availability & Relay** | Single-point of failure unless custom HA PostgreSQL & DERP deployed. | ✅ Globally distributed active-active control plane + multi-region relays. |
+| **Feature Lag & Compatibility** | Community reverse-engineered; lags new client features by months. | ✅ Native feature parity across desktop, mobile, CLI, and kernel agents. |
+| **Compliance & Attestations** | DIY: Must produce and defend own SOC 2, HIPAA, and ISO evidence. | ✅ Turnkey SOC 2 Type II, BAA, ISO 27001 evidence ready out-of-the-box. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│               Self-Hosted Headscale vs. Managed QuickZTNA Fabric       │
-│                                                                        │
-│   SELF-HOSTED HEADSCALE:                                               │
-│   [Tailscale Client] ──► [Self-Hosted Linux VM] ──► [PostgreSQL DB]    │
-│                          (You manage OS patches, SSL certs, backups)   │
-│                                                                        │
-│   MANAGED QUICKZTNA:                                                   │
-│   [Workforce / Servers]                                                │
-│            │                                                           │
-│            ▼ 1. Ephemeral Signaling & Posture                          │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Multi-Region Control Plane (99.99% SLA / SOC 2 Type 2)│ │
-│   └────────────────────────┬─────────────────────────────────────────┘ │
-│                            │ 2. Direct Peer-to-Peer Tunneling          │
-│                            ▼                                           │
-│   [Direct WireGuard Mesh Tunnels between Nodes with Zero Maintenance]  │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Architecture Comparison: Headscale (Self-Hosted) vs. Managed Coordination](/images/diagrams/headscale-vs-managed-coordination-flow.svg)
+*Figure 1.1: Architectural Comparison & Failure Mode Analysis — Headscale (Self-Hosted) vs. Managed Coordination.*
+
+### Architectural Divergence & Failure Mode Analysis
+
+The architectural contrast above details the structural differences between legacy approaches and modern Zero Trust for **Headscale (Self-Hosted) vs. Managed Coordination**:
+
+#### 1. Legacy Limitations: Self-Hosted Headscale (DIY Ops)
+- **Manual Ops & SRE Overhead:** Requires 4-8 hours/month maintaining PostgreSQL, Linux VM. Manual setup of custom DERP relays and STUN servers.
+- **Single Point of Failure:** Vanilla deployments run as single SQLite/PostgreSQL instance. Relies on manual backup scripts and VM snapshots.
+- **Feature Lag vs. Tailscale Clients:** Community reverse-engineered; lags new client releases. May break on unexpected protocol updates.
+- **DIY Compliance Paperwork:** No bundled SOC 2 Type II, ISO 27001, or HIPAA BAAs. Your internal team must defend infrastructure to auditors.
+
+#### 2. Modern Zero Trust Guarantees: Managed Coordination (QuickZTNA)
+- **Zero Infrastructure Maintenance:** 100% Managed SaaS control plane; deploy in <2 minutes. Free tier up to 5 users with full enterprise capabilities.
+- **Active-Active Global High Availability:** Multi-region distributed consensus with automatic failover. Low-latency relay infrastructure in Frankfurt & Bangalore.
+- **Advanced Governance & JIT:** Built-in ABAC, device posture checking, and JIT approvals. Out-of-band policy validation and instant key revocation.
+- **Turnkey Compliance Readiness:** SOC 2 Type II certified, HIPAA compliant with signed BAAs. Automated cryptographic evidence logging exportable to SIEM.
 
 ## Who this is for
 

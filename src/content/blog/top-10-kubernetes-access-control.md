@@ -81,35 +81,23 @@ Most Kubernetes security posture problems are access control problems. ClusterAd
 
 | Control Area | Security Risk in Vanilla K8s | Modern 2026 Hardening Solution |
 |---|---|---|
-| **API Server Reachability** | Public internet-facing API server port (6443). | Dark Kube-API gated behind QuickZTNA / Teleport WireGuard mesh. |
-| **User Authentication** | Static X.509 client certificates in static `kubeconfig`. | Ephemeral OpenID Connect (OIDC) tokens with hardware MFA. |
-| **Namespace Isolation** | Flat cluster network (Pod-to-Pod open by default). | Cilium eBPF NetworkPolicies + fine-grained RBAC roles. |
-| **Privileged Pod Access** | Developers executing interactive root shells via `kubectl exec`. | Just-in-Time elevation with dual approvals and session recording. |
-| **Policy Enforcement** | Misconfigured YAML pushed directly to cluster. | Admission Controllers (Kyverno / OPA Gatekeeper) in CI/CD pipeline. |
+| **API Server Reachability** | ❌ Public internet-facing API server port (6443). | ✅ Dark Kube-API gated behind QuickZTNA / Teleport WireGuard mesh. |
+| **User Authentication** | ❌ Static X.509 client certificates in static `kubeconfig`. | ✅ Ephemeral OpenID Connect (OIDC) tokens with hardware MFA. |
+| **Namespace Isolation** | ❌ Flat cluster network (Pod-to-Pod open by default). | ✅ Cilium eBPF NetworkPolicies + fine-grained RBAC roles. |
+| **Privileged Pod Access** | ❌ Developers executing interactive root shells via `kubectl exec`. | ✅ Just-in-Time elevation with dual approvals and session recording. |
+| **Policy Enforcement** | ❌ Misconfigured YAML pushed directly to cluster. | ✅ Admission Controllers (Kyverno / OPA Gatekeeper) in CI/CD pipeline. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Kubernetes Access Hardening Architecture             │
-│                                                                        │
-│   [Developer / SRE / CI Runner]                                        │
-│                 │                                                      │
-│                 ▼ (OIDC Authentication + Posture Verification)         │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA / Teleport Kubernetes Access Gateway                  │ │
-│   │  - Evaluates: OIDC Identity + Role + Namespace Policy            │ │
-│   └─────────────────────────────┬────────────────────────────────────┘ │
-│                                 │ (Encrypted WireGuard Mesh Tunnel)    │
-│                                 ▼                                      │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Private Kubernetes Cluster (Zero Public Ingress Ports)          │ │
-│   │  ├── Kube-API Server (6443 - Dark from Internet Scanners)        │ │
-│   │  ├── Kyverno / OPA Gatekeeper (Enforces Non-Root & No HostPath)   │ │
-│   │  └── Cilium eBPF Network Policies (Default Deny East-West)       │ │
-│   └─────────────────────────────┬────────────────────────────────────┘ │
-│                                 ▼                                      │
-│   [Audit Telemetry Stream ──► SIEM (Every kubectl verb & exec logged)] │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Defense in Depth: Kubernetes Cluster Hardening & Defense-in-Depth Shield](/images/diagrams/top-10-kubernetes-access-control-flow.svg)
+*Figure 1.1: Concentric Defense-in-Depth Layered Security Architecture — Kubernetes Cluster Hardening & Defense-in-Depth Shield.*
+
+### Concentric Defense-in-Depth Layer Breakdown
+
+The layered security model above outlines concentric defensive controls spanning from the hardware perimeter to the data core for **Kubernetes Cluster Hardening & Defense-in-Depth Shield**:
+
+- **LAYER 1: INGRESS — Cloaked Kube-API Server (Zero Public Port):** Port 6443 hidden behind outbound-only WireGuard mesh; external port scanners receive zero response. *Enforced Controls:* Single-Packet Authorization, no public API server IP, zero Shodan exposure
+- **LAYER 2: IDENTITY — Ephemeral OIDC Tokens & JIT Elevation:** Static cluster-admin kubeconfig files eliminated; developers authenticate via corporate IdP SSO. *Enforced Controls:* Short-lived tokens, namespace-scoped RBAC, interactive exec dual-approval
+- **LAYER 3: POLICY — Kyverno / OPA Gatekeeper Policy Engine:** Blocks privileged containers, root execution, and unverified registry images before pod creation. *Enforced Controls:* Pre-flight CI/CD linting, immutable container signatures, runtime verification
+- **LAYER 4: NETWORK — Cilium eBPF East-West Pod Isolation:** Replaces flat pod network with cryptographic mTLS and strict L3-L7 NetworkPolicies per service. *Enforced Controls:* Default-deny pod communication, SPIFFE cryptographic SVIDs, DNS policy filtering
 
 ## The three Kubernetes access control gaps
 

@@ -85,32 +85,19 @@ Every CISO says "least privilege." Almost no one actually implements it for priv
 | **ChatOps Approval Workflows** | Slack / Teams interactive webhooks for dual-custody peer sign-off. | Ticket / Incident duration | Incident response (PagerDuty) & break-glass elevation. |
 | **Network-Layer JIT Elevation** | Opens dynamic WireGuard micro-tunnel to target port upon approval. | 1 – 4 hours | Contractor access to dark, unexposed internal servers. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Just-In-Time (JIT) Access Lifecycle Flow             │
-│                                                                        │
-│   [Engineer / Contractor]                                              │
-│              │                                                         │
-│              ▼ 1. Request Temporary Elevation (Slack / Web / CLI)      │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA / Sym JIT Policy Engine                               │ │
-│   │  - Validates context (PagerDuty Incident #, Business Justification│
-│   └──────────────────────────┬───────────────────────────────────────┘ │
-│                              │ 2. Dual-Custody Approval Push           │
-│                              ▼                                         │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Authorized Approver (Lead / Security Admin Signs Off)          │ │
-│   └──────────────────────────┬───────────────────────────────────────┘ │
-│                              │ 3. Ephemeral Grant Issued               │
-│                              ▼                                         │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Dynamic WireGuard Mesh Tunnel Opened (TTL: 60 minutes)          │ │
-│   │  └── Automatic Revocation & Session Terminated upon Expiry       │ │
-│   └──────────────────────────┬───────────────────────────────────────┘ │
-│                              ▼ 4. SIEM Audit Telemetry Record          │
-│   [Full Forensic Audit: Who requested, Who approved, TTL, Actions]    │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Protocol Sequence: Just-In-Time (JIT) Access Elevation Lifecycle Sequence](/images/diagrams/top-10-jit-access-frameworks-flow.svg)
+*Figure 1.1: Protocol Handshake Sequence & Lifeline Verification Flow — Just-In-Time (JIT) Access Elevation Lifecycle Sequence.*
+
+### Protocol Handshake & Verification Sequence
+
+The sequence diagram above traces the chronological protocol transactions across participating lifelines for **Just-In-Time (JIT) Access Elevation Lifecycle Sequence**:
+
+1. **1. /access request prod-db --reason 'Incident 402' --ttl 1h (Engineer → ChatOps / Bot):** Request initiated via ChatOps
+2. **2. Notification dispatched with context & pager ticket (ChatOps / Bot → On-Call Approver):** Dual approval policy enforced
+3. **3. Approver clicks [Approve Elevation] (On-Call Approver → JIT Access Broker):** Authenticated via hardware FIDO2 key
+4. **4. Issue Short-Lived Ephemeral WireGuard & DB Token (JIT Access Broker → Engineer):** Valid strictly for 60 minutes
+5. **5. Direct Peer-to-Peer Query Session Established (Engineer → Target Production DB):** Full SQL query audit active
+6. **6. TTL Expires (60m) -> Automatic Cryptographic Teardown (JIT Access Broker → Target Production DB):** Session closed; standing privileges: 0
 
 ## The standing privilege problem
 
@@ -328,11 +315,11 @@ The result is a dense mesh of persistent high-privilege accounts, any one of whi
 | AWS IAM Identity Center | AWS | Custom build | ✅ via STS | Via CloudTrail | ✅ AWS |
 | Teleport | SSH + K8s + DB + Apps | ✅ Slack/email | ✅ | ✅ Native | ❌ |
 | HashiCorp Boundary | Infrastructure | Needs build | ✅ via Vault | Via Vault | ❌ |
-| Sym | Cloud + SaaS | ✅ Slack | ✅ | No | ✅ |
+| Sym | Cloud + SaaS | ✅ Slack | ✅ | ❌ No | ✅ |
 | CyberArk Dynamic PA | All (CyberArk managed) | ✅ Native | ✅ Ephemeral | ✅ PSM | ✅ |
-| Opal Security | Cloud + SaaS + Code | ✅ Slack | ✅ | No | ✅ |
-| SGNL | Identity context-driven | Continuous | ✅ Continuous | No | Via integrations |
-| Indent | Okta + AWS + GitHub | ✅ Slack | ✅ | No | ✅ |
+| Opal Security | Cloud + SaaS + Code | ✅ Slack | ✅ | ❌ No | ✅ |
+| SGNL | Identity context-driven | Continuous | ✅ Continuous | ❌ No | Via integrations |
+| Indent | Okta + AWS + GitHub | ✅ Slack | ✅ | ❌ No | ✅ |
 | QuickZTNA JIT | ZTNA resources | ✅ Dashboard/API | ✅ | ❌ | ❌ |
 
 ---

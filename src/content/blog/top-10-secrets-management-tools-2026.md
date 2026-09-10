@@ -77,32 +77,24 @@ Exposed secrets are the most common root cause of serious cloud breaches. API ke
 
 | Secret Strategy | Operational Mechanism | Risk Level | 2026 Recommended Tooling |
 |---|---|---|---|
-| **Static `.env` / CI Variables** | Hardcoded plaintext secrets in config files & CI runners. | **CRITICAL:** High credential sprawl & exfiltration risk. | Deprecate immediately |
-| **Encrypted Central Vault** | Centralized HSM/AES-256 encrypted key-value storage with RBAC. | Low: Protected at rest; manual rotation required. | AWS Secrets Manager, GCP Secret Manager, Doppler |
-| **Dynamic Ephemeral Secrets** | Generated on-demand with 1-hour TTLs; automatically deleted. | **ZERO STANDING RISK:** Credential useless after expiry. | HashiCorp Vault, CyberArk Conjur, Akeyless |
-| **Workload Identity (OIDC)** | Secretless federation exchanging JWT proofs for temporary cloud tokens. | **OPTIMAL:** Zero static secrets to rotate or store. | GitHub Actions OIDC + QuickZTNA / Vault |
+| **Static `.env` / CI Variables** | Hardcoded plaintext secrets in config files & CI runners. | ❌ **CRITICAL:** High credential sprawl & exfiltration risk. | Deprecate immediately |
+| **Encrypted Central Vault** | Centralized HSM/AES-256 encrypted key-value storage with RBAC. | ❌ Low: Protected at rest; manual rotation required. | AWS Secrets Manager, GCP Secret Manager, Doppler |
+| **Dynamic Ephemeral Secrets** | Generated on-demand with 1-hour TTLs; automatically deleted. | ❌ **ZERO STANDING RISK:** Credential useless after expiry. | HashiCorp Vault, CyberArk Conjur, Akeyless |
+| **Workload Identity (OIDC)** | Secretless federation exchanging JWT proofs for temporary cloud tokens. | ❌ **OPTIMAL:** Zero static secrets to rotate or store. | GitHub Actions OIDC + QuickZTNA / Vault |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Dynamic Secret Lifecycle Architecture                │
-│                                                                        │
-│   [Workload / Ephemeral CI Runner]                                     │
-│                 │                                                      │
-│                 ▼ 1. Present Ephemeral OIDC Job Token                  │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Secrets Manager (HashiCorp Vault / AWS Secrets Manager)         │ │
-│   │  - Verifies cryptographic signature & branch metadata            │ │
-│   └─────────────────────────────┬────────────────────────────────────┘ │
-│                                 │ 2. Issues Dynamic Database Password  │
-│                                 ▼ (TTL: 30 minutes)                    │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Target Production Database Cluster                              │ │
-│   │  - Vault automatically generates user & drops user on TTL expiry │ │
-│   └─────────────────────────────┬────────────────────────────────────┘ │
-│                                 ▼ 3. Full Audit Telemetry              │
-│   [SIEM Audit Stream: Immutable record of secret issue & revocation]   │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Protocol Sequence: Zero-Standing Secrets: Dynamic Ephemeral Token Lifecycle](/images/diagrams/top-10-secrets-management-tools-2026-flow.svg)
+*Figure 1.1: Protocol Handshake Sequence & Lifeline Verification Flow — Zero-Standing Secrets: Dynamic Ephemeral Token Lifecycle.*
+
+### Protocol Handshake & Verification Sequence
+
+The sequence diagram above traces the chronological protocol transactions across participating lifelines for **Zero-Standing Secrets: Dynamic Ephemeral Token Lifecycle**:
+
+1. **1. Workload boots with empty filesystem (App Runtime → QuickZTNA Agent):** Zero static .env secrets on disk
+2. **2. Fetch Short-Lived SPIFFE / OIDC JWT (QuickZTNA Agent → Identity Token (OIDC)):** Cryptographically bound to container UID
+3. **3. Request Dynamic Secret via Vault API (QuickZTNA Agent → Enterprise Vault):** Mutual TLS with attestation token
+4. **4. Synthesize Dynamic Database Role (1h TTL) (Enterprise Vault → QuickZTNA Agent):** Ephemeral credentials generated
+5. **5. Inject Secret Directly into In-Memory Enclave (QuickZTNA Agent → App Runtime):** mlock() volatile RAM; never hits disk
+6. **6. Authenticate to DB & Auto-Revoke upon Exit (App Runtime → Private Target DB):** Vault shreds credential upon TTL expiry
 
 ## Why secrets in env files is a 2012 solution
 
@@ -321,12 +313,12 @@ controls what they can read once there. Those are complementary jobs, not compet
 |---|---|---|---|---|---|---|
 | HashiCorp Vault | Self-hosted | ✅ Full | ✅ | BYOK supported | Medium | Vault Enterprise |
 | AWS Secrets Manager | Hosted (AWS) | ✅ Lambda | ✅ CloudTrail | ✅ CMK | High | ✅ FedRAMP |
-| GCP Secret Manager | Hosted (GCP) | Limited | ✅ | ✅ CMEK | High | ✅ |
+| GCP Secret Manager | Hosted (GCP) | ⚠️ Limited | ✅ | ✅ CMEK | High | ✅ |
 | Azure Key Vault | Hosted (Azure) | PKI/certs | ✅ | ✅ BYOK | High | ✅ FedRAMP |
 | CyberArk Conjur | Both | ✅ | ✅ | ✅ | Low | ✅ Enterprise |
 | Doppler | Hosted SaaS | ❌ | ✅ | ❌ | Excellent | SOC 2 |
 | Infisical | Both | ✅ Growing | ✅ | Self-hosted option | Excellent | Growing |
-| 1Password SA | Hosted SaaS | ❌ | Partial | ❌ | Excellent | SOC 2 |
+| 1Password SA | Hosted SaaS | ❌ | ⚠️ Partial | ❌ | Excellent | SOC 2 |
 | Akeyless | Hosted + Gateway | ✅ | ✅ | ✅ DKE | Good | SOC 2 |
 
 ---

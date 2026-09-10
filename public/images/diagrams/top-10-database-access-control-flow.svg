@@ -1,0 +1,146 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="100%" height="auto" style="background:#0B1120;border-radius:12px;border:1px solid #1E293B;">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#BE123C" />
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#06B6D4" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F43F5E" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="960" height="68" fill="#0F172A" />
+  <rect x="24" y="18" width="218" height="26" rx="5" fill="#DC2626" />
+  <text x="133" y="35" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif" letter-spacing="1">ARCHITECTURAL CONTRAST</text>
+  <text x="268" y="35" fill="#F8FAFC" font-size="16" font-weight="700" font-family="system-ui, sans-serif">Database Access: Legacy Direct DBA vs. Zero Trust Broker</text>
+  <text x="268" y="52" fill="#94A3B8" font-size="11.5" font-family="system-ui, sans-serif">Eliminating Standing Root Credentials with In-Memory Ephemeral Tokens &amp; Dynamic Masking</text>
+  <line x1="0" y1="68" x2="960" y2="68" stroke="#1E293B" stroke-width="1.5" />
+  
+    <!-- Left Column: Legacy -->
+    <rect x="40" y="95" width="420" height="435" rx="10" fill="#111827" stroke="#374151" stroke-width="1.5" filter="url(#shadow)" />
+    <rect x="40" y="95" width="420" height="42" rx="10" fill="#450A0A" />
+    <rect x="55" y="106" width="70" height="20" rx="4" fill="#EF4444" />
+    <text x="90" y="120" fill="#FFFFFF" font-size="9.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">LEGACY</text>
+    <text x="135" y="121" fill="#FECACA" font-size="13" font-weight="700" font-family="system-ui, sans-serif">Legacy DBA Access (Direct TCP Port)</text>
+    
+      <g transform="translate(60, 150)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Exposed Listening Ports</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Port 5432 / 3306 open to corporate VPN or internal LAN.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">Vulnerable to internal port scans, brute-force, and lateral pivots.</text>
+      </g>
+    
+      <g transform="translate(60, 235)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Permanent Static Root Passwords</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Shared database admin credentials stored in local dotfiles.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">Password changes require coordination and risk breaking services.</text>
+      </g>
+    
+      <g transform="translate(60, 320)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Standing 24/7 Superuser Privileges</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">DBA accounts hold unconstrained admin rights indefinitely.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">High blast radius if DBA laptop or credentials are compromised.</text>
+      </g>
+    
+      <g transform="translate(60, 405)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Unmasked Cleartext Sensitive Data</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Developers can view credit cards, PII, and customer secrets.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">Lacks granular column-level or row-level dynamic masking.</text>
+      </g>
+    
+
+    <!-- Central VS Badge -->
+    <circle cx="480" cy="312.5" r="22" fill="#0F172A" stroke="#334155" stroke-width="2" filter="url(#shadow)" />
+    <text x="480" y="317.5" fill="#F59E0B" font-size="12" font-weight="900" text-anchor="middle" font-family="system-ui, sans-serif">VS</text>
+
+    <!-- Right Column: Modern Zero Trust -->
+    <rect x="500" y="95" width="420" height="435" rx="10" fill="#0F172A" stroke="#059669" stroke-width="1.5" filter="url(#shadow)" />
+    <rect x="500" y="95" width="420" height="42" rx="10" fill="#064E3B" />
+    <rect x="515" y="106" width="85" height="20" rx="4" fill="#10B981" />
+    <text x="557" y="120" fill="#FFFFFF" font-size="9.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">ZERO TRUST</text>
+    <text x="610" y="121" fill="#A7F3D0" font-size="13" font-weight="700" font-family="system-ui, sans-serif">Zero Trust Database Broker (QuickZTNA)</text>
+    
+      <g transform="translate(520, 150)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">100% Dark Private Subnet</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">Database has zero open listening ports to the public internet.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Reachable strictly through cryptographic WireGuard microtunnels.</text>
+      </g>
+    
+      <g transform="translate(520, 235)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Dynamic In-Memory Ephemeral Credentials</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">Short-lived database tokens issued on-demand via OIDC / SSO.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Tokens expire automatically after session TTL; dotfiles stay empty.</text>
+      </g>
+    
+      <g transform="translate(520, 320)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Just-In-Time (JIT) Dual Approval</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">Elevation granted only upon ticket verification (Slack/PagerDuty).</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Standing privileges eliminated; zero persistent admin accounts.</text>
+      </g>
+    
+      <g transform="translate(520, 405)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Dynamic Column Masking &amp; Full Audit</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">Sensitive PII masked inline before transmission to developer client.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Every SQL query, DML change, and transaction immutably logged.</text>
+      </g>
+    
+  
+  <!-- Footer -->
+  <line x1="20" y1="552" x2="940" y2="552" stroke="#1E293B" stroke-width="1" />
+  <text x="24" y="568" fill="#64748B" font-size="10" font-family="system-ui, sans-serif">QuickZTNA Technical Architecture Reference</text>
+  <text x="936" y="568" fill="#38BDF8" font-size="10" font-weight="600" text-anchor="end" font-family="system-ui, sans-serif">Zero Trust Verified Blueprint</text>
+</svg>
+  

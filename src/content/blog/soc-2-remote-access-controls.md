@@ -69,35 +69,24 @@ SOC 2 is the attestation report most commonly required by enterprise buyers. It 
 
 | Trust Services Criterion (TSC) | Auditor Requirement | QuickZTNA Evidence Generation |
 |---|---|---|
-| **CC6.1 — Perimeter & Logical Access** | Infrastructure boundary protection and restricted access points. | Single-Packet Authorization (SPA) / Dark nodes + encrypted WireGuard mesh. |
-| **CC6.2 — User Registration & Access** | Unique user identities, authenticated via enterprise IdP. | SCIM 2.0 lifecycle sync + OIDC SSO integration (Okta, Entra ID, Google). |
-| **CC6.3 — Least Privilege & Role Access** | Access restricted strictly to authorized business requirements. | Attribute-Based Access Control (ABAC) per connection; deny-by-default. |
-| **CC6.6 — Boundary Defense & Lateral Move** | Prevent unauthorized lateral traversal across network boundaries. | Microsegmentation down to port/host; eliminates flat subnet routing. |
-| **CC6.7 — Data Transmission Security** | Encryption of data in transit across public and untrusted networks. | ChaCha20-Poly1305 AEAD wire-speed encryption with automated key rotation. |
-| **CC7.2 — Security Monitoring & Telemetry** | Detect and log anomalous access and authorization failures. | Real-time structured JSON audit telemetry streaming to Splunk, Datadog, Elastic. |
+| **CC6.1 — Perimeter & Logical Access** | Infrastructure boundary protection and restricted access points. | ✅ Single-Packet Authorization (SPA) / Dark nodes + encrypted WireGuard mesh. |
+| **CC6.2 — User Registration & Access** | Unique user identities, authenticated via enterprise IdP. | ✅ SCIM 2.0 lifecycle sync + OIDC SSO integration (Okta, Entra ID, Google). |
+| **CC6.3 — Least Privilege & Role Access** | Access restricted strictly to authorized business requirements. | ✅ Attribute-Based Access Control (ABAC) per connection; deny-by-default. |
+| **CC6.6 — Boundary Defense & Lateral Move** | Prevent unauthorized lateral traversal across network boundaries. | ✅ Microsegmentation down to port/host; eliminates flat subnet routing. |
+| **CC6.7 — Data Transmission Security** | Encryption of data in transit across public and untrusted networks. | ✅ ChaCha20-Poly1305 AEAD wire-speed encryption with automated key rotation. |
+| **CC7.2 — Security Monitoring & Telemetry** | Detect and log anomalous access and authorization failures. | ✅ Real-time structured JSON audit telemetry streaming to Splunk, Datadog, Elastic. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   SOC 2 Type II Remote Access Evidence Fabric          │
-│                                                                        │
-│   [Employee / Contractor Endpoint]                                     │
-│                  │                                                     │
-│                  ▼ (CC6.2: IdP Federated SSO & MFA Verification)       │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Policy Engine (CC6.3 & CC6.6: ABAC Microsegmentation) │ │
-│   │  - Evaluates Identity + Posture (CC6.8) + Resource Permission    │ │
-│   └──────────────────────────────┬───────────────────────────────────┘ │
-│                                  │ (CC6.7: Encrypted WireGuard Tunnel) │
-│                                  ▼                                     │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Protected Enterprise Workloads (CC6.1: Dark VPC Infrastructure) │ │
-│   │  ├── Production API Gateway (Allowed per Role)                   │ │
-│   │  └── Core Database Cluster (JIT Approved Elevation Only)         │ │
-│   └──────────────────────────────┬───────────────────────────────────┘ │
-│                                  ▼                                     │
-│   [CC7.2: Immutable Audit Log Stream ──► SOC 2 Compliance Evidence]    │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Defense in Depth: SOC 2 Type II Remote Access Trust Services Criteria Fabric](/images/diagrams/soc-2-remote-access-controls-flow.svg)
+*Figure 1.1: Concentric Defense-in-Depth Layered Security Architecture — SOC 2 Type II Remote Access Trust Services Criteria Fabric.*
+
+### Concentric Defense-in-Depth Layer Breakdown
+
+The layered security model above outlines concentric defensive controls spanning from the hardware perimeter to the data core for **SOC 2 Type II Remote Access Trust Services Criteria Fabric**:
+
+- **CRITERION 1 — Identity-Bound Least Privilege (ABAC):** Enforces role-based and attribute-based access control; standing superuser accounts replaced by JIT. *Enforced Controls:* SSO/SCIM integration, Just-In-Time role elevation with dual approvals
+- **CRITERION 2 — Perimeter Elimination & Dark Infrastructure:** Eliminates open listening ports on internet gateways; restricts access to explicit microtunnels. *Enforced Controls:* Single-Packet Authorization, zero inbound open firewall ports, peer isolation
+- **CRITERION 3 — End-to-End Cryptographic Data Protection:** Encrypts all remote access data in transit using state-of-the-art cryptographic primitives. *Enforced Controls:* WireGuard ChaCha20-Poly1305, ephemeral key rotation with sub-hourly shredding
+- **CRITERION 4 — Automated Auditor Evidence Pipeline:** Produces tamper-evident, structured logs proving that policies were continuously enforced. *Enforced Controls:* One-click auditor CSV/JSON export, cryptographic hash chains, SIEM sync
 
 ## Who this is for
 

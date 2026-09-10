@@ -64,11 +64,13 @@ relatedSlugs:
 
 | Evaluation Pillar | Open-Source ZTNA (Headscale, NetBird, OpenZiti) | Managed SaaS ZTNA (QuickZTNA, Tailscale, Cloudflare) |
 | :--- | :--- | :--- |
-| **Operational Overhead** | High: Requires self-hosting, DB backups, STUN/DERP relays, and patching | Zero: Handled entirely by SaaS vendor with automatic high availability |
-| **Compliance & Attestations** | Self-attestation burden (SOC 2 / HIPAA / ISO are on your team) | Bundled out-of-the-box (SOC 2 Type II, HIPAA BAA, signed logs) |
-| **Data Sovereignty & Air-Gap** | 100% On-premise / Sovereign hosting possible | Cloud coordination (Regional relay nodes available) |
-| **Workforce Governance Features** | Basic tag/group routing; custom scripting needed for advanced JIT/ABAC | Native ABAC, continuous device posture, JIT access, DNS filtering |
-| **Cost Profile Break-Even** | Predictable infrastructure costs ($50-$200/mo) + Engineering hours | Low entry per-seat pricing; highly cost-effective under 60-100 seats |
+| **Operational Overhead** | ✅ High: Requires self-hosting, DB backups, STUN/DERP relays, and patching | ✅ Zero: Handled entirely by SaaS vendor with automatic high availability |
+| **Compliance & Attestations** | ✅ Self-attestation burden (SOC 2 / HIPAA / ISO are on your team) | ✅ Bundled out-of-the-box (SOC 2 Type II, HIPAA BAA, signed logs) |
+| **Data Sovereignty & Air-Gap** | ✅ 100% On-premise / Sovereign hosting possible | ✅ Cloud coordination (Regional relay nodes available) |
+| **Workforce Governance Features** | ✅ Basic tag/group routing; custom scripting needed for advanced JIT/ABAC | ✅ Native ABAC, continuous device posture, JIT access, DNS filtering |
+| **Cost Profile Break-Even** | ✅ Predictable infrastructure costs ($50-$200/mo) + Engineering hours | ✅ Low entry per-seat pricing; highly cost-effective under 60-100 seats |
+
+
 
 The open-source-vs-managed decision for Zero Trust Network Access is not ideological. It is a matter of matching the delivery model to your constraints: engineering capacity, compliance scope, data-sovereignty requirements, scale, and customisation needs. Open source wins when you have platform engineering capacity, need full control, or operate under strict sovereignty rules. Managed wins when you need features fast, want compliance attestations bundled, have a small team, or cannot budget for self-host operations. The total-cost break-even is typically between 20 and 60 users — below that managed is cheaper, above it open source often is. This post gives a structured decision framework that makes the choice explicit, with the four serious options on each side of the line.
 
@@ -78,40 +80,24 @@ Security leads, platform engineers, and CTOs making a build-vs-buy decision for 
 
 ## 1. The frame — it is not an ideology question
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                   ZTNA BUILD VS BUY DECISION FLOWCHART                      │
-└─────────────────────────────────────────────────────────────────────────────┘
+![Architecture Comparison: Open-Source vs. Managed ZTNA Decision Blueprint](/images/diagrams/open-source-vs-managed-ztna-flow.svg)
+*Figure 1.1: Architectural Comparison & Failure Mode Analysis — Open-Source vs. Managed ZTNA Decision Blueprint.*
 
-                          [ Assess Requirements ]
-                                     │
-                 ┌───────────────────┴───────────────────┐
-                 │ Air-Gapped / Strict Data Sovereignty? │
-                 └───────────────────┬───────────────────┘
-                           YES ┌─────┴─────┐ NO
-                               │           │
-                     ┌─────────▼──┐   ┌────▼─────────────────────────┐
-                     │ OPEN SOURCE│   │ Dedicated SRE/DevOps Team to │
-                     │ SELF-HOST  │   │ Manage Relays & Control DBs? │
-                     └────────────┘   └──────────────┬───────────────┘
-                                           YES ┌─────┴─────┐ NO
-                                               │           │
-                                     ┌─────────▼──┐   ┌────▼──────────────┐
-                                     │ OPEN SOURCE│   │ Turnkey SOC2/JIT/ │
-                                     │ (NetBird/  │   │ Managed Security? │
-                                     │ OpenZiti)  │   └────┬──────────────┘
-                                     └────────────┘        │ YES
-                                                      ┌────▼──────────────┐
-                                                      │ MANAGED SaaS ZTNA │
-                                                      │ (QuickZTNA / SASE)│
-                                                      └───────────────────┘
-```
+### Architectural Divergence & Failure Mode Analysis
 
-Teams sometimes pick open source because they believe it is inherently better, or managed because they believe open source is inherently risky. Neither framing helps.
+The architectural contrast above details the structural differences between legacy approaches and modern Zero Trust for **Open-Source vs. Managed ZTNA Decision Blueprint**:
 
-The useful framing: **what is your total cost of operation, including engineering time and compliance overhead, under each option, for your specific constraints?**
+#### 1. Legacy Limitations: Open-Source ZTNA (Self-Hosted)
+- **High SRE Engineering Tax:** Requires dedicated SRE hours for DB backups, VM patches. Custom deployment of STUN/TURN/DERP relays across regions.
+- **DIY Compliance Burden:** Must defend self-hosted architecture during SOC 2 / HIPAA audits. No vendor-provided attestation reports or signed BAAs.
+- **Manual High-Availability:** Custom clustering of PostgreSQL & control planes required. Single-region setups suffer downtime during network cuts.
+- **Cost Inversion at Small Scale:** VM + Relay hosting ($100-$300/mo) exceeds SaaS cost for small teams. Economical only when engineering hours are discounted.
 
-Open source is not free. Managed is not wasteful. Both deliver the same core functionality — encrypted tunnels, policy enforcement, identity integration, audit logging — and the choice is about the operational and organisational shape that fits your team.
+#### 2. Modern Zero Trust Guarantees: Managed SaaS ZTNA (QuickZTNA)
+- **Zero Operational Overhead:** Fully managed control plane with automatic global scaling. One-line installation via curl script in under 2 minutes.
+- **Turnkey Compliance Attestations:** SOC 2 Type II, ISO 27001, and HIPAA compliance bundled. Automated cryptographic evidence export ready for auditors.
+- **Global Relay Infrastructure:** Multi-region relays ensure instant fallback during UDP blocks. Active-active high-availability with zero maintenance windows.
+- **Free Tier for Small Teams:** Free forever for up to 5 users and 100 devices. Enterprise governance available without infrastructure costs.
 
 ## 2. What "open-source ZTNA" actually means
 

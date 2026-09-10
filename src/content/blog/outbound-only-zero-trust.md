@@ -76,11 +76,31 @@ Outbound-Only Zero Trust Architecture structurally alters this exposure model. B
 
 | Dimension | Inbound Perimeter (Legacy) | Outbound-Only Zero Trust (QuickZTNA) |
 |---|---|---|
-| **Ingress Firewall Rule** | `0.0.0.0/0:22,443,5432 ALLOW` | `0.0.0.0/0 INGRESS: DROP ALL (100% Dark)` |
-| **Public IPv4 Requirement** | Mandatory per public instance ($$ hourly cloud fee). | Zero public IPs required; operates in private subnets. |
-| **Internet Scanner Visibility** | Indexed by Shodan, Censys within 15 minutes. | Mathematically invisible to external SYN/port scans. |
-| **Connection Direction** | Inbound connection directly to workload port. | Outbound-only stateful tunnel established to mesh peers. |
-| **Lateral Movement Resistance** | Flat subnet lateral movement once perimeter breached. | Microsegmented per-process ABAC policy enforcement. |
+| **Ingress Firewall Rule** | ❌ `0.0.0.0/0:22,443,5432 ALLOW` | ✅ `0.0.0.0/0 INGRESS: DROP ALL (100% Dark)` |
+| **Public IPv4 Requirement** | ❌ Mandatory per public instance ($$ hourly cloud fee). | ✅ Zero public IPs required; operates in private subnets. |
+| **Internet Scanner Visibility** | ❌ Indexed by Shodan, Censys within 15 minutes. | ✅ Mathematically invisible to external SYN/port scans. |
+| **Connection Direction** | ❌ Inbound connection directly to workload port. | ✅ Outbound-only stateful tunnel established to mesh peers. |
+| **Lateral Movement Resistance** | ❌ Flat subnet lateral movement once perimeter breached. | ✅ Microsegmented per-process ABAC policy enforcement. |
+
+![Architecture Comparison: Inbound Perimeter Exposure vs. Outbound-Only Zero Trust](/images/diagrams/outbound-only-zero-trust-flow.svg)
+*Figure 1.1: Architectural Comparison & Failure Mode Analysis — Inbound Perimeter Exposure vs. Outbound-Only Zero Trust.*
+
+### Architectural Divergence & Failure Mode Analysis
+
+The architectural contrast above details the structural differences between legacy approaches and modern Zero Trust for **Inbound Perimeter Exposure vs. Outbound-Only Zero Trust**:
+
+#### 1. Legacy Limitations: Inbound Perimeter (Legacy Model)
+- **Public Inbound Ports Open:** Ports 22, 443, 3389, and 5432 exposed to 0.0.0.0/0. Continuously scanned by Shodan, Censys, and automated botnets.
+- **Mandatory Public IPv4 Allocation:** Every internet-reachable VM requires public cloud IP ($). Direct target for DDoS, SYN floods, and brute-force attacks.
+- **Flat Subnet Lateral Movement:** Once perimeter breached, attacker pivots across /24 subnet. Zero internal barriers between web server and backend database.
+- **Single Point of Ingress Failure:** Centralized VPN gateway concentrator bottlenecks bandwidth. Downtime halts entire remote engineering organization.
+
+#### 2. Modern Zero Trust Guarantees: Outbound-Only Zero Trust (QuickZTNA)
+- **100% Dark Infrastructure:** 0.0.0.0/0 INGRESS: DROP ALL on security groups. Mathematically invisible to external SYN port scans.
+- **Zero Public IPs Required:** Operates purely within private VPC subnets with zero public IPs. Eliminates hourly IPv4 cloud tax and perimeter exposure.
+- **Direct P2P UDP Hole Punching:** Workloads initiate outbound-only stateful tunnels to mesh peers. Traffic routes peer-to-peer at line-rate kernel WireGuard speeds.
+- **Process-Level Microsegmentation:** Granular ABAC enforces least-privilege access per socket. Compromised machine has zero reachability to adjacent servers.
+
 
 ---
 
@@ -374,14 +394,14 @@ $ ztna ping prod-db-01.myorg.zt.net
 
 | Capability / Architecture | Legacy IPsec / OpenVPN | Bastion Host (Jump Box) | Centralized ZTNA Proxy | QuickZTNA Outbound Mesh |
 | :--- | :--- | :--- | :--- | :--- |
-| **Inbound Ports Exposed** | Open (UDP 1194 / 500) | Open (TCP 22 / 3389) | 0 on Host (Proxied) | **0 (DENY ALL Ingress)** |
-| **Public IPv4 Requirement** | Mandatory on Gateway | Mandatory on Bastion | Cloud IP Required | **Zero Public IPs Required** |
-| **Data Plane Topology** | Hub-and-Spoke Concentrator | Single Jump Host | Central Vendor Cloud | **Direct P2P Encrypted Mesh** |
-| **Data Privacy (Inspection)** | Decrypted at Gateway | Decrypted on Bastion | Decrypted at Vendor Cloud | **100% Zero-Knowledge E2E** |
-| **Throughput Speed** | ~0.84 Gbps | ~0.42 Gbps | ~0.95 Gbps | **Up to 4.12 Gbps (WireGuard)** |
-| **Continuous Posture Checks** | Login-Time Only | None | Basic HTTP Headers | **Continuous Real-Time EDR/Disk** |
-| **Integrated Endpoint DLP** | None / Expensive Add-on | None | None / Expensive Add-on | **Built-in Local Secret Scanning** |
-| **Deployment Time** | Hours to Days | Hours | Days to Weeks | **< 2 Minutes (1-line script)** |
+| **Inbound Ports Exposed** | ❌ Open (UDP 1194 / 500) | ⚠️ Open (TCP 22 / 3389) | ✅ 0 on Host (Proxied) | ✅ **0 (DENY ALL Ingress)** |
+| **Public IPv4 Requirement** | ❌ Mandatory on Gateway | ⚠️ Mandatory on Bastion | ✅ Cloud IP Required | ✅ **Zero Public IPs Required** |
+| **Data Plane Topology** | ❌ Hub-and-Spoke Concentrator | ⚠️ Single Jump Host | ✅ Central Vendor Cloud | ✅ **Direct P2P Encrypted Mesh** |
+| **Data Privacy (Inspection)** | ❌ Decrypted at Gateway | ⚠️ Decrypted on Bastion | ✅ Decrypted at Vendor Cloud | ✅ **100% Zero-Knowledge E2E** |
+| **Throughput Speed** | ❌ ~0.84 Gbps | ⚠️ ~0.42 Gbps | ✅ ~0.95 Gbps | ✅ **Up to 4.12 Gbps (WireGuard)** |
+| **Continuous Posture Checks** | ❌ Login-Time Only | ⚠️ None | ✅ Basic HTTP Headers | ✅ **Continuous Real-Time EDR/Disk** |
+| **Integrated Endpoint DLP** | ❌ None / Expensive Add-on | ⚠️ None | ✅ None / Expensive Add-on | ✅ **Built-in Local Secret Scanning** |
+| **Deployment Time** | ❌ Hours to Days | ⚠️ Hours | ✅ Days to Weeks | ✅ **< 2 Minutes (1-line script)** |
 
 ---
 

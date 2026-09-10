@@ -89,29 +89,24 @@ Every ransomware incident report from 2020 through 2025 lists RDP over the inter
 | **Legacy Jump Host (Bastion)** | Public SSH/RDP ingress to jump server. | Jump box credential; shared bastion session. | Attacker pivots from bastion across entire internal subnet. |
 | **Zero Trust Remote Desktop** | **Zero open inbound ports (100% Dark).** | OIDC SSO + Hardware MFA (FIDO2) + Posture. | Isolated micro-tunnel strictly to target desktop session. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Zero Trust Remote Desktop Architecture               │
-│                                                                        │
-│   [Remote Administrator / Teleworker Laptop]                           │
-│                      │                                                 │
-│                      ▼ (MFA + Device Posture Check)                    │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Policy Decision Point (PDP)                           │ │
-│   │  - Grants ephemeral 1-to-1 session to target desktop only        │ │
-│   └──────────────────────────┬───────────────────────────────────────┘ │
-│                              │ (Encrypted WireGuard Mesh Tunnel)       │
-│                              ▼                                         │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Target Windows Desktop / Bastionless Server                     │ │
-│   │  ├── Inbound Firewall: DROP ALL (Port 3389 Dark from Internet)   │ │
-│   │  ├── Clipboard & File Transfer DLP Policies Enforced             │ │
-│   │  └── Session Recorded & Audited to SIEM                          │ │
-│   └──────────────────────────────────────────────────────────────────┘ │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Architecture Comparison: Remote Desktop: Exposed RDP vs. Web-Brokered Zero Trust](/images/diagrams/top-10-remote-desktop-secure-access-flow.svg)
+*Figure 1.1: Architectural Comparison & Failure Mode Analysis — Remote Desktop: Exposed RDP vs. Web-Brokered Zero Trust.*
 
-> **Adding up your tool bill?** A remote-desktop tool is usually one line item among several — most teams also pay separately for a mesh VPN, a ZTNA gateway and DNS filtering. QuickZTNA folds the network-access side into one agent and one bill; keep your remote-desktop tool for the graphical session. [See what you'd save →](/savings/)
+### Architectural Divergence & Failure Mode Analysis
+
+The architectural contrast above details the structural differences between legacy approaches and modern Zero Trust for **Remote Desktop: Exposed RDP vs. Web-Brokered Zero Trust**:
+
+#### 1. Legacy Limitations: Direct Internet RDP / Legacy VPN
+- **Public Port 3389 Open to World:** Exposed RDP port indexed by Shodan/Censys within minutes. Target for continuous automated brute-force attacks and BlueKeep.
+- **Single Static Password Barrier:** Often configured without MFA on local Active Directory accounts. Credential stuffing trivially compromises internal host.
+- **Broad Layer 3 Network Access:** Connecting via VPN gives infected home laptop full subnet access. Malware spreads laterally to domain controllers and file servers.
+- **Heavy Client Footprint:** Requires installing fat VPN agents and native RDP clients. High friction for contractors, Chromebooks, and external teams.
+
+#### 2. Modern Zero Trust Guarantees: Zero Trust Web Broker (QuickZTNA)
+- **100% Dark Target Machine:** Target Windows/Linux server has zero open inbound ports. Reachable strictly through outbound-only WireGuard connector.
+- **Mandatory IdP SSO + FIDO2 MFA:** Authentication anchored in Okta/Entra ID with hardware key. Continuous device posture check before desktop stream launches.
+- **Single-Resource Micro-Tunnel:** Access scoped strictly to the specific remote desktop host. Zero lateral peer routing; corporate subnet completely invisible.
+- **Clientless In-Browser HTML5 Stream:** Streamed securely over TLS 1.3 to any modern web browser. Zero local agent install needed for third-party contractors.
 
 ## Why legacy remote desktop fails
 
@@ -288,15 +283,15 @@ screen control, pair QuickZTNA's access layer with one of the tools above.
 
 | Tool | No-inbound-port | MFA | Session recording | Device posture | JIT access | Browser-based |
 |---|---|---|---|---|---|---|
-| Azure Virtual Desktop | ✅ | ✅ Entra ID | Partial | ✅ Intune | Via PIM | ✅ |
+| Azure Virtual Desktop | ✅ | ✅ Entra ID | ⚠️ Partial | ✅ Intune | Via PIM | ✅ |
 | Citrix CVAD | ✅ Gateway | ✅ | ✅ | ✅ | Via workflow | ✅ |
 | Apache Guacamole | ✅ | ✅ TOTP/SAML | ✅ | ❌ | ❌ native | ✅ |
-| BeyondTrust RS | ✅ | ✅ | ✅ | Partial | Via PRA | ✅ |
+| BeyondTrust RS | ✅ | ✅ | ✅ | ⚠️ Partial | Via PRA | ✅ |
 | Cloudflare Access | ✅ | ✅ | Via BI | ✅ WARP | ✅ | ✅ |
-| Tailscale + RDP | ✅ tunnel | ✅ | ❌ native | Partial | ❌ | ❌ |
-| Splashtop Enterprise | ✅ | ✅ | ✅ | Partial | ❌ | ✅ |
+| Tailscale + RDP | ✅ tunnel | ✅ | ❌ native | ⚠️ Partial | ❌ | ❌ |
+| Splashtop Enterprise | ✅ | ✅ | ✅ | ⚠️ Partial | ❌ | ✅ |
 | Devolutions RDM | ❌ (network req.) | ✅ | Basic | ❌ | ❌ | ❌ |
-| Teleport Desktop | ✅ | ✅ | ✅ Full | Partial | ✅ | ✅ |
+| Teleport Desktop | ✅ | ✅ | ✅ Full | ⚠️ Partial | ✅ | ✅ |
 | QuickZTNA RD | ✅ | ✅ ZTNA | ✅ | ✅ Full posture | ✅ | ✅ |
 
 ---

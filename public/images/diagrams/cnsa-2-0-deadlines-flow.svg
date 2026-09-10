@@ -1,0 +1,162 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="100%" height="auto" style="background:#0B1120;border-radius:12px;border:1px solid #1E293B;">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#BE123C" />
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#06B6D4" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F43F5E" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="960" height="68" fill="#0F172A" />
+  <rect x="24" y="18" width="182" height="26" rx="5" fill="#6366F1" />
+  <text x="115" y="35" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif" letter-spacing="1">REGULATORY ROADMAP</text>
+  <text x="232" y="35" fill="#F8FAFC" font-size="16" font-weight="700" font-family="system-ui, sans-serif">NSA Commercial National Security Algorithm (CNSA 2.0) Roadmap</text>
+  <text x="232" y="52" fill="#94A3B8" font-size="11.5" font-family="system-ui, sans-serif">US National Security Agency Mandatory Quantum-Resistant Timelines (2025 – 2035)</text>
+  <line x1="0" y1="68" x2="960" y2="68" stroke="#1E293B" stroke-width="1.5" />
+  
+      <g transform="translate(60, 140)">
+        <rect x="0" y="0" width="200" height="320" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="200" height="42" rx="8" fill="#0284C7" />
+        <text x="100" y="18" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">MILESTONE 1</text>
+        <text x="100" y="33" fill="#E0F2FE" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">2025 – 2030</text>
+
+        <text x="14" y="68" fill="#F8FAFC" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Software &amp; Firmware Signing</text>
+        <text x="14" y="88" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">Initial mandate focusing on software supply chain, OS boot, and code signing.</text>
+
+        <!-- Requirements Box -->
+        <rect x="10" y="115" width="180" height="90" rx="5" fill="#0F172A" stroke="#334155" />
+        <text x="18" y="133" fill="#38BDF8" font-size="9.5" font-weight="700" font-family="system-ui, sans-serif">Technical Mandates:</text>
+        <text x="18" y="152" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• Begin ML-DSA / LMS / XMSS signing in 2025</text>
+        <text x="18" y="172" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• Exclusive use mandatory by 2030</text>
+        <text x="18" y="192" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• RSA/ECDSA signatures prohibited post-2030</text>
+
+        <!-- Status / Outcome Badge -->
+        <rect x="10" y="220" width="180" height="42" rx="5" fill="#1E3A8A" stroke="#3B82F6" />
+        <text x="100" y="238" fill="#FFFFFF" font-size="9.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">In Progress (2025)</text>
+        <text x="100" y="252" fill="#CBD5E1" font-size="8" text-anchor="middle" font-family="system-ui, sans-serif">Firmware, OS bootloaders, and code signers</text>
+
+        <!-- Compliance Target -->
+        <rect x="10" y="272" width="180" height="35" rx="5" fill="#18181B" stroke="#475569" />
+        <text x="100" y="287" fill="#F59E0B" font-size="8.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Audit Deliverable</text>
+        <text x="100" y="300" fill="#E2E8F0" font-size="8" text-anchor="middle" font-family="system-ui, sans-serif">CNSA 2.0 Supply Chain Attestation</text>
+      </g>
+    
+      <g transform="translate(275, 140)">
+        <rect x="0" y="0" width="200" height="320" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="200" height="42" rx="8" fill="#0284C7" />
+        <text x="100" y="18" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">MILESTONE 2</text>
+        <text x="100" y="33" fill="#E0F2FE" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">2025 – 2033</text>
+
+        <text x="14" y="68" fill="#F8FAFC" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Web Browsers &amp; Cloud Ingress</text>
+        <text x="14" y="88" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">Protection of external web traffic, cloud services, and client TLS endpoints.</text>
+
+        <!-- Requirements Box -->
+        <rect x="10" y="115" width="180" height="90" rx="5" fill="#0F172A" stroke="#334155" />
+        <text x="18" y="133" fill="#38BDF8" font-size="9.5" font-weight="700" font-family="system-ui, sans-serif">Technical Mandates:</text>
+        <text x="18" y="152" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• Begin hybrid TLS 1.3 key exchange in 2025</text>
+        <text x="18" y="172" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• ML-KEM-1024 or ML-KEM-768 standard</text>
+        <text x="18" y="192" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• Exclusive post-quantum TLS by 2033</text>
+
+        <!-- Status / Outcome Badge -->
+        <rect x="10" y="220" width="180" height="42" rx="5" fill="#064E3B" stroke="#059669" />
+        <text x="100" y="238" fill="#FFFFFF" font-size="9.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Cloud Mandate</text>
+        <text x="100" y="252" fill="#CBD5E1" font-size="8" text-anchor="middle" font-family="system-ui, sans-serif">Browsers, servers, and ingress proxies</text>
+
+        <!-- Compliance Target -->
+        <rect x="10" y="272" width="180" height="35" rx="5" fill="#18181B" stroke="#475569" />
+        <text x="100" y="287" fill="#F59E0B" font-size="8.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Audit Deliverable</text>
+        <text x="100" y="300" fill="#E2E8F0" font-size="8" text-anchor="middle" font-family="system-ui, sans-serif">FIPS 203 Validated Ingress</text>
+      </g>
+    
+      <g transform="translate(490, 140)">
+        <rect x="0" y="0" width="200" height="320" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="200" height="42" rx="8" fill="#0284C7" />
+        <text x="100" y="18" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">MILESTONE 3</text>
+        <text x="100" y="33" fill="#E0F2FE" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">2026 – 2030</text>
+
+        <text x="14" y="68" fill="#F8FAFC" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Networking Equipment &amp; VPNs</text>
+        <text x="14" y="88" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">Routers, firewalls, site-to-site VPNs, and Zero Trust gateways.</text>
+
+        <!-- Requirements Box -->
+        <rect x="10" y="115" width="180" height="90" rx="5" fill="#0F172A" stroke="#334155" />
+        <text x="18" y="133" fill="#38BDF8" font-size="9.5" font-weight="700" font-family="system-ui, sans-serif">Technical Mandates:</text>
+        <text x="18" y="152" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• Begin PQC VPN deployment in 2026</text>
+        <text x="18" y="172" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• Exclusive PQC VPN enforcement by 2030</text>
+        <text x="18" y="192" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• Classical IKEv2 / IPsec / OpenVPN phased out</text>
+
+        <!-- Status / Outcome Badge -->
+        <rect x="10" y="220" width="180" height="42" rx="5" fill="#D97706" stroke="#F59E0B" />
+        <text x="100" y="238" fill="#FFFFFF" font-size="9.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Critical Infrastructure</text>
+        <text x="100" y="252" fill="#CBD5E1" font-size="8" text-anchor="middle" font-family="system-ui, sans-serif">All gateway and tunnel infrastructure</text>
+
+        <!-- Compliance Target -->
+        <rect x="10" y="272" width="180" height="35" rx="5" fill="#18181B" stroke="#475569" />
+        <text x="100" y="287" fill="#F59E0B" font-size="8.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Audit Deliverable</text>
+        <text x="100" y="300" fill="#E2E8F0" font-size="8" text-anchor="middle" font-family="system-ui, sans-serif">Quantum-Resistant Overlay Mesh</text>
+      </g>
+    
+      <g transform="translate(705, 140)">
+        <rect x="0" y="0" width="200" height="320" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="200" height="42" rx="8" fill="#0284C7" />
+        <text x="100" y="18" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">MILESTONE 4</text>
+        <text x="100" y="33" fill="#E0F2FE" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">2031 – 2035</text>
+
+        <text x="14" y="68" fill="#F8FAFC" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Total Sunset: Legacy Hardware</text>
+        <text x="14" y="88" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">Full deprecation of custom ASICs, legacy equipment, and all NSS hardware.</text>
+
+        <!-- Requirements Box -->
+        <rect x="10" y="115" width="180" height="90" rx="5" fill="#0F172A" stroke="#334155" />
+        <text x="18" y="133" fill="#38BDF8" font-size="9.5" font-weight="700" font-family="system-ui, sans-serif">Technical Mandates:</text>
+        <text x="18" y="152" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• Legacy hardware upgrade beginning in 2031</text>
+        <text x="18" y="172" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• 100% quantum-safe across entire US NSS by 2035</text>
+        <text x="18" y="192" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif">• Zero classical public-key cryptography permitted</text>
+
+        <!-- Status / Outcome Badge -->
+        <rect x="10" y="220" width="180" height="42" rx="5" fill="#4C1D95" stroke="#8B5CF6" />
+        <text x="100" y="238" fill="#FFFFFF" font-size="9.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Final Sunset</text>
+        <text x="100" y="252" fill="#CBD5E1" font-size="8" text-anchor="middle" font-family="system-ui, sans-serif">Absolute deadline for all US defense systems</text>
+
+        <!-- Compliance Target -->
+        <rect x="10" y="272" width="180" height="35" rx="5" fill="#18181B" stroke="#475569" />
+        <text x="100" y="287" fill="#F59E0B" font-size="8.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Audit Deliverable</text>
+        <text x="100" y="300" fill="#E2E8F0" font-size="8" text-anchor="middle" font-family="system-ui, sans-serif">NSS Complete PQC Compliance</text>
+      </g>
+    
+  <!-- Footer -->
+  <line x1="20" y1="552" x2="940" y2="552" stroke="#1E293B" stroke-width="1" />
+  <text x="24" y="568" fill="#64748B" font-size="10" font-family="system-ui, sans-serif">QuickZTNA Technical Architecture Reference</text>
+  <text x="936" y="568" fill="#38BDF8" font-size="10" font-weight="600" text-anchor="end" font-family="system-ui, sans-serif">Zero Trust Verified Blueprint</text>
+</svg>
+  

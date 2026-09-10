@@ -1,0 +1,121 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="100%" height="auto" style="background:#0B1120;border-radius:12px;border:1px solid #1E293B;">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#BE123C" />
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#06B6D4" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F43F5E" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="960" height="68" fill="#0F172A" />
+  <rect x="24" y="18" width="137" height="26" rx="5" fill="#0284C7" />
+  <text x="92.5" y="35" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif" letter-spacing="1">SEQUENCE FLOW</text>
+  <text x="187" y="35" fill="#F8FAFC" font-size="16" font-weight="700" font-family="system-ui, sans-serif">CI/CD Ephemeral Runner Workload Attestation Sequence</text>
+  <text x="187" y="52" fill="#94A3B8" font-size="11.5" font-family="system-ui, sans-serif">OIDC Token Attestation, Dynamic Mesh Enrollment &amp; Instant Key Destruction</text>
+  <line x1="0" y1="68" x2="960" y2="68" stroke="#1E293B" stroke-width="1.5" />
+  
+      <line x1="70" y1="138" x2="70" y2="535" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,4" />
+      <rect x="5" y="100" width="130" height="38" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1.5" filter="url(#shadow)" />
+      <text x="70" y="117" fill="#F8FAFC" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Ephemeral Runner</text>
+      <text x="70" y="130" fill="#38BDF8" font-size="9" text-anchor="middle" font-family="system-ui, sans-serif">GitHub / GitLab Job</text>
+    
+      <line x1="275" y1="138" x2="275" y2="535" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,4" />
+      <rect x="210" y="100" width="130" height="38" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1.5" filter="url(#shadow)" />
+      <text x="275" y="117" fill="#F8FAFC" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">IdP / OIDC Provider</text>
+      <text x="275" y="130" fill="#38BDF8" font-size="9" text-anchor="middle" font-family="system-ui, sans-serif">Workload Attestation</text>
+    
+      <line x1="480" y1="138" x2="480" y2="535" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,4" />
+      <rect x="415" y="100" width="130" height="38" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1.5" filter="url(#shadow)" />
+      <text x="480" y="117" fill="#F8FAFC" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">QuickZTNA Controller</text>
+      <text x="480" y="130" fill="#38BDF8" font-size="9" text-anchor="middle" font-family="system-ui, sans-serif">Policy Decision Point</text>
+    
+      <line x1="685" y1="138" x2="685" y2="535" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,4" />
+      <rect x="620" y="100" width="130" height="38" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1.5" filter="url(#shadow)" />
+      <text x="685" y="117" fill="#F8FAFC" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Mesh Gateway</text>
+      <text x="685" y="130" fill="#38BDF8" font-size="9" text-anchor="middle" font-family="system-ui, sans-serif">Private Staging / Prod</text>
+    
+      <line x1="890" y1="138" x2="890" y2="535" stroke="#334155" stroke-width="1.5" stroke-dasharray="4,4" />
+      <rect x="825" y="100" width="130" height="38" rx="6" fill="#1E293B" stroke="#475569" stroke-width="1.5" filter="url(#shadow)" />
+      <text x="890" y="117" fill="#F8FAFC" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Production Target</text>
+      <text x="890" y="130" fill="#38BDF8" font-size="9" text-anchor="middle" font-family="system-ui, sans-serif">Kubernetes / RDS</text>
+    
+      <line x1="70" y1="165" x2="275" y2="165" stroke="#06B6D4" stroke-width="2" marker-end="url(#arrow-cyan)"  />
+      <rect x="47.5" y="146" width="250" height="18" rx="4" fill="#0F172A" stroke="#334155" stroke-width="0.8" opacity="0.95" />
+      <text x="172.5" y="159" fill="#06B6D4" font-size="10" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif">1. Request OIDC Token (actions.id.token)</text>
+    
+        <rect x="87.5" y="170" width="170" height="15" rx="3" fill="#1E293B" stroke="#06B6D4" stroke-width="0.7" />
+        <text x="172.5" y="181" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif" text-anchor="middle">Claims: repo, branch, commit hash</text>
+      
+      <line x1="70" y1="223.33333333333334" x2="480" y2="223.33333333333334" stroke="#06B6D4" stroke-width="2" marker-end="url(#arrow-cyan)"  />
+      <rect x="150" y="204.33333333333334" width="250" height="18" rx="4" fill="#0F172A" stroke="#334155" stroke-width="0.8" opacity="0.95" />
+      <text x="275" y="217.33333333333334" fill="#06B6D4" font-size="10" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif">2. Authenticate to Mesh with OIDC JWT</text>
+    
+        <rect x="190" y="228.33333333333334" width="170" height="15" rx="3" fill="#1E293B" stroke="#06B6D4" stroke-width="0.7" />
+        <text x="275" y="239.33333333333334" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif" text-anchor="middle">Zero static AWS/SSH secrets needed</text>
+      
+      <line x1="480" y1="281.6666666666667" x2="70" y2="281.6666666666667" stroke="#10B981" stroke-width="2" marker-end="url(#arrow-cyan)"  />
+      <rect x="150" y="262.6666666666667" width="250" height="18" rx="4" fill="#0F172A" stroke="#334155" stroke-width="0.8" opacity="0.95" />
+      <text x="275" y="275.6666666666667" fill="#10B981" font-size="10" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif">3. Issue Ephemeral WireGuard Key Pair</text>
+    
+        <rect x="190" y="286.6666666666667" width="170" height="15" rx="3" fill="#1E293B" stroke="#10B981" stroke-width="0.7" />
+        <text x="275" y="297.6666666666667" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif" text-anchor="middle">TTL strictly bounded to CI job (15m)</text>
+      
+      <line x1="70" y1="340" x2="685" y2="340" stroke="#10B981" stroke-width="2" marker-end="url(#arrow-cyan)"  />
+      <rect x="252.5" y="321" width="250" height="18" rx="4" fill="#0F172A" stroke="#334155" stroke-width="0.8" opacity="0.95" />
+      <text x="377.5" y="334" fill="#10B981" font-size="10" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif">4. Outbound P2P Encrypted Mesh Tunnel</text>
+    
+        <rect x="292.5" y="345" width="170" height="15" rx="3" fill="#1E293B" stroke="#10B981" stroke-width="0.7" />
+        <text x="377.5" y="356" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif" text-anchor="middle">Authorized strictly for deploy command</text>
+      
+      <line x1="685" y1="398.33333333333337" x2="890" y2="398.33333333333337" stroke="#06B6D4" stroke-width="2" marker-end="url(#arrow-cyan)"  />
+      <rect x="662.5" y="379.33333333333337" width="250" height="18" rx="4" fill="#0F172A" stroke="#334155" stroke-width="0.8" opacity="0.95" />
+      <text x="787.5" y="392.33333333333337" fill="#06B6D4" font-size="10" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif">5. Deploy Artifact to Production Target</text>
+    
+        <rect x="702.5" y="403.33333333333337" width="170" height="15" rx="3" fill="#1E293B" stroke="#06B6D4" stroke-width="0.7" />
+        <text x="787.5" y="414.33333333333337" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif" text-anchor="middle">Full commit-attributed audit logging</text>
+      
+      <line x1="70" y1="456.6666666666667" x2="480" y2="456.6666666666667" stroke="#EF4444" stroke-width="2" marker-end="url(#arrow-cyan)"  />
+      <rect x="150" y="437.6666666666667" width="250" height="18" rx="4" fill="#0F172A" stroke="#334155" stroke-width="0.8" opacity="0.95" />
+      <text x="275" y="450.6666666666667" fill="#EF4444" font-size="10" font-weight="600" text-anchor="middle" font-family="system-ui, sans-serif">6. Job Completes -&gt; Instant Cryptographic Key Shred</text>
+    
+        <rect x="190" y="461.6666666666667" width="170" height="15" rx="3" fill="#1E293B" stroke="#EF4444" stroke-width="0.7" />
+        <text x="275" y="472.6666666666667" fill="#CBD5E1" font-size="8.5" font-family="system-ui, sans-serif" text-anchor="middle">Runner destroyed; zero standing access</text>
+      
+  <!-- Footer -->
+  <line x1="20" y1="552" x2="940" y2="552" stroke="#1E293B" stroke-width="1" />
+  <text x="24" y="568" fill="#64748B" font-size="10" font-family="system-ui, sans-serif">QuickZTNA Technical Architecture Reference</text>
+  <text x="936" y="568" fill="#38BDF8" font-size="10" font-weight="600" text-anchor="end" font-family="system-ui, sans-serif">Zero Trust Verified Blueprint</text>
+</svg>
+  

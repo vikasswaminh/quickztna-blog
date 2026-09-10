@@ -78,7 +78,7 @@ By default, WireGuard requires pre-sharing long-term public keys between peers. 
 | **Cryptographic Identity** | Static 32-byte Curve25519 public key | Short-lived dynamic key pairs bound to OIDC/IdP |
 | **Key Storage & Persistence** | Persisted on disk in configuration files | Volatile RAM only (`mlock`); zero disk footprint |
 | **Re-Authentication Trigger** | Manual administrator revocation | Dynamic expiration (60s - 15m) + Continuous Posture |
-| **Identity Co-Signing** | None (Operates strictly at L3/L4) | Signed via IdP JWT/OIDC assertions & EDR health |
+| **Identity Co-Signing** | ❌ None (Operates strictly at L3/L4) | Signed via IdP JWT/OIDC assertions & EDR health |
 | **Key Injection Mechanism** | Static `wg set` / static config reload | Atomic Netlink dual-key staging (zero connection drop) |
 | **Forwarding Performance** | Line rate in-kernel (38+ Gbps) | Uncompromised line rate (<180µs injection latency) |
 
@@ -117,35 +117,20 @@ This model creates severe architectural vulnerabilities for enterprise deploymen
 
 To understand why Ephemeral Key Architecture is necessary, we must analyze the evolution of secure remote access protocols over the past three decades.
 
-```
-┌─────────────────────────────────┐
-│ 1. IPsec & IKEv2 (1990s)        │ ──► Complex IKE state machines, slow handshakes, high overhead
-└────────────────┬────────────────┘
-                 ▼
-┌─────────────────────────────────┐
-│ 2. OpenVPN & TLS (2000s)        │ ──► User-space context switching, high CPU load, 1.2 Gbps limit
-└────────────────┬────────────────┘
-                 ▼
-┌─────────────────────────────────┐
-│ 3. WireGuard Revolution (2018)  │ ──► In-kernel, Noise_IK crypto, 38+ Gbps, but STATIC public keys
-└────────────────┬────────────────┘
-                 ▼
-┌─────────────────────────────────┐
-│ 4. Ephemeral Key Arch (2026)    │ ──► Out-of-band dynamic Netlink rotation + continuous OIDC/EDR
-└─────────────────────────────────┘
-```
+![Protocol Sequence: Atomic Netlink Dual-Key Ephemeral Rotation Lifeline](/images/diagrams/ephemeral-key-architecture-flow.svg)
+*Figure 1.1: Protocol Handshake Sequence & Lifeline Verification Flow — Atomic Netlink Dual-Key Ephemeral Rotation Lifeline.*
 
-### IPsec and IKEv2 (1990s–Present)
-IPsec introduced dynamic session rekeying through the Internet Key Exchange (IKEv1/IKEv2) protocol. While IKEv2 provides automatic dynamic key rotation (Perfect Forward Secrecy - PFS) via periodic Diffie-Hellman exchanges, the protocol suite is bloated (hundreds of thousands of lines of code), prone to state synchronization failures, slow during initial handshake, and notoriously difficult to traverse complex NAT topologies.
+### Protocol Handshake & Verification Sequence
 
-### OpenVPN and SSL/TLS VPNs (2000s–Present)
-OpenVPN leveraged TLS for authentication, allowing user-level identity integration via X.509 certificates and username/password combinations. However, OpenVPN operates predominantly in user-space, incurring high context-switching costs between kernel space (`tun/tap` interfaces) and user space. This results in poor throughput, high CPU utilization, and latency degradation on high-speed links.
+The sequence diagram above traces the chronological protocol transactions across participating lifelines for **Atomic Netlink Dual-Key Ephemeral Rotation Lifeline**:
 
-### The WireGuard Revolution (2018)
-Created by Jason A. Donenfeld, WireGuard fundamentally disrupted modern networking by implementing an in-kernel crypto engine containing under 4,000 lines of code. By standardizing on modern cryptographic primitives (Curve25519, ChaCha20, Poly1305, BLAKE2s, HKDF), WireGuard achieved unmatched throughput and battery efficiency. However, to maintain code simplicity, Donenfeld purposefully omitted authentication mechanisms, dynamic key exchange protocols, and central management from the core protocol, leaving key orchestration to higher-layer applications.
+1. **1. OIDC Token Nearing Expiration (Dev Workstation → Local ZTNA Daemon):** TTL <= 60 seconds
+2. **2. Request JIT Ephemeral Key Pair (Local ZTNA Daemon → IdP / OIDC Broker):** Authenticated via hardware TPM
+3. **3. Issue New Short-Lived Curve25519 Pair (IdP / OIDC Broker → Local ZTNA Daemon):** Valid for 15 minutes
+4. **4. Netlink Atomic Key Swap (RTM_NEWLINK) (Local ZTNA Daemon → Linux Kernel):** Zero packet drop / No socket reset
+5. **5. Noise_IK Ephemeral Handshake (Linux Kernel → Target Gateway):** Rekeyed tunnel active in <2ms
+6. **6. Zero Memory & Shred Old Private Key (Local ZTNA Daemon → Linux Kernel):** mlock() volatile RAM cleared
 
-### The Rise of Ephemeral Key Orchestration (2023–2026)
-As enterprise architectures shifted entirely toward Zero Trust Network Access (ZTNA), organizations needed a way to superimpose modern identity lifecycle logic onto WireGuard. Ephemeral Key Architecture emerged as the standard design pattern—utilizing out-of-band control planes (such as those engineered in QuickZTNA) to dynamically inject short-lived keys into the WireGuard kernel module on demand.
 
 ---
 
@@ -165,23 +150,15 @@ As enterprise architectures shifted entirely toward Zero Trust Network Access (Z
 
 Ephemeral Key Architecture explicitly decouples the **Control Plane** (Identity, Policy, Ephemeral Key Signer) from the **Data Plane** (Kernel WireGuard Engine).
 
-```
-         ┌────────────────────────────────────────────────────────┐
-         │              EKA Central Control Plane                 │
-         │      (Policy Decision Point, OIDC Verifier, TTL)       │
-         └───────────────────────────┬────────────────────────────┘
-                                     │
-                 ┌───────────────────┴───────────────────┐
-                 │ Signed gRPC Peer Lease (Out-of-Band)  │
-                 ▼                                       ▼
-    ┌─────────────────────────┐             ┌─────────────────────────┐
-    │  Client Ephemeral Agent │             │  Target Gateway Daemon  │
-    │  (RAM-Only Curve25519)  │             │  (Netlink In-Kernel GW) │
-    └────────────┬────────────┘             └────────────┬────────────┘
-                 │                                       │
-                 │   High-Speed In-Kernel Data Path      │
-                 └─── (WireGuard Noise_IK / ChaCha20) ───┘
-```
+> [!NOTE]
+> • EKA Central Control Plane
+> • (Policy Decision Point, OIDC Verifier, TTL)
+> • Signed gRPC Peer Lease (OutofBand)
+> • ▼                                       ▼
+> • Client Ephemeral Agent                Target Gateway Daemon
+> • (RAMOnly Curve25519)                 (Netlink InKernel GW)
+> • HighSpeed InKernel Data Path
+> • (WireGuard Noise_IK / ChaCha20)
 
 ### 1. The Client Ephemeral Daemon
 Running on the end-user device or workload, this lightweight agent interacts with the local OS trust store, hardware TPM (Trusted Platform Module), and user login flows:
@@ -218,17 +195,13 @@ The enterprise gateway receives the ephemeral peer registration instruction:
 
 ## 6. Cryptographic Rekeying vs. Identity Rekeying
 
-```
-┌───────────────────────────────┬───────────────────────────────┬───────────────────────────────┐
-│ Attribute                     │ Native WireGuard Rekeying     │ EKA Identity Rekeying         │
-├───────────────────────────────┼───────────────────────────────┼───────────────────────────────┤
-│ Execution Layer               │ In-band (Kernel Crypto Engine)│ Out-of-band (Control Plane)   │
-│ Trigger Interval              │ Every 120s or 2^20 packets    │ Every 60s – 15 mins or posture│
-│ Rotated Keys                  │ Symmetric Session Keys        │ Asymmetric Curve25519 Identity│
-│ Underlying Peer Identity      │ Unchanged (Static Curve25519) │ Fully Destroyed & Replaced    │
-│ Identity & Posture Binding    │ None (Layer 3/4 only)         │ Verified via OIDC & EDR feeds │
-└───────────────────────────────┴───────────────────────────────┴───────────────────────────────┘
-```
+| Attribute | Native WireGuard Rekeying | EKA Identity Rekeying |
+|---|---|---|
+| **Execution Layer** | In-band (Kernel Crypto Engine) | Out-of-band (Control Plane) |
+| **Trigger Interval** | Every 120s or 2^20 packets | Every 60s – 15 mins or posture trigger |
+| **Rotated Keys** | Symmetric Session Keys | Asymmetric Curve25519 Identity Keys |
+| **Underlying Peer Identity** | Unchanged (Static Curve25519) | Fully Destroyed & Replaced in Memory |
+| **Identity & Posture Binding** | ❌ None (Layer 3/4 only) | Continuously verified via OIDC & EDR feeds |
 
 ---
 
@@ -428,11 +401,11 @@ sudo timedatectl status
 
 | Access Technology | Data Plane Engine | Throughput (10GbE) | Key Storage Location | Zero Trust Level | Key Rotation Frequency |
 | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Native WireGuard** | Linux Kernel | ~9.8 Gbps | Static on Disk | Low (Static Identity) | None (Static) |
-| **Legacy OpenVPN** | User-Space | ~1.2 Gbps | Disk (X.509 Certs) | Medium | Session-based (Daily) |
-| **Traditional IPsec** | Linux Kernel | ~5.5 Gbps | Kernel SA / Disk | Low-Medium | Hourly (IKEv2 SA) |
-| **Tailscale / Mesh** | User/Kernel Space | ~8.5 Gbps | Memory / Cloud | Medium-High | Daily to Monthly |
-| **QuickZTNA (EKA)** | In-Kernel + Netlink | **9.8 Gbps (Line Rate)** | **Locked RAM (mlock)** | **Maximum (NIST 800-207)** | **60s to 15 Minutes** |
+| **Native WireGuard** | Linux Kernel | ~9.8 Gbps | Static on Disk | ✅ Low (Static Identity) | ❌ None (Static) |
+| **Legacy OpenVPN** | User-Space | ~1.2 Gbps | Disk (X.509 Certs) | ✅ Medium | Session-based (Daily) |
+| **Traditional IPsec** | Linux Kernel | ~5.5 Gbps | Kernel SA / Disk | ✅ Low-Medium | Hourly (IKEv2 SA) |
+| **Tailscale / Mesh** | User/Kernel Space | ~8.5 Gbps | Memory / Cloud | ✅ Medium-High | Daily to Monthly |
+| **QuickZTNA (EKA)** | In-Kernel + Netlink | **9.8 Gbps (Line Rate)** | **Locked RAM (mlock)** | ✅ **Maximum (NIST 800-207)** | **60s to 15 Minutes** |
 
 ---
 
@@ -546,8 +519,6 @@ By replacing static trust with temporal, dynamic access, Ephemeral Key Architect
 * **[Identity-First Networking: SCIM 2.0 & Multi-IdP Least-Privilege ZTNA](/blog/identity-first-networking-scim/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[Infrastructure as Code for Zero Trust: Terraform + Mesh VPN Guide](/blog/infrastructure-as-code-zero-trust/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
-
-
 
 ---
 

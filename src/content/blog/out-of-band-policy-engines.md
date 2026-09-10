@@ -77,11 +77,11 @@ By executing dry-run linting out-of-band, security infrastructure evaluates abst
 
 | Validation Dimension | In-Band / Direct Push Policy Deployment | Out-of-Band Policy Engine with Dry-Run Linting |
 | :--- | :--- | :--- |
-| **Execution Path** | Injected directly into active kernel / eBPF data path | Isolated verification sandbox using mirrored state telemetry |
-| **Lockout Protection** | High risk: Logic flaws sever SSH/gRPC control channels | 100% Protected: Automated detection of self-blocking rules |
-| **Context Simulation** | Limited to basic syntax checks at runtime | Evaluates ASTs against live IdP claims, JWTs, and posture scores |
-| **Blast Radius & Rollback** | Requires physical/serial console recovery if orphaned | Zero risk: Blocks broken PRs in CI/CD before atomic commits |
-| **Throughput Impact** | Risk of CPU spikes during compilation in active plane | Zero latency or packet loss on live production tunnels |
+| **Execution Path** | ❌ Injected directly into active kernel / eBPF data path | ✅ Isolated verification sandbox using mirrored state telemetry |
+| **Lockout Protection** | ❌ High risk: Logic flaws sever SSH/gRPC control channels | ✅ 100% Protected: Automated detection of self-blocking rules |
+| **Context Simulation** | ❌ Limited to basic syntax checks at runtime | ✅ Evaluates ASTs against live IdP claims, JWTs, and posture scores |
+| **Blast Radius & Rollback** | ❌ Requires physical/serial console recovery if orphaned | ✅ Zero risk: Blocks broken PRs in CI/CD before atomic commits |
+| **Throughput Impact** | ❌ Risk of CPU spikes during compilation in active plane | ✅ Zero latency or packet loss on live production tunnels |
 
 ---
 
@@ -106,15 +106,12 @@ Consider a scenario where a network engineer modifies a global ZTNA rule set usi
 
 The moment the controller pushes this compiled rule payload to edge enforcement nodes, active SSH, gRPC, and TLS management channels are dropped instantly. Because the control channel is now severed, the central orchestrator cannot push a revert payload. The edge node becomes orphaned in a hard-locked state.
 
-```
-[SecOps Engineer] ──► [Central Orchestrator] ──► [Edge ZTNA Gateway]
-                             │                            │
-                             └── Invalid Commit Pushed ──►│ (Implicit Deny Applied)
-                                                          ▼
-                                                [Management Socket 22 Dropped]
-                                                [Control Channel gRPC Severed]
-                                                [CRITICAL LOCKOUT: Gateway Orphaned]
-```
+> [!WARNING]
+> **The Fatal Lockout Cascade:**
+> 1. **SecOps Engineer** commits rule change with an unhandled default-override.
+> 2. **Central Orchestrator** compiles and pushes active policy directly into enforcement gateways.
+> 3. **Implicit Deny Applied:** Remote management socket (Port 22 SSH) and gRPC signaling channels are severed.
+> 4. **Orphaned State:** Controller cannot push a revert payload; edge node is hard-locked, requiring manual serial console recovery.
 
 ### Operational and Economic Consequences
 1. **Out-of-Band Physical Interventions:** Resolving an in-band control lockout requires physical datacenter console access, remote IP-KVM attachment, or cloud provider serial console access.
@@ -125,35 +122,23 @@ The moment the controller pushes this compiled rule payload to edge enforcement 
 
 ## 2. Historical Context & Evolution
 
-```
-┌─────────────────────────────────┐
-│ Era 1: Direct CLI Editing       │ ──► SSH/Telnet imperative commands; single typo breaks console
-└────────────────┬────────────────┘
-                 ▼
-┌─────────────────────────────────┐
-│ Era 2: Timed In-Band Rollbacks  │ ──► "commit confirmed" timers; causes transient drops and downtime
-└────────────────┬────────────────┘
-                 ▼
-┌─────────────────────────────────┐
-│ Era 3: Declarative IaC Syntax   │ ──► YAML/JSON schema linting; checks syntax but blind to network state
-└────────────────┬────────────────┘
-                 ▼
-┌─────────────────────────────────┐
-│ Era 4: Out-of-Band Dry-Run Eng  │ ──► AST parsing + SMT solvers + live telemetry reachability check
-└─────────────────────────────────┘
-```
+![Decision Flowchart: Out-of-Band Policy Simulation & Dry-Run Engine](/images/diagrams/out-of-band-policy-engines-flow.svg)
+*Figure 1.1: Multi-Stage Policy Decision Flowchart & Gating Logic — Out-of-Band Policy Simulation & Dry-Run Engine.*
 
-### Era 1: Direct Imperative CLI Editing (1990s - 2000s)
-Engineers edited firewalls, routers, and switches directly via SSH or Telnet using vendor-specific command-line interfaces. Errors were corrected manually in real-time. A single syntax mistake could sever the console session immediately, requiring a physical system reboot or a manual serial console connection.
+### Multi-Stage Gating Logic & Policy Evaluation Flow
 
-### Era 2: Scripted Rollbacks and In-Band Test Timers (2010s)
-Systems implemented automated safety fallbacks, such as the `commit confirmed` feature in Junos or Linux shell execution patterns using background sleep wrappers that restored backup rule sets if administrative connectivity was lost. While this prevented permanent lockouts, it still interrupted live traffic, dropped active control plane sessions, and relied on crude timing mechanisms rather than true static or semantic policy analysis.
+The decision flowchart above illustrates the sequential verification pipeline enforced by **Out-of-Band Policy Simulation & Dry-Run Engine**:
 
-### Era 3: Declarative Infrastructure-as-Code & In-Band Syntax Checkers (2015 - 2022)
-Tools like Ansible, Terraform, and early Open Policy Agent (OPA) integrations introduced syntax validation. However, these tools checked syntax only. They verified whether the configuration was valid JSON, YAML, or Rego, but could not simulate how rules interacted with live network topology, active control plane connections, or dynamic ZTNA posture claims.
+- **PHASE 1: AST PARSER — Abstract Syntax Tree:** Parses human-authored Rego / JSON policies into typed AST expressions.
+  - **Verification Rules:** Syntax & type checking; Schema version validation
+  - **Branch Outcome:** Passes to *AST Generated in 12ms*; non-compliant requests trigger *Syntax Error Flagged*.
+- **PHASE 2: REACHABILITY — Graph Matrix Solver:** Evaluates policy against live topology graph to detect self-lockouts.
+  - **Verification Rules:** Blocks rules severing admin SSH; Detects orphan mesh nodes
+  - **Branch Outcome:** Passes to *Zero Lockout Confirmed*; non-compliant requests trigger *Lockout Warning Raised*.
+- **PHASE 3: ATOMIC PUSH — Compiled Binary Push:** Deploys compiled BPF / Netlink rules out-of-band to edge nodes.
+  - **Verification Rules:** Sub-150ms propagation time; Zero live connection drops
+  - **Branch Outcome:** Passes to *Live Enforcement Active*; non-compliant requests trigger *Rollback to Previous AST*.
 
-### Era 4: Decoupled Out-of-Band Policy Engines & Dry-Run Linting (Present - 2026)
-Modern architectures decouple policy linting entirely from the active control path. Out-of-band evaluation engines pull live topology, active control plane session tables, and identity graphs, running proposed updates through a dry-run execution engine. The engine verifies structural validity, semantic isolation, and management reachability before any real packet filter rule is compiled or injected into live data paths.
 
 ---
 
@@ -165,44 +150,18 @@ An **Out-of-Band (OOB) Policy Engine** is an isolated computational pipeline tha
 ### Dry-Run Linting
 Dry-Run Linting goes beyond basic static code analysis. While static linters check syntax, indentation, and structure, dry-run linting evaluates policy **abstract syntax trees (ASTs)** against current topological state data, active socket tables, identity assertion schemes, and route tables to simulate real packet processing.
 
-```
-┌───────────────────────────┬───────────────────────────────────────────────────────────────────┐
-│ Concept                   │ Architectural Role                                                │
-├───────────────────────────┼───────────────────────────────────────────────────────────────────┤
-│ AST (Abstract Syntax Tree)│ Structural tree representation of policy code to analyze semantics│
-│ Control Isolation Channel │ Protected signaling path kept distinct from data plane filtering  │
-│ Shadow Rule Evaluation    │ Live telemetry processing in parallel without mutating real tables│
-│ Reachability Graph Check  │ Mathematical solver calculation ensuring admin reachability       │
-└───────────────────────────┴───────────────────────────────────────────────────────────────────┘
-```
+| Concept | Architectural Role |
+|---|---|
+| **AST (Abstract Syntax Tree)** | Structural tree representation of policy code to parse logic and analyze semantics before compilation. |
+| **Control Isolation Channel** | Protected out-of-band signaling path kept strictly distinct from data plane packet filtering. |
+| **Shadow Rule Evaluation** | Live telemetry evaluation pipeline that processes packets against proposed rules without mutating active tables. |
+| **Reachability Graph Check** | Mathematical solver calculation verifying administrative sessions remain reachable under new rule logic. |
 
 ---
 
 ## 4. System Architecture & Design
 
 An out-of-band policy engine sits between the **Policy Authoring Interface** (Git, Admin Console, API) and the **Active Enforcement Gateways** (ZTNA Edge Nodes, Cloud Firewalls, Kernel eBPF Probes).
-
-```
- ┌────────────────────────────────────────────────────────┐
- │            SecOps GitOps / API Authoring               │
- └───────────────────────────┬────────────────────────────┘
-                             │ Proposed Policy Candidate
-                             ▼
- ┌────────────────────────────────────────────────────────┐
- │           Out-of-Band Validation Control Plane         │
- │  ┌─────────────────┐ ┌─────────────────┐ ┌──────────┐  │
- │  │ AST Syntax Tree │ │ SMT Logic Solver│ │ Topology │  │
- │  │ Parser & Linter │ │ (Lockout Guard) │ │ Snapshot │  │
- │  └─────────────────┘ └─────────────────┘ └──────────┘  │
- └───────────────────────────┬────────────────────────────┘
-                             │ Signed & Validated Binary (Atomic Commit)
-                 ┌───────────┴───────────┐
-                 ▼                       ▼
-    ┌─────────────────────────┐ ┌─────────────────────────┐
-    │  QuickZTNA Gateway AWS  │ │ QuickZTNA Gateway Edge  │
-    │  (eBPF / Netlink PEP)   │ │ (On-Premises Data Plane)│
-    └─────────────────────────┘ └─────────────────────────┘
-```
 
 The architecture comprises five operational layers:
 1. **Policy Ingestion Interface:** Accepts raw policy definitions in Rego, YAML, JSON, or custom ZTNA DSLs via GitOps webhooks.
@@ -243,20 +202,14 @@ The architecture comprises five operational layers:
 
 ## 7. Step-by-Step Workflow & Execution Path
 
-```
-[SecOps Author] ──► [Git Commit] ──► [CI Webhook] ──► [OOB Linter Engine]
-                                                             │
-                                      ┌──────────────────────┴──────────────────────┐
-                                      │                                             │
-                              [Lockout Detected]                            [Validation Passed]
-                                      │                                             │
-                                      ▼                                             ▼
-                             [PR Blocked & Report]                        [Cryptographic Sign]
-                             [Zero Network Impact]                                  │
-                                                                                    ▼
-                                                                          [Atomic 2-Phase Commit]
-                                                                          [Edge Node Deployment]
-```
+> [!NOTE]
+> • [SecOps Author] ► [Git Commit] ► [CI Webhook] ► [OOB Linter Engine]
+> • [Lockout Detected]                            [Validation Passed]
+> • ▼                                             ▼
+> • [PR Blocked & Report]                        [Cryptographic Sign]
+> • [Zero Network Impact]
+> • [Atomic 2Phase Commit]
+> • [Edge Node Deployment]
 
 1. **Phase 1: Policy Authoring:** A SecOps engineer updates access policies in source control (for example, locking down SSH across the network to enforce ZTNA microsegmentation).
 2. **Phase 2: Webhook Triggering:** Committing code to the primary branch fires a webhook targeting the out-of-band linting engine service endpoint.
@@ -414,16 +367,12 @@ Evaluated on an **AMD EPYC 7763 (8 vCPUs, 32 GB DDR4 RAM)** against 10,000 activ
 
 ## 11. Security Hardening & Threat Analysis
 
-```
-┌──────────────────────────────────────┬────────────────────────────────────────────────────────┐
-│ Threat Vector                        │ Out-of-Band Engine Mitigation Strategy                 │
-├──────────────────────────────────────┼────────────────────────────────────────────────────────┤
-│ Shadow Telemetry Poisoning           │ mTLS certificate pinning + TPM 2.0 signed state feeds  │
-│ Dry-Run Engine Bypass (Direct Push)  │ Edge nodes reject any policy lacking valid OOB signature│
-│ Policy Guard Tampering               │ Multi-party (m-of-n) approval required on guard repos   │
-│ Stale Telemetry Execution            │ Strict state TTL enforcement; fail-closed on timeout   │
-└──────────────────────────────────────┴────────────────────────────────────────────────────────┘
-```
+| Threat Vector / Failure Mode | Out-of-Band Engine Mitigation Strategy |
+|---|---|
+| **Syntax / Parsing Failure** | ✅ Static schema validation in CI/CD pipeline prevents invalid payloads from reaching nodes. |
+| **Self-Lockout Rule Push** | ✅ Reachability graph analysis blocks commits that destroy active administrative paths. |
+| **Overly Broad Microsegmentation** | ✅ Shadow evaluation detects unintended packet drops against historical traffic flows. |
+| **Flawed High-Volume Rule Set** | ✅ Canary deployment rolls out rules incrementally with automatic rollback on telemetry errors. |
 
 ---
 
@@ -431,15 +380,11 @@ Evaluated on an **AMD EPYC 7763 (8 vCPUs, 32 GB DDR4 RAM)** against 10,000 activ
 
 ### Common Error Codes & Resolution
 
-```
-┌───────────────────────────────┬───────────────────────────────────────────────────────────────┐
-│ Error Code                    │ Root Cause & Remediation Steps                                │
-├───────────────────────────────┼───────────────────────────────────────────────────────────────┤
-│ ERR_OOB_AST_PARSE_FAILED (501)│ Syntax error in Rego/YAML policy. Inspect line/column numbers. │
-│ ERR_OOB_CRITICAL_LOCKOUT (509)│ Proposed policy severs an immutable control plane path.       │
-│ ERR_OOB_TELEMETRY_STALE (514) │ Gateway telemetry snapshot older than TTL. Refresh state feed.│
-└───────────────────────────────┴───────────────────────────────────────────────────────────────┘
-```
+| Error Code | Root Cause & Remediation Steps |
+| --- | --- |
+| ERR_OOB_AST_PARSE_FAILED (501) | Syntax error in Rego/YAML policy. Inspect line/column numbers. |
+| ERR_OOB_CRITICAL_LOCKOUT (509) | Proposed policy severs an immutable control plane path. |
+| ERR_OOB_TELEMETRY_STALE (514) | Gateway telemetry snapshot older than TTL. Refresh state feed. |
 
 1. **Resolving False-Positive Lockout Warnings:** Inspect the reachability matrix log to check which vector failed. Ensure management CIDR masks cover the entire administrative subnet rather than a single host IP.
 2. **Investigating State Out-of-Sync Conditions:** If edge nodes experience transient disconnects after a policy update, verify clock synchronization via NTP and decrease the telemetry snapshot cache TTL.
@@ -546,8 +491,6 @@ Upgrade your enterprise network policy safety today with **[QuickZTNA.com](https
 * **[Identity-First Networking: SCIM 2.0 & Multi-IdP Least-Privilege ZTNA](/blog/identity-first-networking-scim/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[The Anatomy of a Remote Workforce Security OS: Beyond Legacy Tunnels](/blog/remote-workforce-security-os/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise [WireGuard mesh](/blog/wireguard-mesh-network/) networking, automated identity-based microsegmentation, and zero trust access control.
-
-
 
 ---
 

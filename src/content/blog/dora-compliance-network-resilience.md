@@ -71,34 +71,26 @@ The Digital Operational Resilience Act — [Regulation (EU) 2022/2554](https://e
 
 | Pillar / Mandate | DORA Requirement (Regulation EU 2022/2554) | QuickZTNA Technical Control |
 |---|---|---|
-| **ICT Risk Management (Art. 9)** | Strong encryption in transit, least privilege, and network microsegmentation. | WireGuard ChaCha20-Poly1305 encryption + fine-grained ABAC per connection. |
-| **Identity & Access Control (Art. 9.4)** | Continuous authentication and rigorous access control policies. | Continuous device posture checking + JIT elevation with auto-revocation. |
-| **ICT Third-Party Risk (Art. 28-30)** | Granular contractor access governance without standing lateral network access. | Scoped vendor identities, time-bounded grants, and zero public IP exposure. |
-| **Operational Resilience (Art. 12)** | Resilient multi-region mesh architecture with no single point of failure. | Distributed peer-to-peer mesh with automated DERP relay fallback. |
-| **Audit & Incident Evidence (Art. 13)** | Complete, tamper-proof logging of all access decisions exportable to SIEM. | Real-time JSON audit telemetry streams for SOC 2, DORA, and ISO 27001. |
+| **ICT Risk Management (Art. 9)** | Strong encryption in transit, least privilege, and network microsegmentation. | ✅ WireGuard ChaCha20-Poly1305 encryption + fine-grained ABAC per connection. |
+| **Identity & Access Control (Art. 9.4)** | Continuous authentication and rigorous access control policies. | ✅ Continuous device posture checking + JIT elevation with auto-revocation. |
+| **ICT Third-Party Risk (Art. 28-30)** | Granular contractor access governance without standing lateral network access. | ✅ Scoped vendor identities, time-bounded grants, and zero public IP exposure. |
+| **Operational Resilience (Art. 12)** | Resilient multi-region mesh architecture with no single point of failure. | ✅ Distributed peer-to-peer mesh with automated DERP relay fallback. |
+| **Audit & Incident Evidence (Art. 13)** | Complete, tamper-proof logging of all access decisions exportable to SIEM. | ✅ Real-time JSON audit telemetry streams for SOC 2, DORA, and ISO 27001. |
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    DORA Digital Operational Resilience Architecture     │
-│                                                                         │
-│   [Remote Financial Worker / Third-Party Vendor]                        │
-│                          │                                              │
-│                          ▼ (Continuous Device Posture & MFA)            │
-│   ┌──────────────────────────────────────────────────────────────────┐  │
-│   │  QuickZTNA Decoupled Control Plane (ABAC Policy & JIT Access)    │  │
-│   └──────────────────────────────┬───────────────────────────────────┘  │
-│                                  │ (Encrypted WireGuard Mesh)           │
-│                                  ▼                                      │
-│   ┌──────────────────────────────────────────────────────────────────┐  │
-│   │  Microsegmented Core Banking & Payment Infrastructure (Dark VPC) │  │
-│   │  ├── Core Banking API (Port 443 only - Scoped by Role)          │  │
-│   │  ├── SWIFT Gateway (JIT Approver Grant Required)                │  │
-│   │  └── Transaction Database (Denied to General Workforce)        │  │
-│   └──────────────────────────────┬───────────────────────────────────┘  │
-│                                  ▼                                      │
-│   [Real-Time Audit Telemetry Stream ──► Enterprise SIEM / Regulator]    │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+![Mesh Topology: EU DORA ICT Multi-Relay Disaster Resilient Mesh](/images/diagrams/dora-compliance-network-resilience-flow.svg)
+*Figure 1.1: Distributed Mesh Topology & Multi-Cloud Peering Matrix — EU DORA ICT Multi-Relay Disaster Resilient Mesh.*
+
+### Distributed Mesh Topology & Multi-Cloud Peering Matrix
+
+The network topology above maps the peer-to-peer overlay and encrypted data plane for **EU DORA ICT Multi-Relay Disaster Resilient Mesh**:
+
+- **Coordination Layer (DORA Dual-Region Active-Active Coordination Plane):** Frankfurt (Primary) + Dublin (Hot Standby) control plane with zero-loss Raft state replication
+- **Distributed Mesh Nodes:**
+  - **Core Banking Cloud (AWS Frankfurt (eu-central-1)):** 100.64.10.1 (ztna0). Primary Core Banking Ledger; Zero Inbound Ports / 100% Dark.
+  - **Financial Disaster Enclave (Azure Dublin (northeurope)):** 100.64.20.1 (ztna0). Hot Standby Secondary Enclave; Automated Sub-second Failover.
+  - **On-Premises Mainframe (Zurich Private Datacenter):** 100.64.30.1 (ztna0). Hardware HSM & SWIFT Gateway; Direct Encrypted Mesh Overlay.
+  - **Authorized Treasury Operator (Secured Compliance Laptop):** 100.64.40.5 (ztna0). FIDO2 Token + Continuous Posture; Direct P2P Tunnel to Active Site.
+- **Direct Point-to-Point Transit:** Endpoints negotiate direct UDP sockets via STUN/DERP hole-punching, entirely bypassing centralized VPN concentrator bottlenecks.
 
 ## Who this is for
 
@@ -302,15 +294,15 @@ How a modern ZTNA product addresses specific DORA articles.
 
 | DORA article | Obligation | ZTNA feature |
 |---|---|---|
-| Art. 7 Sound ICT | Resilient ICT systems | Multi-region control plane, DERP relay fallback |
-| Art. 8 Identification | Asset inventory | Device registration, tagged machines |
-| Art. 9 Protection | Crypto, MFA, access control | WireGuard (X25519 + ChaCha20-Poly1305), TOTP MFA, ABAC policies |
-| Art. 10 Detection | Monitoring | Per-session audit log, SIEM export |
-| Art. 11 Response and recovery | Incident response | Machine quarantine, key revocation |
-| Art. 12 Backup | Data backup policies | Config backup, encrypted org exports |
-| Art. 15 ICT security policies | Policy enforcement | Policy-as-code in dashboard |
-| Art. 19 Reporting | Incident reporting | Structured event export with classifiers |
-| Art. 30 Third-party | Contractual terms | DPA, audit rights, SLA, exit process |
+| Art. 7 Sound ICT | Resilient ICT systems | ✅ Multi-region control plane, DERP relay fallback |
+| Art. 8 Identification | Asset inventory | ✅ Device registration, tagged machines |
+| Art. 9 Protection | Crypto, MFA, access control | ✅ WireGuard (X25519 + ChaCha20-Poly1305), TOTP MFA, ABAC policies |
+| Art. 10 Detection | Monitoring | ✅ Per-session audit log, SIEM export |
+| Art. 11 Response and recovery | Incident response | ✅ Machine quarantine, key revocation |
+| Art. 12 Backup | Data backup policies | ✅ Config backup, encrypted org exports |
+| Art. 15 ICT security policies | Policy enforcement | ✅ Policy-as-code in dashboard |
+| Art. 19 Reporting | Incident reporting | ✅ Structured event export with classifiers |
+| Art. 30 Third-party | Contractual terms | ✅ DPA, audit rights, SLA, exit process |
 
 No ZTNA product is a complete DORA solution on its own. The organisational controls — management-body engagement, three-lines-of-defence, business continuity — are yours. A well-chosen ZTNA covers a substantial part of the technical Article 5–16 surface.
 

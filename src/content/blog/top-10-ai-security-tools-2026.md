@@ -88,29 +88,25 @@ relatedSlugs:
 | **LLM App Firewalls & DLP** | Inspects prompt embeddings and token streams for data leakage. | Blocks API key and source code exfiltration to external LLMs. | Lakera Guard, Prompt Security, Robust Intelligence |
 | **Policy Drift & Heatmap Analysis** | Continuously compares assigned permissions against real traffic telemetry. | Identifies over-privileged roles and recommends least-privilege cuts. | QuickZTNA AI Insights, Wiz, Orca Security |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   AI-Powered Zero Trust Security Fabric                │
-│                                                                        │
-│   [Telemetry Inputs]                                                   │
-│   ├── User Access Patterns (Time, Geo, Resource Frequency)             │
-│   ├── Network Flow Tuples (Bytes Sent, Port, Protocol)                 │
-│   └── Endpoint Posture Logs (OS Drift, EDR Status, Process Hashes)     │
-│                            │                                           │
-│                            ▼                                           │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  AI / ML Behavioral Baseline & Anomaly Engine (UEBA)             │ │
-│   │  - Evaluates Risk Score per Connection Request                   │ │
-│   └────────────────────────┬─────────────────────────────────────────┘ │
-│                            │                                           │
-│         ┌──────────────────┴──────────────────┐                        │
-│         ▼ [Normal Pattern: Risk < 15]         ▼ [Anomaly: Risk > 80]   │
-│   ┌───────────────────────────────┐     ┌────────────────────────────┐ │
-│   │  Approve WireGuard Session    │     │  Trigger Step-Up MFA       │ │
-│   │  (Direct Least-Privilege Pipe)│     │  or Immediate Quarantine   │ │
-│   └───────────────────────────────┘     └────────────────────────────┘ │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Threat Model: Enterprise AI Security & Prompt Injection Defense Pipeline](/images/diagrams/top-10-ai-security-tools-2026-flow.svg)
+*Figure 1.1: Attack Vector Threat Model & Zero Trust Interception Gate — Enterprise AI Security & Prompt Injection Defense Pipeline.*
+
+### Attack Surface, Interception Barrier & Cryptographic Enclave Analysis
+
+The threat model above diagrams the exploit vectors, inline interception gates, and protected workloads for **Enterprise AI Security & Prompt Injection Defense Pipeline**:
+
+1. **Threat Vector & Infiltration Origin (Malicious Prompt & Data Exfil):** Prompt injection, jailbreak tokens; Unauthorized API key / PII leaks. Identified entry points:
+   - Developer CLI sends prompt to LLM
+   - Prompt contains proprietary source code
+   - Indirect prompt injection via external data
+2. **Zero Trust Enforcement Gate (AI Prompt Firewall & DLP Broker):** Intercepts traffic at the operating system kernel before network egress:
+   - **Semantic Embedding Anomaly Check:** Detects jailbreak patterns & adversarial tokens
+   - **Real-Time Regex & PII Redaction:** Masks AWS keys, passwords, and customer data
+3. **Protected Workload Enclave (Approved Enterprise AI Gateway):** Validated sessions terminate inside isolated execution boundaries:
+   - Anthropic Claude / OpenAI Private API
+   - Zero-Data Retention Enclave
+   - Audited Prompt / Token Telemetry
+4. **SIEM Telemetry & Forensic Audit (AI Security Governance & Audit Lake):** Logs token counts, redacted entities, and attempted injection vectors in real time. Alerts security team within milliseconds if anomalous prompt exfiltration is detected.
 
 ## What separates real AI security from marketing
 
@@ -260,13 +256,13 @@ The tools below are categorised accordingly.
 |---|---|---|---|---|---|
 | Darktrace | Unsupervised ML | ✅ | ❌ | ✅ | Appliance |
 | CrowdStrike FI | UEBA + endpoint | ✅ | ❌ | ✅ Endpoint | ❌ |
-| Microsoft Sentinel | UEBA + analytics | ✅ | Partial | Via Playbooks | ❌ |
+| Microsoft Sentinel | UEBA + analytics | ✅ | ⚠️ Partial | Via Playbooks | ❌ |
 | Vectra AI | Attack-specific ML | ✅ | ❌ | ✅ | ❌ |
-| Zscaler AI | Inline proxy ML | ✅ | Partial | Block + alert | ❌ |
+| Zscaler AI | Inline proxy ML | ✅ | ⚠️ Partial | Block + alert | ❌ |
 | Abnormal Security | Email ML | ✅ | ❌ | ✅ Auto-block | ❌ |
 | Orca CSPM | Attack path scoring | CSPM | ❌ | ❌ | ❌ |
 | LLM (GPT/Claude) | NLP drafting | ❌ | ✅ | ❌ (must not) | Via API |
-| Wiz Security Graph | Graph risk ML | Partial | ❌ | ❌ | ❌ |
+| Wiz Security Graph | Graph risk ML | ⚠️ Partial | ❌ | ❌ | ❌ |
 
 ---
 

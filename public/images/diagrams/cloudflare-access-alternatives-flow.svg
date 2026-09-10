@@ -1,0 +1,146 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="100%" height="auto" style="background:#0B1120;border-radius:12px;border:1px solid #1E293B;">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#BE123C" />
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#06B6D4" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F43F5E" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="960" height="68" fill="#0F172A" />
+  <rect x="24" y="18" width="218" height="26" rx="5" fill="#DC2626" />
+  <text x="133" y="35" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif" letter-spacing="1">ARCHITECTURAL CONTRAST</text>
+  <text x="268" y="35" fill="#F8FAFC" font-size="16" font-weight="700" font-family="system-ui, sans-serif">Cloudflare Edge-Proxy vs. Direct WireGuard Mesh</text>
+  <text x="268" y="52" fill="#94A3B8" font-size="11.5" font-family="system-ui, sans-serif">Architectural Comparison: Centralized HTTP Reverse Proxy vs. P2P Kernel Overlay</text>
+  <line x1="0" y1="68" x2="960" y2="68" stroke="#1E293B" stroke-width="1.5" />
+  
+    <!-- Left Column: Legacy -->
+    <rect x="40" y="95" width="420" height="435" rx="10" fill="#111827" stroke="#374151" stroke-width="1.5" filter="url(#shadow)" />
+    <rect x="40" y="95" width="420" height="42" rx="10" fill="#450A0A" />
+    <rect x="55" y="106" width="70" height="20" rx="4" fill="#EF4444" />
+    <text x="90" y="120" fill="#FFFFFF" font-size="9.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">LEGACY</text>
+    <text x="135" y="121" fill="#FECACA" font-size="13" font-weight="700" font-family="system-ui, sans-serif">Cloudflare Access (Edge-Proxy)</text>
+    
+      <g transform="translate(60, 150)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Hairpinned Data Plane</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">All packets traverse Cloudflare edge data centers.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">Latency overhead + per-GB egress costs on large transfers.</text>
+      </g>
+    
+      <g transform="translate(60, 235)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">TLS Decryption at Edge</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Cloudflare proxy terminates and inspects user TLS.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">Third-party vendor has visibility into decrypted payload.</text>
+      </g>
+    
+      <g transform="translate(60, 320)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Limited Non-HTTP Support</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Protocols like SSH/RDP require WARP client or cloudflared.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">High operational friction for internal infrastructure.</text>
+      </g>
+    
+      <g transform="translate(60, 405)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Vendor Cloud Lock-in</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Control plane and data path bound to proprietary CDN.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">Cannot run air-gapped or purely sovereign infrastructure.</text>
+      </g>
+    
+
+    <!-- Central VS Badge -->
+    <circle cx="480" cy="312.5" r="22" fill="#0F172A" stroke="#334155" stroke-width="2" filter="url(#shadow)" />
+    <text x="480" y="317.5" fill="#F59E0B" font-size="12" font-weight="900" text-anchor="middle" font-family="system-ui, sans-serif">VS</text>
+
+    <!-- Right Column: Modern Zero Trust -->
+    <rect x="500" y="95" width="420" height="435" rx="10" fill="#0F172A" stroke="#059669" stroke-width="1.5" filter="url(#shadow)" />
+    <rect x="500" y="95" width="420" height="42" rx="10" fill="#064E3B" />
+    <rect x="515" y="106" width="85" height="20" rx="4" fill="#10B981" />
+    <text x="557" y="120" fill="#FFFFFF" font-size="9.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">ZERO TRUST</text>
+    <text x="610" y="121" fill="#A7F3D0" font-size="13" font-weight="700" font-family="system-ui, sans-serif">QuickZTNA (Direct WireGuard Mesh)</text>
+    
+      <g transform="translate(520, 150)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Direct Peer-to-Peer Routing</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">Sub-2ms direct LAN/WAN connections without hairpin.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Native line-rate kernel WireGuard throughput (10GbE).</text>
+      </g>
+    
+      <g transform="translate(520, 235)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">100% Zero-Knowledge E2E</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">End-to-end encryption with ChaCha20-Poly1305.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Control plane never sees or decrypts user payloads.</text>
+      </g>
+    
+      <g transform="translate(520, 320)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Universal Layer 4/7 Support</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">Native support for Postgres, SSH, RDP, SMB, and UDP.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Zero proxy wrapper friction; operates transparently.</text>
+      </g>
+    
+      <g transform="translate(520, 405)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Out-of-Band Coordination</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">Decoupled control plane; mesh survives cloud outages.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Deployable across any cloud, bare-metal, or on-prem.</text>
+      </g>
+    
+  
+  <!-- Footer -->
+  <line x1="20" y1="552" x2="940" y2="552" stroke="#1E293B" stroke-width="1" />
+  <text x="24" y="568" fill="#64748B" font-size="10" font-family="system-ui, sans-serif">QuickZTNA Technical Architecture Reference</text>
+  <text x="936" y="568" fill="#38BDF8" font-size="10" font-weight="600" text-anchor="end" font-family="system-ui, sans-serif">Zero Trust Verified Blueprint</text>
+</svg>
+  

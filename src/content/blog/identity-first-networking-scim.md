@@ -93,12 +93,12 @@ Furthermore, enterprise environments rarely operate on a single identity directo
 
 | Dimension | Legacy IP-Centric Access | Identity-First Networking (QuickZTNA SCIM 2.0) |
 | :--- | :--- | :--- |
-| **Access Decision Basis** | Source IP address, subnet CIDR, VLAN port | Validated IdP tokens, SCIM groups, device posture |
-| **Deprovisioning Speed** | Hours to days (Waits for tunnel/token expiry) | Sub-second (<1s) via real-time SCIM webhooks |
-| **Multi-Directory / M&A** | High friction; requires manual directory merge | Multi-IdP Bridge connects disparate IdPs seamlessly |
-| **Contractor Onboarding** | Corporate directory account creation required | Partner IdP federation without enterprise directory pollution |
-| **Policy Granularity** | L3/L4 coarse subnet routing rules | Fine-grained ABAC (User metadata, port, time, posture) |
-| **Network Resilience** | Tied to centralized VPN gateway uptime | Distributed peer-to-peer data plane with cached policies |
+| **Access Decision Basis** | ❌ Source IP address, subnet CIDR, VLAN port | ✅ Validated IdP tokens, SCIM groups, device posture |
+| **Deprovisioning Speed** | ❌ Hours to days (Waits for tunnel/token expiry) | ✅ Sub-second (<1s) via real-time SCIM webhooks |
+| **Multi-Directory / M&A** | ❌ High friction; requires manual directory merge | ✅ Multi-IdP Bridge connects disparate IdPs seamlessly |
+| **Contractor Onboarding** | ❌ Corporate directory account creation required | ✅ Partner IdP federation without enterprise directory pollution |
+| **Policy Granularity** | ❌ L3/L4 coarse subnet routing rules | ✅ Fine-grained ABAC (User metadata, port, time, posture) |
+| **Network Resilience** | ❌ Tied to centralized VPN gateway uptime | ✅ Distributed peer-to-peer data plane with cached policies |
 
 ---
 
@@ -158,33 +158,20 @@ Network access mechanisms have undergone four structural evolutions over the pas
 
 QuickZTNA maintains strict separation between **Control Plane Directory Synchronization** and **Data Plane Network Enforcement**. This separation ensures high throughput, low latency, and continuous availability even during temporary external identity provider outages:
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                        CONTROL PLANE ORCHESTRATION                     │
-│                                                                        │
-│  Okta / Entra ID / GitHub ──[SCIM 2.0 / SAML]──► QuickZTNA Bridge       │
-│                                                        │               │
-│                                               Compiled ABAC Matrix     │
-│                                                        ▼               │
-└────────────────────────────────────────────────────────┬───────────────┘
-                                                         │ TLS 1.3 Signaling
-┌────────────────────────────────────────────────────────▼───────────────┐
-│                          DATA PLANE ENFORCEMENT                        │
-│                                                                        │
-│  [ Workstation ] ◄────── WireGuard Mesh (ChaCha20-Poly1305) ────► [ Target DB ]│
-│  (100.64.40.10)              Direct P2P Encrypted                (100.64.40.12)│
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Protocol Sequence: SCIM 2.0 Real-Time Deprovisioning & Key Eviction Sequence](/images/diagrams/identity-first-networking-scim-flow.svg)
+*Figure 1.1: Protocol Handshake Sequence & Lifeline Verification Flow — SCIM 2.0 Real-Time Deprovisioning & Key Eviction Sequence.*
 
-### 4.1 Control Plane Synchronization Mechanics
-* **Directory Provisioning:** The QuickZTNA SCIM 2.0 Bridge receives RESTful POST, PUT, PATCH, and DELETE requests from enterprise IdPs whenever users are created, updated, transferred, or deactivated.
-* **Identity Normalization:** The Multi-IdP Engine normalizes claims into standardized internal tags. A user authenticated via Okta belonging to `Okta-DevOps` and a contractor authenticated via GitHub belonging to `Org-Contractors` are assigned distinct, non-overlapping identity signatures.
-* **Policy Compilation:** The ABAC Policy Engine continuously compiles identity tags, compliance requirements, and resource mappings into an optimized, memory-resident Access Control List (ACL) matrix.
+### Protocol Handshake & Verification Sequence
 
-### 4.2 Data Plane Enforcement Mechanics
-* **Local Kernel Enforcement:** The compiled ACL matrix is pushed down to local `ztna` daemons over an encrypted TLS 1.3 control channel.
-* **Direct Encapsulation:** When a user attempts to connect to a target host (e.g., `prod-db-01.myorg.zt.net`), the local client daemon inspects its local policy table. If authorized, it encapsulates raw IP packets inside standard WireGuard UDP frames using hardware-accelerated ChaCha20-Poly1305 encryption.
-* **Zero Payload Inspection:** Control plane components never touch, inspect, or route data payload traffic. Data streams directly peer-to-peer between endpoints over internal CGNAT addresses (`100.64.0.0/10`).
+The sequence diagram above traces the chronological protocol transactions across participating lifelines for **SCIM 2.0 Real-Time Deprovisioning & Key Eviction Sequence**:
+
+1. **1. Employee Terminated or Role Changed (Enterprise IdP → SCIM 2.0 Webhook):** User deactivated in HR directory
+2. **2. POST /scim/v2/Users/{id} (active: false) (SCIM 2.0 Webhook → QuickZTNA Controller):** Signed HMAC Webhook < 50ms
+3. **3. Broadcast Ephemeral Key Revocation Signal (QuickZTNA Controller → Local ZTNA Daemon):** Sub-second gRPC control broadcast
+4. **4. Immediate WireGuard Peer Teardown (Local ZTNA Daemon → Private Target Workload):** Netlink RTM_DELLINK executed
+5. **5. Flush Local Route & Packet Drop (Local ZTNA Daemon → Private Target Workload):** Packets blackholed; zero lingering access
+6. **6. Deprovisioning Confirmation & Audit Log (QuickZTNA Controller → Enterprise IdP):** Cryptographic proof logged to SIEM
+
 
 ---
 
@@ -374,11 +361,11 @@ Active Network Tunnels Allowed:
 
 | Threat Scenario / Metric | Legacy VPN (Static IP) | ZTNA 1.0 (No SCIM) | QuickZTNA Identity-First |
 | :--- | :--- | :--- | :--- |
-| **Offboarding Revocation Latency** | Hours to Days (Until Disconnect) | 15–60 min (Cron/Token Expiry) | **< 1 Second (SCIM Webhook)** |
-| **Privilege Escalation Drift** | High Risk (Old Subnet Kept) | Medium Risk (Requires Relogin) | **Zero Risk (Real-Time Re-compile)** |
-| **Contractor Directory Pollution** | Full AD Account Required | Manual Guest Accounts | **Isolated Multi-IdP Federation** |
-| **Stolen Static Credentials** | High Risk (Broad Subnet Access) | Mitigated (MFA at Login) | **Blocked (Default-Deny ABAC + Posture)** |
-| **Credential Replay Attacks** | High Risk (Persistent Tokens) | Mitigated (OAuth Tokens) | **Blocked (Ephemeral WireGuard Keys)** |
+| **Offboarding Revocation Latency** | ❌ Hours to Days (Until Disconnect) | ⚠️ 15–60 min (Cron/Token Expiry) | ✅ **< 1 Second (SCIM Webhook)** |
+| **Privilege Escalation Drift** | ❌ High Risk (Old Subnet Kept) | ⚠️ Medium Risk (Requires Relogin) | ✅ **Zero Risk (Real-Time Re-compile)** |
+| **Contractor Directory Pollution** | ❌ Full AD Account Required | ⚠️ Manual Guest Accounts | ✅ **Isolated Multi-IdP Federation** |
+| **Stolen Static Credentials** | ❌ High Risk (Broad Subnet Access) | ⚠️ Mitigated (MFA at Login) | ✅ **Blocked (Default-Deny ABAC + Posture)** |
+| **Credential Replay Attacks** | ❌ High Risk (Persistent Tokens) | ⚠️ Mitigated (OAuth Tokens) | ✅ **Blocked (Ephemeral WireGuard Keys)** |
 
 ---
 
@@ -433,14 +420,14 @@ $ ztna identity refresh
 
 | Capability / Attribute | Legacy IPsec / OpenVPN | ZTNA 1.0 (Proxy-Based) | QuickZTNA Identity-First Mesh |
 | :--- | :--- | :--- | :--- |
-| **Primary Authorization Identity** | Source IP Addresses | Static SAML/OIDC Tokens | **Real-Time SCIM Attributes & Tags** |
-| **Directory Provisioning Protocol** | Legacy LDAP / Active Directory | Manual / Periodic Cron Polling | **SCIM 2.0 (RFC 7643/7644) Webhooks** |
-| **Deprovisioning Revocation Speed** | Hours to Days | 15 to 60 Minutes | **< 1 Second (Sub-second)** |
-| **Multi-IdP Coexistence** | No Support (Single LDAP/Radius) | Rare (Single Directory Lock-in) | **Native Multi-IdP Identity Bridge** |
-| **Access Policy Engine** | Static IP Firewall Rules | Static RBAC Roles | **Dynamic Default-Deny ABAC Engine** |
-| **Contractor Access Management** | Full Corporate AD Accounts | Manual Guest Accounts | **Federated Partner / Social IdP Isolation** |
-| **Data Plane Encryption** | Central Concentrator Hub | Central Cloud TLS Proxy | **Direct WireGuard P2P Encrypted Mesh** |
-| **Datapath Inspection Overhead** | High (VPN Hairpinning) | High (Cloud Proxy Inspection) | **Zero (Out-of-band Control Plane)** |
+| **Primary Authorization Identity** | ❌ Source IP Addresses | ⚠️ Static SAML/OIDC Tokens | ✅ **Real-Time SCIM Attributes & Tags** |
+| **Directory Provisioning Protocol** | ❌ Legacy LDAP / Active Directory | ⚠️ Manual / Periodic Cron Polling | ✅ **SCIM 2.0 (RFC 7643/7644) Webhooks** |
+| **Deprovisioning Revocation Speed** | ❌ Hours to Days | ⚠️ 15 to 60 Minutes | ✅ **< 1 Second (Sub-second)** |
+| **Multi-IdP Coexistence** | ❌ No Support (Single LDAP/Radius) | ⚠️ Rare (Single Directory Lock-in) | ✅ **Native Multi-IdP Identity Bridge** |
+| **Access Policy Engine** | ❌ Static IP Firewall Rules | ⚠️ Static RBAC Roles | ✅ **Dynamic Default-Deny ABAC Engine** |
+| **Contractor Access Management** | ❌ Full Corporate AD Accounts | ⚠️ Manual Guest Accounts | ✅ **Federated Partner / Social IdP Isolation** |
+| **Data Plane Encryption** | ❌ Central Concentrator Hub | ⚠️ Central Cloud TLS Proxy | ✅ **Direct WireGuard P2P Encrypted Mesh** |
+| **Datapath Inspection Overhead** | ❌ High (VPN Hairpinning) | ⚠️ High (Cloud Proxy Inspection) | ✅ **Zero (Out-of-band Control Plane)** |
 
 ---
 

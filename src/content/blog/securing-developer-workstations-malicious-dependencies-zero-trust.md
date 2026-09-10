@@ -40,38 +40,19 @@ faq:
     a: No. While package manager controls like disabling npm lifecycle scripts or enforcing lockfile hashes are valuable baseline hygiene, they only protect against specific installation vectors and can be bypassed by secondary dependencies, obfuscated dynamic imports, or compromised build tools. Zero Trust Network Access operates at the infrastructure and kernel networking layer, ensuring that even if malicious code successfully executes on an endpoint, it cannot communicate with external command servers or pivot laterally across internal subnets.
 ---
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│               ZERO TRUST WORKSTATION DEFENSE: SUPPLY CHAIN CONTAINMENT                 │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                        │
-│     DEVELOPER WORKSTATION (ztna0: 100.64.0.15)                                         │
-│     ┌────────────────────────────────────────────────────────────────────────────┐     │
-│     │  npm install / pip install  ───►  Spawns Malicious Lifecycle Script        │     │
-│     │                                                                            │     │
-│     │  [Attack Phase 1: Local Secret Reconnaissance]                             │     │
-│     │  ├── Scan ~/.aws/credentials  ──►  BLOCKED (Zero-Standing Privileges / ZSP)│     │
-│     │  ├── Scan ~/.ssh/id_rsa       ──►  BLOCKED (Empty / Ephemeral JIT Tokens)  │     │
-│     │  └── Read .env Passwords      ──►  BLOCKED (In-Memory Brokered Secrets)    │     │
-│     │                                                                            │     │
-│     │  [Attack Phase 2: Exfiltration & C2 Beaconing]                             │     │
-│     │  ├── Direct TCP:4444 Outbound ──►  BLOCKED (Default-Deny Mesh Egress)      │     │
-│     │  └── DNS Tunnel Query         ──►  DROPPED (MagicDNS NRD / Threat Sinkhole)│     │
-│     │                                                                            │     │
-│     │  [Attack Phase 3: Lateral Movement Across Corporate Subnets]               │     │
-│     │  └── Pivot to 10.0.0.0/8      ──►  ISOLATED (Instant Cryptographic Revoke) │     │
-│     └──────────────────────────────────────┬─────────────────────────────────────┘     │
-│                                            │                                           │
-│                         Encrypted WireGuard│Mesh Tunnel (X25519)                       │
-│                                            ▼                                           │
-│                       ┌────────────────────────────────────────┐                       │
-│                       │   QuickZTNA Security Gateway Proxy     │                       │
-│                       │   - Private Authenticated Registries   │                       │
-│                       │   - MagicDNS 6h Threat Intel Sync      │                       │
-│                       │   - Continuous Posture Verification    │                       │
-│                       └────────────────────────────────────────┘                       │
-└────────────────────────────────────────────────────────────────────────────────────────┘
-```
+![Protocol Sequence: Malicious Dependency Interception & Workstation Defense Sequence](/images/diagrams/securing-developer-workstations-malicious-dependencies-zero-trust-flow.svg)
+*Figure 1.1: Protocol Handshake Sequence & Lifeline Verification Flow — Malicious Dependency Interception & Workstation Defense Sequence.*
+
+### Protocol Handshake & Verification Sequence
+
+The sequence diagram above traces the chronological protocol transactions across participating lifelines for **Malicious Dependency Interception & Workstation Defense Sequence**:
+
+1. **1. Exec preinstall malicious payload (Developer CLI → Local ZTNA Daemon):** npm install launches child process
+2. **2. Attempt outbound exfiltration to C2 (Local ZTNA Daemon → Public C2 / Internet):** BLOCKED: Direct public egress dropped
+3. **3. Attempt reading ~/.aws/credentials (Developer CLI → Local ZTNA Daemon):** BLOCKED: Zero-Standing Privileges (Empty dotfiles)
+4. **4. Host posture violation signal emitted (Local ZTNA Daemon → QuickZTNA Controller):** Binary hash anomaly / unauthorized socket
+5. **5. Sub-millisecond key revocation command (QuickZTNA Controller → Local ZTNA Daemon):** Netlink peer eviction; workstation isolated
+6. **6. Legitimate package resolved via mesh proxy (Developer CLI → Air-Gapped Proxy):** Cryptographic hash verified before install
 
 ## TL;DR
 
@@ -257,16 +238,14 @@ This practice is an existential supply chain hazard. A malicious package running
 
 To understand why static secrets are indefensible, consider where typical developer tools store authentication state:
 
-| Security Dimension | Traditional Enterprise Security Model | QuickZTNA Zero Trust Workstation Model |
-| :--- | :--- | :--- |
-| **Underlying Network Architecture** | Centralized hub-and-spoke legacy VPN (IPsec/OpenVPN) with high latency and hairpin bottlenecks. | Cryptographic peer-to-peer **WireGuard mesh** (X25519 + ChaCha20-Poly1305) with native line-rate speed. |
-| **Package Manager Egress Control** | Unrestricted, direct egress to public registries (`npmjs.com`, `pypi.org`) over local home internet. | Egress strictly microsegmented to private, authenticated registry proxies via authenticated mesh routes. |
-| **DNS Resolution & Filtering** | Uninspected public DNS or coarse corporate DNS forwarders. Susceptible to DNS tunneling. | **MagicDNS loopback filtering** with automated 6-hour threat intelligence refreshes and NRD blocking. |
-| **Local Credential Storage** | Static AWS keys, private SSH keys, and database passwords stored in plaintext dotfiles (`~/.aws`, `~/.ssh`). | **Zero-Standing Privileges (ZSP)**. Ephemeral, memory-only tokens issued via JIT workflows; dotfiles remain empty. |
-| **Lateral Movement Blast Radius** | Wide /16 or /24 corporate subnet routing. Infected laptop can pivot directly to internal infrastructure. | **Microsegmentation by default**. Zero lateral peer-to-peer routing between workstations; strict ABAC rules. |
-| **Device Posture Evaluation** | Single point-in-time check during initial VPN authentication; blind for the remainder of the session. | **Continuous per-connection posture checking**. Any posture violation triggers sub-millisecond key revocation. |
-| **Compromise Containment Time** | Manual containment averaging days or weeks after alert triaging in SIEM. | **Automated instantaneous quarantine** in milliseconds via cryptographic WireGuard peer teardown. |
-| **Developer Velocity & Friction** | High friction: bulky agents, broken compilation from EDR, slow hairpinned proxies, complex login steps. | Zero friction: lightweight background daemon, native WireGuard throughput, seamless SSO, automated JIT. |
+| Tool / Service | Default Local Storage Path | Security Posture | Vulnerability to Malicious Scripts |
+| :--- | :--- | :--- | :--- |
+| **AWS CLI** | `~/.aws/credentials` | ❌ Plaintext INI file | ❌ Trivial read access for any local process |
+| **OpenSSH** | `~/.ssh/id_rsa`, `~/.ssh/id_ed25519` | ❌ Plaintext or weak passphrase | ❌ Immediate exfiltration and offline cracking |
+| **Kubernetes (kubectl)** | `~/.kube/config` | ❌ Plaintext YAML with embedded certs/tokens | ❌ Direct cluster compromise |
+| **Docker Engine** | `~/.docker/config.json` | ❌ Base64-encoded auth tokens | ❌ Full private container registry access |
+| **Git / GitHub CLI** | `~/.git-credentials`, `~/.config/gh/hosts.yml` | ❌ Plaintext or basic token | ❌ Repository hijacking and source code theft |
+| **Application Configs** | `~/workspace/*/.env` | ❌ Plaintext key-value pairs | ❌ Database passwords, API keys, secret keys |
 
 Relying on filesystem permissions (e.g., `chmod 600 ~/.ssh/id_rsa`) provides zero protection against a malicious dependency. The dependency runs as the same operating system user that owns those files. If the developer can read the file, the script can read the file.
 
@@ -363,14 +342,14 @@ The differences between legacy endpoint defense and a comprehensive Zero Trust w
 
 | Security Dimension | Traditional Enterprise Security Model | QuickZTNA Zero Trust Workstation Model |
 | :--- | :--- | :--- |
-| **Underlying Network Architecture** | Centralized hub-and-spoke legacy VPN (IPsec/OpenVPN) with high latency and hairpin bottlenecks. | Cryptographic peer-to-peer **WireGuard mesh** (X25519 + ChaCha20-Poly1305) with native line-rate speed. |
-| **Package Manager Egress Control** | Unrestricted, direct egress to public registries (`npmjs.com`, `pypi.org`) over local home internet. | Egress strictly microsegmented to private, authenticated registry proxies via authenticated mesh routes. |
-| **DNS Resolution & Filtering** | Uninspected public DNS or coarse corporate DNS forwarders. Susceptible to DNS tunneling. | **MagicDNS loopback filtering** with automated 6-hour threat intelligence refreshes and NRD blocking. |
-| **Local Credential Storage** | Static AWS keys, private SSH keys, and database passwords stored in plaintext dotfiles (`~/.aws`, `~/.ssh`). | **Zero-Standing Privileges (ZSP)**. Ephemeral, memory-only tokens issued via JIT workflows; dotfiles remain empty. |
-| **Lateral Movement Blast Radius** | Wide /16 or /24 corporate subnet routing. Infected laptop can pivot directly to internal infrastructure. | **Microsegmentation by default**. Zero lateral peer-to-peer routing between workstations; strict ABAC rules. |
-| **Device Posture Evaluation** | Single point-in-time check during initial VPN authentication; blind for the remainder of the session. | **Continuous per-connection posture checking**. Any posture violation triggers sub-millisecond key revocation. |
-| **Compromise Containment Time** | Manual containment averaging days or weeks after alert triaging in SIEM. | **Automated instantaneous quarantine** in milliseconds via cryptographic WireGuard peer teardown. |
-| **Developer Velocity & Friction** | High friction: bulky agents, broken compilation from EDR, slow hairpinned proxies, complex login steps. | Zero friction: lightweight background daemon, native WireGuard throughput, seamless SSO, automated JIT. |
+| **Underlying Network Architecture** | ❌ Centralized hub-and-spoke legacy VPN (IPsec/OpenVPN) with high latency and hairpin bottlenecks. | ✅ Cryptographic peer-to-peer **WireGuard mesh** (X25519 + ChaCha20-Poly1305) with native line-rate speed. |
+| **Package Manager Egress Control** | ❌ Unrestricted, direct egress to public registries (`npmjs.com`, `pypi.org`) over local home internet. | ✅ Egress strictly microsegmented to private, authenticated registry proxies via authenticated mesh routes. |
+| **DNS Resolution & Filtering** | ❌ Uninspected public DNS or coarse corporate DNS forwarders. Susceptible to DNS tunneling. | ✅ **MagicDNS loopback filtering** with automated 6-hour threat intelligence refreshes and NRD blocking. |
+| **Local Credential Storage** | ❌ Static AWS keys, private SSH keys, and database passwords stored in plaintext dotfiles (`~/.aws`, `~/.ssh`). | ✅ **Zero-Standing Privileges (ZSP)**. Ephemeral, memory-only tokens issued via JIT workflows; dotfiles remain empty. |
+| **Lateral Movement Blast Radius** | ❌ Wide /16 or /24 corporate subnet routing. Infected laptop can pivot directly to internal infrastructure. | ✅ **Microsegmentation by default**. Zero lateral peer-to-peer routing between workstations; strict ABAC rules. |
+| **Device Posture Evaluation** | ❌ Single point-in-time check during initial VPN authentication; blind for the remainder of the session. | ✅ **Continuous per-connection posture checking**. Any posture violation triggers sub-millisecond key revocation. |
+| **Compromise Containment Time** | ❌ Manual containment averaging days or weeks after alert triaging in SIEM. | ✅ **Automated instantaneous quarantine** in milliseconds via cryptographic WireGuard peer teardown. |
+| **Developer Velocity & Friction** | ❌ High friction: bulky agents, broken compilation from EDR, slow hairpinned proxies, complex login steps. | ✅ Zero friction: lightweight background daemon, native WireGuard throughput, seamless SSO, automated JIT. |
 
 ---
 

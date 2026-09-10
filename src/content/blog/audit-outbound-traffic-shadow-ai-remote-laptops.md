@@ -57,11 +57,11 @@ Below is an in-depth engineering evaluation of the top 10 auditing frameworks an
 
 | Evaluation Metric | Legacy SWG / Proxy | DNS-Only Filter | QuickZTNA Egress + Process Mesh |
 |---|---|---|---|
-| **Egress Coverage** | Full tunnel (High latency) | DNS queries only (Bypassable) | Selective WireGuard Mesh (Sub-2ms) |
-| **DoH / DoT Circumvention Protection** | Requires PAC / certs | Ineffective against DoH | Kernel loopback interception + DoH drop |
-| **Kernel Process Attribution** | No (Network IP only) | No | Yes (PID, SHA-256 binary hash, user) |
-| **Developer Runtime Compatibility** | Frequent CA breakages | High | 100% Native compatibility |
-| **Endpoint Battery & CPU Impact** | Heavy (5–15% CPU) | Low | Negligible (Kernel WireGuard / eBPF) |
+| **Egress Coverage** | ❌ Full tunnel (High latency) | ⚠️ DNS queries only (Bypassable) | ✅ Selective WireGuard Mesh (Sub-2ms) |
+| **DoH / DoT Circumvention Protection** | ❌ Requires PAC / certs | ⚠️ Ineffective against DoH | ✅ Kernel loopback interception + DoH drop |
+| **Kernel Process Attribution** | ❌ No (Network IP only) | ⚠️ No | ✅ Yes (PID, SHA-256 binary hash, user) |
+| **Developer Runtime Compatibility** | ❌ Frequent CA breakages | ⚠️ High | ✅ 100% Native compatibility |
+| **Endpoint Battery & CPU Impact** | ❌ Heavy (5–15% CPU) | ⚠️ Low | ✅ Negligible (Kernel WireGuard / eBPF) |
 
 ---
 
@@ -69,23 +69,25 @@ Below is an in-depth engineering evaluation of the top 10 auditing frameworks an
 
 The rapid proliferation of generative artificial intelligence has fundamentally inverted enterprise egress security. In the legacy corporate perimeter model, employees worked behind centralized next-generation firewalls (NGFWs) that inspected all outbound web traffic. Today, distributed engineering and product teams operate on remote laptops connected to residential Wi-Fi and mobile hotspots.
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   The Shadow AI Data Exfiltration Path                 │
-│                                                                        │
-│   [Remote Laptop]                                                      │
-│    ├── Terminal CLI Agent (aider / claude-code)                        │
-│    ├── Unauthorized IDE Plugin (Cursor / Continue.dev)                 │
-│    └── Unapproved Browser Chat (chatgpt.com / claude.ai)               │
-│                            │                                           │
-│                            │  ❌ Bypasses Split-Tunnel VPN             │
-│                            │  ❌ Bypasses Port 53 DNS via DoH (1.1.1.1)│
-│                            │  ❌ Concealed by TLS 1.3 + ECH            │
-│                            ▼                                           │
-│           [Public Third-Party LLM Infrastructure]                     │
-│           (Proprietary source code & customer PII ingested)           │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Threat Model: Shadow AI Egress Interception & DLP Architecture](/images/diagrams/audit-outbound-traffic-shadow-ai-remote-laptops-flow.svg)
+*Figure 1.1: Attack Vector Threat Model & Zero Trust Interception Gate — Shadow AI Egress Interception & DLP Architecture.*
+
+### Attack Surface, Interception Barrier & Cryptographic Enclave Analysis
+
+The threat model above diagrams the exploit vectors, inline interception gates, and protected workloads for **Shadow AI Egress Interception & DLP Architecture**:
+
+1. **Threat Vector & Infiltration Origin (Shadow AI & Rogue LLM Exfil):** Developer CLIs (Cursor, Claude Code, Aider); Unauthorized public LLM web browsers. Identified entry points:
+   - Prompt pastes source code & AWS keys
+   - Encrypted DNS (DoH) attempts bypass
+   - Split-tunnel socket skirts legacy VPN
+2. **Zero Trust Enforcement Gate (QuickZTNA eBPF + DLP Interceptor):** Intercepts traffic at the operating system kernel before network egress:
+   - **Kernel Socket Probe & PID Attribution:** Tracks process binary hash (SHA-256)
+   - **DoH / SNI / ECH Loopback Decryption:** Inspects HTTP/2 SSE streaming prompt buffers
+3. **Protected Workload Enclave (Authorized Corporate AI Gateway):** Validated sessions terminate inside isolated execution boundaries:
+   - Private Enterprise Model Endpoints
+   - Automated Regex & PII Redaction
+   - Zero Retention Agreement (ZRA) Mesh
+4. **SIEM Telemetry & Forensic Audit (Real-Time Shadow AI Telemetry & CISO Alerting):** Identifies rogue model APIs, token counts, and attempted secret leaks within 50ms. Exported to Splunk, Datadog, and CrowdStrike via cryptographically signed JSON logs.
 
 The operational breakdown unfolds across six distinct phases:
 

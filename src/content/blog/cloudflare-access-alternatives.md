@@ -66,33 +66,30 @@ Cloudflare Access is an edge-native identity-aware proxy. It is strong for user-
 
 | Architectural Dimension | Cloudflare Access (Edge-Proxy) | QuickZTNA / Tailscale (WireGuard Mesh) |
 |---|---|---|
-| **Data Plane Topology** | All traffic hairpins through Cloudflare global edge data centers. | Direct peer-to-peer tunnels (sub-2ms direct LAN/WAN speed). |
-| **Protocol Support** | Best for HTTP/HTTPS web apps (Non-HTTP requires WARP/cloudflared). | Full Layer 3/4 support (SSH, RDP, Postgres, custom UDP/TCP). |
-| **Data Privacy & Decryption** | Cloudflare edge decrypts TLS session for inspection. | End-to-end encryption; control plane never sees or decrypts payloads. |
-| **On-Prem & Multi-Cloud Mesh** | Requires running `cloudflared` connectors per app. | Native mesh routing across AWS, GCP, Azure, and bare-metal nodes. |
-| **Pricing & User Tiers** | Pay-per-user with strict feature gates on enterprise tiers. | Free forever up to 5 users on QuickZTNA with full enterprise ABAC. |
+| **Data Plane Topology** | All traffic hairpins through Cloudflare global edge data centers. | ✅ Direct peer-to-peer tunnels (sub-2ms direct LAN/WAN speed). |
+| **Protocol Support** | Best for HTTP/HTTPS web apps (Non-HTTP requires WARP/cloudflared). | ✅ Full Layer 3/4 support (SSH, RDP, Postgres, custom UDP/TCP). |
+| **Data Privacy & Decryption** | Cloudflare edge decrypts TLS session for inspection. | ✅ End-to-end encryption; control plane never sees or decrypts payloads. |
+| **On-Prem & Multi-Cloud Mesh** | Requires running `cloudflared` connectors per app. | ✅ Native mesh routing across AWS, GCP, Azure, and bare-metal nodes. |
+| **Pricing & User Tiers** | Pay-per-user with strict feature gates on enterprise tiers. | ✅ Free forever up to 5 users on QuickZTNA with full enterprise ABAC. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│               Edge Proxy (Cloudflare) vs. Direct Mesh (QuickZTNA)      │
-│                                                                        │
-│   EDGE PROXY MODEL (Cloudflare Access):                                │
-│   [Developer Laptop] ──► [Cloudflare Edge POP] ──► [cloudflared] ──►[DB]│
-│   (Traffic hairpins across public internet edge proxy; added latency)  │
-│                                                                        │
-│   DIRECT MESH MODEL (QuickZTNA):                                       │
-│   [Developer Laptop]                                  [Private App/DB] │
-│           │                                                   ▲        │
-│           │ 1. Ephemeral Signaling                            │        │
-│           ▼                                                   │        │
-│   [QuickZTNA Control] ──────── 2. Issue ABAC Policy ──────────┤        │
-│                                                               │        │
-│           └──────────── 3. Direct WireGuard P2P Pipe ─────────┘        │
-│                         (Zero Hairpinning / Wire-Speed)                │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Architecture Comparison: Cloudflare Edge-Proxy vs. Direct WireGuard Mesh](/images/diagrams/cloudflare-access-alternatives-flow.svg)
+*Figure 1.1: Architectural Comparison & Failure Mode Analysis — Cloudflare Edge-Proxy vs. Direct WireGuard Mesh.*
 
-> **Adding up your tool bill?** An access proxy like Cloudflare Access is usually just one line item — most teams also pay separately for a device-agent mesh, DNS filtering and a monitoring tool. QuickZTNA folds those into one agent and one bill. [See what you'd save →](/savings/)
+### Architectural Divergence & Failure Mode Analysis
+
+The architectural contrast above details the structural differences between legacy approaches and modern Zero Trust for **Cloudflare Edge-Proxy vs. Direct WireGuard Mesh**:
+
+#### 1. Legacy Limitations: Cloudflare Access (Edge-Proxy)
+- **Hairpinned Data Plane:** All packets traverse Cloudflare edge data centers. Latency overhead + per-GB egress costs on large transfers.
+- **TLS Decryption at Edge:** Cloudflare proxy terminates and inspects user TLS. Third-party vendor has visibility into decrypted payload.
+- **Limited Non-HTTP Support:** Protocols like SSH/RDP require WARP client or cloudflared. High operational friction for internal infrastructure.
+- **Vendor Cloud Lock-in:** Control plane and data path bound to proprietary CDN. Cannot run air-gapped or purely sovereign infrastructure.
+
+#### 2. Modern Zero Trust Guarantees: QuickZTNA (Direct WireGuard Mesh)
+- **Direct Peer-to-Peer Routing:** Sub-2ms direct LAN/WAN connections without hairpin. Native line-rate kernel WireGuard throughput (10GbE).
+- **100% Zero-Knowledge E2E:** End-to-end encryption with ChaCha20-Poly1305. Control plane never sees or decrypts user payloads.
+- **Universal Layer 4/7 Support:** Native support for Postgres, SSH, RDP, SMB, and UDP. Zero proxy wrapper friction; operates transparently.
+- **Out-of-Band Coordination:** Decoupled control plane; mesh survives cloud outages. Deployable across any cloud, bare-metal, or on-prem.
 
 ## Who this is for
 
@@ -218,11 +215,11 @@ Snapshot as of April 2026. Always verify against each vendor's current documenta
 |---|---|---|---|---|---|---|---|
 | Architecture | Edge proxy | Mesh | Mesh | Mesh + ZTNA | ZTNA proxy | ZTNA proxy | Web-app proxy |
 | Data plane | CF proprietary | WireGuard | WireGuard | WireGuard | Proprietary | Proprietary | AWS-managed |
-| Self-host | No | No (Headscale exists) | Yes | No | Partial | No | No |
-| Free tier | Yes (verify current) | Yes | Yes | Yes (5 users, 100 devices) | Yes (limited) | No | Check AWS pricing |
-| Tunnel-level PQ | Edge TLS 1.3 hybrid | Verify | Verify | Not implemented | Verify | Verify | Verify |
-| Mesh P2P | No | Yes | Yes | Yes | No | No | No |
-| Clientless browser | Yes | No | No | Partial (admin UI) | No | Yes | Yes |
+| Self-host | ❌ No | ❌ No (Headscale exists) | ✅ Yes | ❌ No | ⚠️ Partial | ❌ No | ❌ No |
+| Free tier | ✅ Yes (verify current) | ✅ Yes | ✅ Yes | ✅ Yes (5 users, 100 devices) | ✅ Yes (limited) | ❌ No | Check AWS pricing |
+| Tunnel-level PQ | ⚠️ Edge TLS 1.3 hybrid | Verify | Verify | ❌ Not implemented | Verify | Verify | Verify |
+| Mesh P2P | ❌ No | ✅ Yes | ✅ Yes | ✅ Yes | ❌ No | ❌ No | ❌ No |
+| Clientless browser | ✅ Yes | ❌ No | ❌ No | ⚠️ Partial (admin UI) | ❌ No | ✅ Yes | ✅ Yes |
 | Best fit | User-to-web-app w/ CF | Developer mesh | OSS mesh + self-host | Full ZTNA + workforce | Proxy ZTNA | Enterprise ZTNA | AWS-native web |
 
 **Decision framework.**

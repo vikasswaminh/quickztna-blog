@@ -120,21 +120,75 @@
 }
 
 #article-body table {
+  width: 100%;
+  border-collapse: collapse;
   background-color: #ffffff;
   border-radius: 0.75rem;
   border: 1px solid #e2e8f0;
   overflow: hidden;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  margin: 1.5rem 0;
 }
 
 #article-body table th {
   background-color: #f8fafc;
   color: #0f172a;
   font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.75rem 1rem;
+  text-align: left;
   border-bottom: 1px solid #e2e8f0;
 }
 
 #article-body table td {
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  line-height: 1.55;
   border-bottom: 1px solid #f1f5f9;
   color: #334155;
 }
+
+#article-body table tr:last-child td {
+  border-bottom: none;
+}
+
+#article-body table tr:hover td {
+  background-color: rgba(248, 250, 252, 0.5);
+}
+
+/* Technical Diagrams & Architecture Blueprints */
+#article-body p:has(> img[src*="/images/diagrams/"]) {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 0.875rem;
+}
+
+#article-body img[src*="/images/diagrams/"] {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04), 0 2px 4px -2px rgba(0, 0, 0, 0.03);
+}
+
+#article-body p:has(> img[src*="/images/diagrams/"]) + p > em:only-child {
+  display: block;
+  text-align: center;
+  font-size: 0.825rem;
+  line-height: 1.5;
+  color: #64748b;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
+  font-style: normal;
+}
+
+@media (max-width: 640px) {
+  #article-body img[src*="/images/diagrams/"] {
+    min-width: 620px;
+  }
+}
+

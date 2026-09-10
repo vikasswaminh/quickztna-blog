@@ -65,37 +65,30 @@ Kubernetes Zero Trust is the pattern of brokering developer, operator, and CI/CD
 
 | Layer | Problem in Legacy Kubernetes | Zero Trust Solution (QuickZTNA + SPIFFE) |
 |---|---|---|
-| **Human-to-Cluster Access** | Long-lived static `kubeconfig` certs; full API server access. | IdP-authenticated ephemeral tokens; API server kept completely dark. |
-| **RBAC / Namespace Scoping** | Broad cluster-admin role bindings; difficult credential rotation. | Fine-grained ABAC mapped to namespace and verb (`get`, `apply`, `exec`). |
-| **Service-to-Service (East-West)** | Flat pod network (CNI allows all pod-to-pod connections). | mTLS sidecar mesh (Linkerd/Istio) with SPIFFE/SPIRE cryptographic SVIDs. |
-| **CI/CD Pipeline Ingestion** | Static service account keys stored in GitHub Secrets. | Workload Identity Federation (OIDC) + short-lived JIT deployment grants. |
+| **Human-to-Cluster Access** | ❌ Long-lived static `kubeconfig` certs; full API server access. | ✅ IdP-authenticated ephemeral tokens; API server kept completely dark. |
+| **RBAC / Namespace Scoping** | ❌ Broad cluster-admin role bindings; difficult credential rotation. | ✅ Fine-grained ABAC mapped to namespace and verb (`get`, `apply`, `exec`). |
+| **Service-to-Service (East-West)** | ❌ Flat pod network (CNI allows all pod-to-pod connections). | ✅ mTLS sidecar mesh (Linkerd/Istio) with SPIFFE/SPIRE cryptographic SVIDs. |
+| **CI/CD Pipeline Ingestion** | ❌ Static service account keys stored in GitHub Secrets. | ✅ Workload Identity Federation (OIDC) + short-lived JIT deployment grants. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Kubernetes Zero Trust Access Architecture            │
-│                                                                        │
-│   [Developer / Operator Laptop]                                        │
-│                 │                                                      │
-│                 ▼ (OIDC Authentication + Posture Verification)         │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Access Gateway (Dark Kube-API Proxy)                  │ │
-│   │  - Evaluates: Role + Target Namespace + Just-in-Time Grant       │ │
-│   └─────────────────────────────┬────────────────────────────────────┘ │
-│                                 │ (Encrypted WireGuard Mesh Tunnel)    │
-│                                 ▼                                      │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Private Kubernetes Cluster (Zero Public Ingress Ports)          │ │
-│   │  ├── Kube-API Server (Only reachable from ZTNA Gateway)          │ │
-│   │  │                                                               │ │
-│   │  ├── Namespace: production (Gated behind JIT Elevation)          │ │
-│   │  │   └── Pod A ◄───[mTLS via SPIFFE/SPIRE]───► Pod B             │ │
-│   │  │                                                               │ │
-│   │  └── Namespace: staging (Direct Developer RBAC Access)           │ │
-│   └─────────────────────────────┬────────────────────────────────────┘ │
-│                                 ▼                                      │
-│   [Audit Telemetry Stream ──► SIEM (kubectl exec / apply forensics)]   │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Threat Model: Kubernetes Zero Trust Access & Defense-in-Depth Shield](/images/diagrams/kubernetes-zero-trust-flow.svg)
+*Figure 1.1: Attack Vector Threat Model & Zero Trust Interception Gate — Kubernetes Zero Trust Access & Defense-in-Depth Shield.*
+
+### Attack Surface, Interception Barrier & Cryptographic Enclave Analysis
+
+The threat model above diagrams the exploit vectors, inline interception gates, and protected workloads for **Kubernetes Zero Trust Access & Defense-in-Depth Shield**:
+
+1. **Threat Vector & Infiltration Origin (Compromised Pod & Lateral Scanner):** Malicious container image or CVE exploit; Attempts scanning cluster internal subnet. Identified entry points:
+   - Container escapes to host namespace
+   - Scans for 10.96.0.1:443 Kube-API
+   - Attempts token theft via serviceaccount
+2. **Zero Trust Enforcement Gate (QuickZTNA Dark Kube-API + SPIFFE):** Intercepts traffic at the operating system kernel before network egress:
+   - **API Server 100% Dark (No Public Port):** Reachable strictly through WireGuard mesh
+   - **Cilium eBPF Microsegmentation:** Blocks all unauthorized east-west pod traffic
+3. **Protected Workload Enclave (Production Cluster Enclave):** Validated sessions terminate inside isolated execution boundaries:
+   - Kube-API Server (Dark behind Mesh)
+   - Production Secret Store (Vault / KMS)
+   - Isolated Namespace Data Plane
+4. **SIEM Telemetry & Forensic Audit (Kubernetes Audit & Admission Telemetry):** Records every kubectl exec, namespace port-forward, and API query with user identity. Ephemeral tokens expire immediately upon CLI command completion; static certs eliminated.
 
 ## Who this is for
 

@@ -64,32 +64,31 @@ relatedSlugs:
 
 | Evaluation Vector | Legacy Enterprise VPN | Modern ZTNA Fabric (QuickZTNA) |
 |---|---|---|
-| **1. OSI Layer & Scope** | Layer 3 (Full subnet IP routing). | Layer 4/7 (Application and port specific). |
-| **2. Authentication Lifecycle** | One-time check at connection initiation. | Continuous real-time identity & device posture re-evaluation. |
-| **3. Access Granularity** | Broad network access to the entire subnet. | Attribute-Based Access Control (ABAC) per connection. |
-| **4. Ingress Visibility** | Publicly reachable IP address and open listening port. | Completely Dark; single-packet authorization / WireGuard mesh. |
-| **5. Lateral Movement** | Permitted across internal LAN unless blocked by ACLs. | Cryptographically impossible; peer isolation by default. |
-| **6. Deployment Topology** | Centralized hub-and-spoke concentrators (latency bottleneck). | Direct peer-to-peer mesh with edge routing. |
+| **1. OSI Layer & Scope** | ❌ Layer 3 (Full subnet IP routing). | ✅ Layer 4/7 (Application and port specific). |
+| **2. Authentication Lifecycle** | ❌ One-time check at connection initiation. | ✅ Continuous real-time identity & device posture re-evaluation. |
+| **3. Access Granularity** | ❌ Broad network access to the entire subnet. | ✅ Attribute-Based Access Control (ABAC) per connection. |
+| **4. Ingress Visibility** | ❌ Publicly reachable IP address and open listening port. | ✅ Completely Dark; single-packet authorization / WireGuard mesh. |
+| **5. Lateral Movement** | ❌ Permitted across internal LAN unless blocked by ACLs. | ✅ Cryptographically impossible; peer isolation by default. |
+| **6. Deployment Topology** | ❌ Centralized hub-and-spoke concentrators (latency bottleneck). | ✅ Direct peer-to-peer mesh with edge routing. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   ZTNA vs. VPN Architectural Topology                  │
-│                                                                        │
-│   LEGACY VPN (Hub-and-Spoke):                                          │
-│   [Client] ──► [Concentrator Chokepoint] ──► [Flat Internal Subnet]    │
-│                (Publicly Scannable Port)     (Unrestricted Lateral LAN)│
-│                                                                        │
-│   QUICKZTNA (Decoupled Peer-to-Peer Mesh):                             │
-│   [Client]                                  [Target Private Workload]  │
-│      │                                                 ▲               │
-│      │  1. Auth & Posture Check                        │               │
-│      ▼                                                 │               │
-│   [Decoupled Cloud PDP] ──► 2. Issue Ephemeral Grant ──┤               │
-│                                                        │               │
-│      └──────────────── 3. Direct Encrypted Tunnel ─────┘               │
-│                        (Peer-to-Peer / Zero Latency)                   │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Architecture Comparison: Legacy VPN Hub-and-Spoke vs. Modern ZTNA Fabric](/images/diagrams/ztna-vs-vpn-flow.svg)
+*Figure 1.1: Architectural Comparison & Failure Mode Analysis — Legacy VPN Hub-and-Spoke vs. Modern ZTNA Fabric.*
+
+### Architectural Divergence & Failure Mode Analysis
+
+The architectural contrast above details the structural differences between legacy approaches and modern Zero Trust for **Legacy VPN Hub-and-Spoke vs. Modern ZTNA Fabric**:
+
+#### 1. Legacy Limitations: Legacy Enterprise VPN (IPSec/OpenVPN)
+- **Centralized Concentrator Chokepoint:** All traffic hairpins through central office or cloud gateway. Severe latency bottleneck; expensive bandwidth backhaul fees.
+- **Broad Layer 3 Network-Level Trust:** Grants full subnet access; trusting the endpoint once authenticated. Compromised laptop can scan internal IP ranges and spread ransomware.
+- **Publicly Exposed Listening Gateway:** VPN concentrator exposes listening port (443/1194/500) to 0.0.0.0/0. Target for continuous zero-day exploits (Pulse Secure, Fortinet CVEs).
+- **Single Point-in-Time Login Check:** Authentication evaluated only once at morning connect. Blind to subsequent host infection, malware installation, or posture loss.
+
+#### 2. Modern Zero Trust Guarantees: Modern ZTNA Fabric (QuickZTNA)
+- **Direct Peer-to-Peer Encrypted Mesh:** Tunnels route directly between workloads with sub-2ms latency. No central concentrator bottleneck; line-rate WireGuard performance.
+- **Granular Layer 4/7 Microsegmentation:** Grants access strictly to individual application ports. Zero lateral peer routing between workstations; breach contained.
+- **100% Dark Ingress Infrastructure:** Workloads initiate outbound-only tunnels; zero open inbound ports. Single-Packet Authorization makes servers mathematically invisible.
+- **Continuous Per-Connection Posture Check:** Evaluates identity, EDR health, and posture before every socket open. Any posture violation triggers automated sub-millisecond key revocation.
 
 ## Who this is for
 
@@ -222,38 +221,31 @@ Increasingly, hybrid post-quantum key exchange. Classical plus [ML-KEM-768](/blo
 
 ### Traditional VPN topology
 
-```
-   Users ──► VPN concentrator ──► Corporate LAN
-                                  │
-                                  ├── DB servers
-                                  ├── File shares
-                                  ├── Internal apps
-                                  └── Dev environments
-```
+> [!NOTE]
+> • Users ► VPN concentrator ► Corporate LAN
+> • DB servers
+> • File shares
+> • Internal apps
+> • Dev environments
 
 One concentrator. Broad access after login. Traffic hairpin through the concentrator. Concentrator is a bottleneck and a single point of failure.
 
 ### Mesh ZTNA topology
 
-```
-   User A device ◄──── encrypted tunnel ────► User B device
-        │                                         │
-        ▼                                         ▼
-   App server 1 ◄── encrypted tunnel ──► App server 2
-        │                                         │
-        └──► coordination plane ◄──┬───policy─────┘
-                                   └───identity────
-```
+> [!NOTE]
+> • User A device ◄ encrypted tunnel ► User B device
+> • ▼                                         ▼
+> • App server 1 ◄ encrypted tunnel ► App server 2
+> • ► coordination plane ◄policy
+> • identity
 
 Peer-to-peer tunnels between endpoints. Coordination plane distributes policy and identity; it is not in the data path. Access is authorised per tunnel per session, based on identity and posture.
 
 ### Proxy ZTNA topology
 
-```
-   User ──► agent ──► Edge proxy ──► App gateway ──► App
-                          │             │
-                          └──►Policy Decision Point◄──Identity
-```
+> [!NOTE]
+> • User ► agent ► Edge proxy ► App gateway ► App
+> • ►Policy Decision Point◄Identity
 
 User authenticates to proxy. Proxy brokers access per request. Global proxy fabric provides low latency. Typical of Cloudflare Access, Zscaler Private Access.
 
@@ -338,8 +330,6 @@ fact_check:
 * **[The Anatomy of a Remote Workforce Security OS: Beyond Legacy Tunnels](/blog/remote-workforce-security-os/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[Zero Trust for M&A Integration: Connecting Networks in Days](/blog/zero-trust-ma-integration/):** In-depth technical architecture, protocol specifications, and implementation best practices.
 * **[QuickZTNA Architecture & Deployment](https://quickztna.com/):** Enterprise WireGuard mesh networking, automated identity-based microsegmentation, and zero trust access control.
-
-
 
 ---
 

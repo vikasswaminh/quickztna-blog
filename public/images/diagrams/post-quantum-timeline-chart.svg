@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" width="100%" height="100%">
+  <defs>
+    <linearGradient id="tl-bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <linearGradient id="milestone-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#38bdf8"/>
+    </linearGradient>
+    <linearGradient id="milestone-amber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#fbbf24"/>
+    </linearGradient>
+    <linearGradient id="milestone-purple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7c3aed"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1000" height="560" rx="14" fill="url(#tl-bg)" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Title Header -->
+  <g transform="translate(36, 28)">
+    <rect width="180" height="24" rx="12" fill="#7c3aed" opacity="0.2"/>
+    <text x="90" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-size="10.5" font-weight="700" fill="#a78bfa" text-anchor="middle" letter-spacing="1">REGULATORY COMPLIANCE ROADMAP</text>
+    <text x="0" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-size="20" font-weight="800" fill="#f8fafc">Global Post-Quantum Migration Master Timeline</text>
+    <text x="0" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-size="12" font-weight="400" fill="#94a3b8">NIST FIPS, NSA CNSA 2.0, BSI TR-02102, and EU NIS2 Regulatory Deadlines (2024–2035)</text>
+  </g>
+
+  <!-- Central Horizontal Timeline Rail -->
+  <line x1="60" y1="260" x2="940" y2="260" stroke="#334155" stroke-width="3"/>
+
+  <!-- Milestone 1: 2024 (Top) -->
+  <g transform="translate(100, 260)">
+    <circle cx="0" cy="0" r="8" fill="#38bdf8" stroke="#0284c7" stroke-width="3"/>
+    <line x1="0" y1="-8" x2="0" y2="-45" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3"/>
+    
+    <!-- Card -->
+    <g transform="translate(-85, -135)">
+      <rect width="170" height="85" rx="8" fill="#1e293b" stroke="#0284c7" stroke-width="1.5"/>
+      <rect x="8" y="8" width="46" height="18" rx="4" fill="#0284c7"/>
+      <text x="31" y="21" font-family="monospace" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">2024</text>
+      <text x="8" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="700" fill="#f8fafc">NIST FIPS Published</text>
+      <text x="8" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">FIPS 203 (ML-KEM),</text>
+      <text x="8" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">204 (ML-DSA) finalized.</text>
+    </g>
+  </g>
+
+  <!-- Milestone 2: 2025 (Bottom) -->
+  <g transform="translate(260, 260)">
+    <circle cx="0" cy="0" r="8" fill="#fbbf24" stroke="#d97706" stroke-width="3"/>
+    <line x1="0" y1="8" x2="0" y2="45" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="3,3"/>
+    
+    <!-- Card -->
+    <g transform="translate(-85, 45)">
+      <rect width="170" height="85" rx="8" fill="#1e293b" stroke="#d97706" stroke-width="1.5"/>
+      <rect x="8" y="8" width="46" height="18" rx="4" fill="#d97706"/>
+      <text x="31" y="21" font-family="monospace" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">2025</text>
+      <text x="8" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="700" fill="#f8fafc">CNSA 2.0 Inception</text>
+      <text x="8" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">Software/firmware</text>
+      <text x="8" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">signing transition starts.</text>
+    </g>
+  </g>
+
+  <!-- Milestone 3: 2026 (Top) -->
+  <g transform="translate(420, 260)">
+    <circle cx="0" cy="0" r="8" fill="#34d399" stroke="#059669" stroke-width="3"/>
+    <line x1="0" y1="-8" x2="0" y2="-45" stroke="#34d399" stroke-width="1.5" stroke-dasharray="3,3"/>
+    
+    <!-- Card -->
+    <g transform="translate(-85, -135)">
+      <rect width="170" height="85" rx="8" fill="#1e293b" stroke="#059669" stroke-width="1.5"/>
+      <rect x="8" y="8" width="46" height="18" rx="4" fill="#059669"/>
+      <text x="31" y="21" font-family="monospace" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">2026</text>
+      <text x="8" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="700" fill="#f8fafc">Hybrid Mesh Baseline</text>
+      <text x="8" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">BSI TR-02102-1 mandate,</text>
+      <text x="8" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">X25519+ML-KEM in ZTNA.</text>
+    </g>
+  </g>
+
+  <!-- Milestone 4: 2030 (Bottom) -->
+  <g transform="translate(580, 260)">
+    <circle cx="0" cy="0" r="8" fill="#a78bfa" stroke="#7c3aed" stroke-width="3"/>
+    <line x1="0" y1="8" x2="0" y2="45" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="3,3"/>
+    
+    <!-- Card -->
+    <g transform="translate(-85, 45)">
+      <rect width="170" height="85" rx="8" fill="#1e293b" stroke="#7c3aed" stroke-width="1.5"/>
+      <rect x="8" y="8" width="46" height="18" rx="4" fill="#7c3aed"/>
+      <text x="31" y="21" font-family="monospace" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">2030</text>
+      <text x="8" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="700" fill="#f8fafc">Software Exclusive</text>
+      <text x="8" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">EU Critical Systems &amp;</text>
+      <text x="8" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">NSA software exclusive.</text>
+    </g>
+  </g>
+
+  <!-- Milestone 5: 2033 (Top) -->
+  <g transform="translate(740, 260)">
+    <circle cx="0" cy="0" r="8" fill="#f43f5e" stroke="#e11d48" stroke-width="3"/>
+    <line x1="0" y1="-8" x2="0" y2="-45" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="3,3"/>
+    
+    <!-- Card -->
+    <g transform="translate(-85, -135)">
+      <rect width="170" height="85" rx="8" fill="#1e293b" stroke="#e11d48" stroke-width="1.5"/>
+      <rect x="8" y="8" width="46" height="18" rx="4" fill="#e11d48"/>
+      <text x="31" y="21" font-family="monospace" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">2033</text>
+      <text x="8" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="700" fill="#f8fafc">OS &amp; Routers Exclusive</text>
+      <text x="8" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">Web servers, browsers,</text>
+      <text x="8" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">and OS 100% PQC.</text>
+    </g>
+  </g>
+
+  <!-- Milestone 6: 2035 (Bottom) -->
+  <g transform="translate(900, 260)">
+    <circle cx="0" cy="0" r="8" fill="#38bdf8" stroke="#0284c7" stroke-width="3"/>
+    <line x1="0" y1="8" x2="0" y2="45" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="3,3"/>
+    
+    <!-- Card -->
+    <g transform="translate(-85, 45)">
+      <rect width="170" height="85" rx="8" fill="#1e293b" stroke="#0284c7" stroke-width="1.5"/>
+      <rect x="8" y="8" width="46" height="18" rx="4" fill="#0284c7"/>
+      <text x="31" y="21" font-family="monospace" font-size="10" font-weight="700" fill="#ffffff" text-anchor="middle">2035</text>
+      <text x="8" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="700" fill="#f8fafc">Full NSS Cutover</text>
+      <text x="8" y="60" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">100% Classical crypto</text>
+      <text x="8" y="74" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="10" fill="#94a3b8">deprecated across NSS.</text>
+    </g>
+  </g>
+
+  <!-- Bottom Legend Banner -->
+  <g transform="translate(36, 495)">
+    <text x="0" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-size="11" font-weight="600" fill="#64748b">
+      FIG 1.3: Multi-Jurisdiction PQC Cutover Roadmap · NSA CNSA 2.0, NIST FIPS, and BSI TR-02102-1 Alignment
+    </text>
+    <text x="928" y="16" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-size="11" font-weight="700" fill="#a78bfa" text-anchor="end">QuickZTNA Compliance Reference</text>
+  </g>
+</svg>

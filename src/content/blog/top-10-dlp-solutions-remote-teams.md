@@ -71,32 +71,30 @@ Remote teams create new DLP challenges. Data flows through home networks, person
 
 | DLP Vector | Exfiltration Channel | Modern Remote Mitigation Strategy |
 |---|---|---|
-| **SaaS & Cloud Uploads** | Direct file drops into personal Dropbox / Box / Drive. | Inline CASB & Selective Egress Proxy via WireGuard exit nodes. |
-| **Shadow AI Prompts** | Copy-pasting proprietary code/PII into web LLMs. | MagicDNS DoH blocking + Regex DLP for tokens (`sk-proj-...`). |
-| **Local Endpoint Channels** | USB mass storage, local printing, clipboard scraping. | Endpoint MDM agent with hardware device control and OS policies. |
-| **Developer Repositories** | Accidental `git push` of API keys or database connection strings. | Pre-commit git hooks + CI/CD secret scanning (TruffleHog, Gitleaks). |
+| **SaaS & Cloud Uploads** | Direct file drops into personal Dropbox / Box / Drive. | ✅ Inline CASB & Selective Egress Proxy via WireGuard exit nodes. |
+| **Shadow AI Prompts** | Copy-pasting proprietary code/PII into web LLMs. | ✅ MagicDNS DoH blocking + Regex DLP for tokens (`sk-proj-...`). |
+| **Local Endpoint Channels** | USB mass storage, local printing, clipboard scraping. | ✅ Endpoint MDM agent with hardware device control and OS policies. |
+| **Developer Repositories** | Accidental `git push` of API keys or database connection strings. | ✅ Pre-commit git hooks + CI/CD secret scanning (TruffleHog, Gitleaks). |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Remote Workforce DLP Defense In Depth                │
-│                                                                        │
-│   [Remote Laptop / BYOD Workstation]                                   │
-│    ├── 1. Host OS Layer: FileVault, EDR & Clipboard Governance         │
-│    ├── 2. DNS Layer: MagicDNS Loopback Blocks Unsanctioned AI/Storage  │
-│    └── 3. Network Plane: Kernel WireGuard Egress Route                 │
-│              │                                                         │
-│              ▼ (Encrypted Selective Egress)                            │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Egress Gateway + DLP Inspection Proxy                 │ │
-│   │  ├── Regex Pattern Matching (Credit Cards, PII, Private Keys)    │ │
-│   │  └── Drops & Alerts on Exfiltration Attempts                     │ │
-│   └──────────────────────────┬───────────────────────────────────────┘ │
-│                              ▼                                         │
-│   [Sanctioned SaaS / Clean Corporate Repositories Only]                │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Threat Model: Remote Team DLP: Endpoint Interception & Data Redaction](/images/diagrams/top-10-dlp-solutions-remote-teams-flow.svg)
+*Figure 1.1: Attack Vector Threat Model & Zero Trust Interception Gate — Remote Team DLP: Endpoint Interception & Data Redaction.*
 
-> **Adding up your tool bill?** Standalone DLP is usually one line item among several — most remote teams also pay separately for a mesh VPN, a ZTNA gateway and DNS filtering. QuickZTNA folds those into one agent and one bill, and adds file-hash malware detection; it does **not** replace content-inspection DLP. [See what you'd save →](/savings/)
+### Attack Surface, Interception Barrier & Cryptographic Enclave Analysis
+
+The threat model above diagrams the exploit vectors, inline interception gates, and protected workloads for **Remote Team DLP: Endpoint Interception & Data Redaction**:
+
+1. **Threat Vector & Infiltration Origin (Insider Threat & Accidental Leak):** Employee pasting secrets to personal cloud; Malware exfiltrating local source code. Identified entry points:
+   - Copies customer database extract to clipboard
+   - Attempts upload to personal Google Drive
+   - Attempts screen capture or printing
+2. **Zero Trust Enforcement Gate (QuickZTNA Endpoint DLP Agent):** Intercepts traffic at the operating system kernel before network egress:
+   - **Kernel Egress & Socket Interception:** Detects unauthorized cloud uploads and file transfer
+   - **Regex & Exact Data Matching (EDM):** Inspects text buffers for credit cards and API keys
+3. **Protected Workload Enclave (Enterprise Data Enclave):** Validated sessions terminate inside isolated execution boundaries:
+   - Customer PII & Financial Records
+   - Proprietary Source Code Repositories
+   - Regulated Healthcare / Legal Data
+4. **SIEM Telemetry & Forensic Audit (Real-Time DLP Incident Alerting & Quarantine):** Blocks unauthorized clipboard paste and uploads instantly; displays user remediation coaching. Sends high-priority alert to SOC with cryptographic evidence and redacted payload snapshot.
 
 ## What makes DLP for remote teams different
 
@@ -315,14 +313,14 @@ you need to stop secrets and PII from leaving, use one of the tools above.
 
 | Tool | Type | Endpoint | Network | SaaS at rest | BYOD-friendly | AI/ML classification |
 |---|---|---|---|---|---|---|
-| Microsoft Purview | Platform | ✅ | Partial | ✅ M365 only | Partial | ✅ |
-| Zscaler ZIA | Cloud proxy | ❌ | ✅ | ❌ | Network only | Partial |
+| Microsoft Purview | Platform | ✅ | ⚠️ Partial | ✅ M365 only | ⚠️ Partial | ✅ |
+| Zscaler ZIA | Cloud proxy | ❌ | ✅ | ❌ | Network only | ⚠️ Partial |
 | Netskope | Cloud proxy/CASB | ❌ | ✅ | ✅ | Network only | ✅ |
 | CrowdStrike Falcon DLP | Endpoint/EDR | ✅ | ❌ | ❌ | ❌ | ✅ |
-| Forcepoint ONE | Unified | ✅ | ✅ | Partial | Partial | Partial |
+| Forcepoint ONE | Unified | ✅ | ✅ | ⚠️ Partial | ⚠️ Partial | ⚠️ Partial |
 | Google Workspace DLP | SaaS native | ❌ | ❌ | ✅ Google only | ✅ (no agent) | ✅ |
-| Symantec/Broadcom | Platform | ✅ | ✅ | Partial | ❌ | Partial |
-| Code42 Incydr | Insider threat | ✅ | ❌ | Partial | ❌ | ✅ (behaviour) |
+| Symantec/Broadcom | Platform | ✅ | ✅ | ⚠️ Partial | ❌ | ⚠️ Partial |
+| Code42 Incydr | Insider threat | ✅ | ❌ | ⚠️ Partial | ❌ | ✅ (behaviour) |
 | Nightfall AI | API/SaaS | ❌ | ❌ | ✅ SaaS APIs | ✅ (no agent) | ✅ |
 
 ---

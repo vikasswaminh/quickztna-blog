@@ -68,38 +68,25 @@ A hybrid post-quantum key exchange combines two key-agreement primitives — one
 
 | Component / Parameter | Technical Specification |
 |---|---|
-| **Classical Primitive** | X25519 (ECDH over Montgomery Curve25519, 32-byte public key / 32-byte shared secret). |
-| **Post-Quantum Primitive** | ML-KEM-768 (FIPS 203, Module-LWE, 1,184-byte public key / 1,088-byte ciphertext). |
+| **Classical Primitive** | 🔒 X25519 (ECDH over Montgomery Curve25519, 32-byte public key / 32-byte shared secret). |
+| **Post-Quantum Primitive** | 🛡️ ML-KEM-768 (FIPS 203, Module-LWE, 1,184-byte public key / 1,088-byte ciphertext). |
 | **Key Derivation (Combiner)** | Secret Concatenation (`SS_Classical || SS_PQC`) + HKDF-Extract / HKDF-Expand (NIST SP 800-56C). |
 | **Dual-Defense Guarantee** | Session remains cryptographically unassailable if *either* X25519 or ML-KEM-768 holds. |
 | **Handshake Overhead** | Adds ~2.27 KB to initial handshake payload; CPU processing latency is < 300 µs. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│             Hybrid Key Exchange Architecture (X25519 + ML-KEM)         │
-│                                                                        │
-│   [Initiator / Client]                               [Responder / Host]│
-│            │                                                 │         │
-│            ├─────── Ephemeral Public Keys (X25519 + ML-KEM) ─►│         │
-│            │                                                 │         │
-│            │◄────── Ephemeral Key (X25519) + PQC Ciphertext ─┤         │
-│            │                                                 │         │
-│            ▼                                                 ▼         │
-│   ┌─────────────────────┐                           ┌────────────────┐ │
-│   │ Derive SS_Classical │                           │ SS_Classical   │ │
-│   │ Derive SS_PQC       │                           │ SS_PQC         │ │
-│   └──────────┬──────────┘                           └────────┬───────┘ │
-│              │                                               │         │
-│              ▼                                               ▼         │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Dual-Secret Concatenation: SS_Combined = SS_Class || SS_PQC     │ │
-│   │  HKDF-Extract(Salt=Transcript_Hash, IKM=SS_Combined)             │ │
-│   │  HKDF-Expand(PRK, Info="hybrid-session-key", L=32)               │ │
-│   └──────────────────────────────────┬───────────────────────────────┘ │
-│                                      ▼                                 │
-│                 [Quantum-Resistant Symmetric WireGuard Key]            │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Protocol Sequence: Hybrid Post-Quantum Key Exchange Protocol Lifeline](/images/diagrams/hybrid-key-exchange-x25519-mlkem-flow.svg)
+*Figure 1.1: Protocol Handshake Sequence & Lifeline Verification Flow — Hybrid Post-Quantum Key Exchange Protocol Lifeline.*
+
+### Protocol Handshake & Verification Sequence
+
+The sequence diagram above traces the chronological protocol transactions across participating lifelines for **Hybrid Post-Quantum Key Exchange Protocol Lifeline**:
+
+1. **1. Generate Ephemeral X25519 Share + ML-KEM Public Key (Initiator (Alice) → KEM Encapsulator):** pk_x (32B) + pk_kem (1184B)
+2. **2. Transmit Combined ClientHello Extension (KEM Encapsulator → KEM Decapsulator):** Handshake payload ~1216 Bytes
+3. **3. ML-KEM Encapsulation & ECDH Computation (KEM Decapsulator → Responder (Bob)):** Derives ss_x (32B) + ss_kem (32B)
+4. **4. Return Ephemeral X25519 Share + KEM Ciphertext (KEM Decapsulator → KEM Encapsulator):** ct_kem (1088B) + resp_x (32B)
+5. **5. HKDF-SHA256 Combiner Function (KEM Encapsulator → Initiator (Alice)):** K = HKDF(ss_x || ss_kem || Transcript)
+6. **6. Inject 256-Bit Quantum-Safe Session Key (Initiator (Alice) → WireGuard Tunnel):** ChaCha20-Poly1305 Line-Rate Pipeline
 
 ## Who this is for
 

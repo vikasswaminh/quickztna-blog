@@ -1,0 +1,126 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="100%" height="auto" style="background:#0B1120;border-radius:12px;border:1px solid #1E293B;">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#BE123C" />
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#06B6D4" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F43F5E" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="960" height="68" fill="#0F172A" />
+  <rect x="24" y="18" width="137" height="26" rx="5" fill="#0284C7" />
+  <text x="92.5" y="35" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif" letter-spacing="1">MESH TOPOLOGY</text>
+  <text x="187" y="35" fill="#F8FAFC" font-size="16" font-weight="700" font-family="system-ui, sans-serif">EU DORA ICT Multi-Relay Disaster Resilient Mesh</text>
+  <text x="187" y="52" fill="#94A3B8" font-size="11.5" font-family="system-ui, sans-serif">Regulation (EU) 2022/2554 Resilience Testing &amp; Automated Out-of-Band Failover</text>
+  <line x1="0" y1="68" x2="960" y2="68" stroke="#1E293B" stroke-width="1.5" />
+  
+    <!-- Mesh Peer-to-Peer Interconnects -->
+    <line x1="290" y1="280" x2="370" y2="200" stroke="#06B6D4" stroke-width="2" stroke-dasharray="4,4" />
+    <line x1="290" y1="280" x2="370" y2="410" stroke="#06B6D4" stroke-width="2" stroke-dasharray="4,4" />
+    <line x1="590" y1="200" x2="670" y2="280" stroke="#06B6D4" stroke-width="2" stroke-dasharray="4,4" />
+    <line x1="590" y1="410" x2="670" y2="280" stroke="#06B6D4" stroke-width="2" stroke-dasharray="4,4" />
+    <line x1="480" y1="265" x2="480" y2="350" stroke="#10B981" stroke-width="2.5" />
+    <rect x="420" y="295" width="120" height="18" rx="4" fill="#064E3B" stroke="#10B981" />
+    <text x="480" y="308" fill="#A7F3D0" font-size="8.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Direct WireGuard P2P</text>
+  
+      <g transform="translate(70, 220)">
+        <rect x="0" y="0" width="220" height="135" rx="8" fill="#1E293B" stroke="#0284C7" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="220" height="30" rx="8" fill="#0F172A" />
+        <circle cx="15" cy="15" r="5" fill="#10B981" />
+        <text x="28" y="19" fill="#38BDF8" font-size="10" font-weight="700" font-family="system-ui, sans-serif">Core Banking Cloud</text>
+        
+        <text x="14" y="52" fill="#FFFFFF" font-size="12" font-weight="700" font-family="system-ui, sans-serif">AWS Frankfurt (eu-central-1)</text>
+        <text x="14" y="70" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">100.64.10.1 (ztna0)</text>
+        
+        <rect x="10" y="85" width="200" height="40" rx="4" fill="#0B1120" stroke="#334155" stroke-width="0.8" />
+        <text x="18" y="101" fill="#E2E8F0" font-size="8.5" font-family="system-ui, sans-serif">• Primary Core Banking Ledger</text>
+        <text x="18" y="117" fill="#6EE7B7" font-size="8.5" font-family="system-ui, sans-serif">• Zero Inbound Ports / 100% Dark</text>
+      </g>
+    
+      <g transform="translate(370, 130)">
+        <rect x="0" y="0" width="220" height="135" rx="8" fill="#1E293B" stroke="#0284C7" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="220" height="30" rx="8" fill="#0F172A" />
+        <circle cx="15" cy="15" r="5" fill="#10B981" />
+        <text x="28" y="19" fill="#38BDF8" font-size="10" font-weight="700" font-family="system-ui, sans-serif">Financial Disaster Enclave</text>
+        
+        <text x="14" y="52" fill="#FFFFFF" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Azure Dublin (northeurope)</text>
+        <text x="14" y="70" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">100.64.20.1 (ztna0)</text>
+        
+        <rect x="10" y="85" width="200" height="40" rx="4" fill="#0B1120" stroke="#334155" stroke-width="0.8" />
+        <text x="18" y="101" fill="#E2E8F0" font-size="8.5" font-family="system-ui, sans-serif">• Hot Standby Secondary Enclave</text>
+        <text x="18" y="117" fill="#6EE7B7" font-size="8.5" font-family="system-ui, sans-serif">• Automated Sub-second Failover</text>
+      </g>
+    
+      <g transform="translate(670, 220)">
+        <rect x="0" y="0" width="220" height="135" rx="8" fill="#1E293B" stroke="#0284C7" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="220" height="30" rx="8" fill="#0F172A" />
+        <circle cx="15" cy="15" r="5" fill="#10B981" />
+        <text x="28" y="19" fill="#38BDF8" font-size="10" font-weight="700" font-family="system-ui, sans-serif">On-Premises Mainframe</text>
+        
+        <text x="14" y="52" fill="#FFFFFF" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Zurich Private Datacenter</text>
+        <text x="14" y="70" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">100.64.30.1 (ztna0)</text>
+        
+        <rect x="10" y="85" width="200" height="40" rx="4" fill="#0B1120" stroke="#334155" stroke-width="0.8" />
+        <text x="18" y="101" fill="#E2E8F0" font-size="8.5" font-family="system-ui, sans-serif">• Hardware HSM &amp; SWIFT Gateway</text>
+        <text x="18" y="117" fill="#6EE7B7" font-size="8.5" font-family="system-ui, sans-serif">• Direct Encrypted Mesh Overlay</text>
+      </g>
+    
+      <g transform="translate(370, 350)">
+        <rect x="0" y="0" width="220" height="135" rx="8" fill="#1E293B" stroke="#0284C7" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="220" height="30" rx="8" fill="#0F172A" />
+        <circle cx="15" cy="15" r="5" fill="#10B981" />
+        <text x="28" y="19" fill="#38BDF8" font-size="10" font-weight="700" font-family="system-ui, sans-serif">Authorized Treasury Operator</text>
+        
+        <text x="14" y="52" fill="#FFFFFF" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Secured Compliance Laptop</text>
+        <text x="14" y="70" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">100.64.40.5 (ztna0)</text>
+        
+        <rect x="10" y="85" width="200" height="40" rx="4" fill="#0B1120" stroke="#334155" stroke-width="0.8" />
+        <text x="18" y="101" fill="#E2E8F0" font-size="8.5" font-family="system-ui, sans-serif">• FIDO2 Token + Continuous Posture</text>
+        <text x="18" y="117" fill="#6EE7B7" font-size="8.5" font-family="system-ui, sans-serif">• Direct P2P Tunnel to Active Site</text>
+      </g>
+    
+    <!-- Central Coordination Plane (Out of band) -->
+    <g transform="translate(260, 485)">
+      <rect x="0" y="0" width="440" height="50" rx="8" fill="#0F172A" stroke="#F59E0B" stroke-width="1.5" />
+      <text x="220" y="22" fill="#F59E0B" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">⚡ DORA Dual-Region Active-Active Coordination Plane</text>
+      <text x="220" y="38" fill="#94A3B8" font-size="9" text-anchor="middle" font-family="system-ui, sans-serif">Frankfurt (Primary) + Dublin (Hot Standby) control plane with zero-loss Raft state replication</text>
+    </g>
+  
+  <!-- Footer -->
+  <line x1="20" y1="552" x2="940" y2="552" stroke="#1E293B" stroke-width="1" />
+  <text x="24" y="568" fill="#64748B" font-size="10" font-family="system-ui, sans-serif">QuickZTNA Technical Architecture Reference</text>
+  <text x="936" y="568" fill="#38BDF8" font-size="10" font-weight="600" text-anchor="end" font-family="system-ui, sans-serif">Zero Trust Verified Blueprint</text>
+</svg>
+  

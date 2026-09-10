@@ -1,0 +1,142 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="100%" height="auto" style="background:#0B1120;border-radius:12px;border:1px solid #1E293B;">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#BE123C" />
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#06B6D4" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F43F5E" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="960" height="68" fill="#0F172A" />
+  <rect x="24" y="18" width="137" height="26" rx="5" fill="#059669" />
+  <text x="92.5" y="35" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif" letter-spacing="1">DECISION TREE</text>
+  <text x="187" y="35" fill="#F8FAFC" font-size="16" font-weight="700" font-family="system-ui, sans-serif">GitOps Policy-as-Code Verification &amp; Apply Pipeline</text>
+  <text x="187" y="52" fill="#94A3B8" font-size="11.5" font-family="system-ui, sans-serif">Automated PR Validation, Dry-Run Linting, and Zero-Downtime Terraform State Apply</text>
+  <line x1="0" y1="68" x2="960" y2="68" stroke="#1E293B" stroke-width="1.5" />
+  
+      <!-- Stage 1 -->
+      <g transform="translate(40, 130)">
+        <rect x="0" y="0" width="190" height="280" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="190" height="32" rx="8" fill="#0284C7" />
+        <text x="95" y="20" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">STAGE 1: GITHUB PR</text>
+        
+        <text x="12" y="55" fill="#F8FAFC" font-size="11.5" font-weight="700" font-family="system-ui, sans-serif">Terraform Pull Request</text>
+        <text x="12" y="75" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">Security engineer defines declarative ABAC rules in HCL.</text>
+
+        <!-- Evaluation Condition -->
+        <rect x="10" y="95" width="170" height="65" rx="5" fill="#0F172A" stroke="#334155" />
+        <text x="95" y="114" fill="#38BDF8" font-size="9" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Evaluation Criterion:</text>
+        <text x="16" y="132" fill="#E2E8F0" font-size="8.5" font-family="system-ui, sans-serif">• Peer tags &amp; port definitions</text>
+        <text x="16" y="148" fill="#E2E8F0" font-size="8.5" font-family="system-ui, sans-serif">• Reviewer peer approval required</text>
+
+        <!-- Success Outcome -->
+        <rect x="10" y="170" width="170" height="45" rx="5" fill="#064E3B" stroke="#059669" fill-opacity="0.4" />
+        <text x="16" y="188" fill="#6EE7B7" font-size="9" font-weight="700" font-family="system-ui, sans-serif">✓ PASS</text>
+        <text x="16" y="204" fill="#A7F3D0" font-size="8.5" font-family="system-ui, sans-serif">Trigger CI/CD Runner</text>
+
+        <!-- Failure Outcome -->
+        <rect x="10" y="222" width="170" height="45" rx="5" fill="#450A0A" stroke="#EF4444" fill-opacity="0.4" />
+        <text x="16" y="240" fill="#FCA5A5" font-size="9" font-weight="700" font-family="system-ui, sans-serif">✕ FAIL</text>
+        <text x="16" y="256" fill="#FECACA" font-size="8.5" font-family="system-ui, sans-serif">PR Blocked</text>
+      </g>
+    
+        <line x1="230" y1="322" x2="275" y2="322" stroke="#10B981" stroke-width="2.5" marker-end="url(#arrow-green)" />
+      
+      <!-- Stage 2 -->
+      <g transform="translate(275, 130)">
+        <rect x="0" y="0" width="190" height="280" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="190" height="32" rx="8" fill="#D97706" />
+        <text x="95" y="20" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">STAGE 2: DRY-RUN LINT</text>
+        
+        <text x="12" y="55" fill="#F8FAFC" font-size="11.5" font-weight="700" font-family="system-ui, sans-serif">Out-of-Band AST Solver</text>
+        <text x="12" y="75" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">Simulates reachability matrix against real-world traffic telemetry.</text>
+
+        <!-- Evaluation Condition -->
+        <rect x="10" y="95" width="170" height="65" rx="5" fill="#0F172A" stroke="#334155" />
+        <text x="95" y="114" fill="#38BDF8" font-size="9" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Evaluation Criterion:</text>
+        <text x="16" y="132" fill="#E2E8F0" font-size="8.5" font-family="system-ui, sans-serif">• Self-lockout rule detection</text>
+        <text x="16" y="148" fill="#E2E8F0" font-size="8.5" font-family="system-ui, sans-serif">• Syntax &amp; schema verification</text>
+
+        <!-- Success Outcome -->
+        <rect x="10" y="170" width="170" height="45" rx="5" fill="#064E3B" stroke="#059669" fill-opacity="0.4" />
+        <text x="16" y="188" fill="#6EE7B7" font-size="9" font-weight="700" font-family="system-ui, sans-serif">✓ PASS</text>
+        <text x="16" y="204" fill="#A7F3D0" font-size="8.5" font-family="system-ui, sans-serif">Pass Pre-Flight Check</text>
+
+        <!-- Failure Outcome -->
+        <rect x="10" y="222" width="170" height="45" rx="5" fill="#450A0A" stroke="#EF4444" fill-opacity="0.4" />
+        <text x="16" y="240" fill="#FCA5A5" font-size="9" font-weight="700" font-family="system-ui, sans-serif">✕ FAIL</text>
+        <text x="16" y="256" fill="#FECACA" font-size="8.5" font-family="system-ui, sans-serif">Lint Error Flagged</text>
+      </g>
+    
+        <line x1="465" y1="322" x2="510" y2="322" stroke="#10B981" stroke-width="2.5" marker-end="url(#arrow-green)" />
+      
+      <!-- Stage 3 -->
+      <g transform="translate(510, 130)">
+        <rect x="0" y="0" width="190" height="280" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5" filter="url(#shadow)" />
+        <rect x="0" y="0" width="190" height="32" rx="8" fill="#059669" />
+        <text x="95" y="20" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">STAGE 3: ATOMIC APPLY</text>
+        
+        <text x="12" y="55" fill="#F8FAFC" font-size="11.5" font-weight="700" font-family="system-ui, sans-serif">Control Plane Push</text>
+        <text x="12" y="75" fill="#94A3B8" font-size="9.5" font-family="system-ui, sans-serif">Pushes compiled binary policy directly to distributed control planes.</text>
+
+        <!-- Evaluation Condition -->
+        <rect x="10" y="95" width="170" height="65" rx="5" fill="#0F172A" stroke="#334155" />
+        <text x="95" y="114" fill="#38BDF8" font-size="9" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">Evaluation Criterion:</text>
+        <text x="16" y="132" fill="#E2E8F0" font-size="8.5" font-family="system-ui, sans-serif">• Atomic commit with rollback</text>
+        <text x="16" y="148" fill="#E2E8F0" font-size="8.5" font-family="system-ui, sans-serif">• Zero live data plane interruption</text>
+
+        <!-- Success Outcome -->
+        <rect x="10" y="170" width="170" height="45" rx="5" fill="#064E3B" stroke="#059669" fill-opacity="0.4" />
+        <text x="16" y="188" fill="#6EE7B7" font-size="9" font-weight="700" font-family="system-ui, sans-serif">✓ PASS</text>
+        <text x="16" y="204" fill="#A7F3D0" font-size="8.5" font-family="system-ui, sans-serif">Policy Live in &lt;100ms</text>
+
+        <!-- Failure Outcome -->
+        <rect x="10" y="222" width="170" height="45" rx="5" fill="#450A0A" stroke="#EF4444" fill-opacity="0.4" />
+        <text x="16" y="240" fill="#FCA5A5" font-size="9" font-weight="700" font-family="system-ui, sans-serif">✕ FAIL</text>
+        <text x="16" y="256" fill="#FECACA" font-size="8.5" font-family="system-ui, sans-serif">Automated Git Revert</text>
+      </g>
+    
+    <g transform="translate(60, 445)">
+      <rect x="0" y="0" width="840" height="70" rx="8" fill="#0F172A" stroke="#1E293B" stroke-width="1.2" />
+      <text x="24" y="28" fill="#F59E0B" font-size="11" font-weight="700" font-family="system-ui, sans-serif">⚡ Continuous Re-Evaluation Axiom:</text>
+      <text x="24" y="48" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Policies are not static login checkpoints. If any posture metric or token claim degrades during an active session, keys are evicted instantly.</text>
+    </g>
+  
+  <!-- Footer -->
+  <line x1="20" y1="552" x2="940" y2="552" stroke="#1E293B" stroke-width="1" />
+  <text x="24" y="568" fill="#64748B" font-size="10" font-family="system-ui, sans-serif">QuickZTNA Technical Architecture Reference</text>
+  <text x="936" y="568" fill="#38BDF8" font-size="10" font-weight="600" text-anchor="end" font-family="system-ui, sans-serif">Zero Trust Verified Blueprint</text>
+</svg>
+  

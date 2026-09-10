@@ -66,31 +66,27 @@ The Bundesamt für Sicherheit in der Informationstechnik (BSI) — Germany's Fed
 
 | Dimension / Requirement | BSI TR-02102-1 Baseline |
 |---|---|
-| **Scope & Authority** | Mandatory for German Federal Administration & KRITIS critical infrastructure; baseline for NIS2UmsuCG transposition. |
+| **Scope & Authority** | 🏛️ Mandatory for German Federal Administration & KRITIS critical infrastructure; baseline for NIS2UmsuCG transposition. |
 | **PQC Recommendation** | Mandatory hybrid key establishment (ECDH + Post-Quantum KEM) for data with long-term confidentiality horizons. |
 | **Accepted Primitives** | ML-KEM (FIPS 203), FrodoKEM (preferred in ultra-high assurance), AES-256-GCM, SHA-384/512. |
 | **Migration Window** | Immediate planning and hybrid deployment; classical-only algorithms to be phased out across federal IT systems. |
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                    BSI TR-02102-1 Hybrid Crypto Architecture            │
-│                                                                         │
-│   [Remote Client (KRITIS)]                  [Gateway / Data Center]     │
-│              │                                         │                │
-│              ├───── 1. Dual Key Exchange Offer ───────►│                │
-│              │      - Classical: ECDH (Curve25519)     │                │
-│              │      - Post-Quantum: ML-KEM-768         │                │
-│              │                                         │                │
-│              │◄──── 2. Dual Response + Ciphertext ─────┤                │
-│              │                                         │                │
-│              ▼                                         ▼                │
-│   ┌──────────────────────────────────────────────────────────────────┐  │
-│   │ Combine Shared Secrets via HKDF (BSI Conforming KDF Construction)│  │
-│   └──────────────────────────────────┬───────────────────────────────┘  │
-│                                      ▼                                  │
-│                 [Symmetric Tunnel Key (AES-256-GCM)]                    │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+![Decision Flowchart: German BSI TR-02102-1 Compliance Flowchart](/images/diagrams/bsi-post-quantum-transition-2026-flow.svg)
+*Figure 1.1: Multi-Stage Policy Decision Flowchart & Gating Logic — German BSI TR-02102-1 Compliance Flowchart.*
+
+### Multi-Stage Gating Logic & Policy Evaluation Flow
+
+The decision flowchart above illustrates the sequential verification pipeline enforced by **German BSI TR-02102-1 Compliance Flowchart**:
+
+- **STAGE 1: ASSET SCOPE — KRITIS / NIS2 Scope:** Identifies whether workload belongs to German vital infrastructure.
+  - **Verification Rules:** Energy, Water, Finance, Gov; Data retention horizon >= 5 years
+  - **Branch Outcome:** Passes to *Proceed to PQC Mandate*; non-compliant requests trigger *Standard Baseline*.
+- **STAGE 2: KEM ALGORITHM — FrodoKEM / ML-KEM:** Evaluates algorithm hardness against BSI approved specifications.
+  - **Verification Rules:** FrodoKEM (Unstructured Lattice); ML-KEM / Kyber (FIPS 203)
+  - **Branch Outcome:** Passes to *Algorithm Approved*; non-compliant requests trigger *Non-Compliant Primitive*.
+- **STAGE 3: HYBRIDIZATION — Classical ECDH Combiner:** Validates that post-quantum KEM is combined with Curve25519/Brainpool.
+  - **Verification Rules:** HKDF-SHA256 dual derivation; Zero single-algorithm point of failure
+  - **Branch Outcome:** Passes to *BSI TR-02102 Certified*; non-compliant requests trigger *Standalone PQC Rejected*.
 
 ## Who this is for
 

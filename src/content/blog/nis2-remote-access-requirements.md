@@ -68,35 +68,23 @@ The NIS2 Directive — [Directive (EU) 2022/2555](https://eur-lex.europa.eu/eli/
 
 | NIS2 Obligation (Article 21) | Directive Requirement | QuickZTNA Technical Control |
 |---|---|---|
-| **Art. 21(2)(h) — Cryptography & Encryption** | Use of appropriate and proportionate cryptographic controls and encryption. | End-to-end WireGuard tunnels (ChaCha20-Poly1305) with zero standing public IPs. |
-| **Art. 21(2)(i) — Access Control & Policies** | Human resources security, access policies, and asset management. | Identity-first ABAC policies, continuous device posture checks, and MFA enforcement. |
-| **Art. 21(2)(j) — Multi-Factor & Secure Comms** | Secured voice, video, and text comms; secured emergency comms systems. | OIDC / SCIM integration with Okta, Microsoft Entra ID, and Google Workspace. |
-| **Art. 21(2)(d) — Supply-Chain Security** | Risk management for direct suppliers and third-party contractors. | Time-bounded JIT vendor access; auto-revoked paths without broad subnet bridging. |
-| **Art. 23 — Incident Reporting (24h/72h)** | Rapid forensic notification and incident root-cause analysis. | Structured real-time SIEM audit stream with user, host, IP, and timestamp telemetry. |
+| **Art. 21(2)(h) — Cryptography & Encryption** | Use of appropriate and proportionate cryptographic controls and encryption. | ✅ End-to-end WireGuard tunnels (ChaCha20-Poly1305) with zero standing public IPs. |
+| **Art. 21(2)(i) — Access Control & Policies** | Human resources security, access policies, and asset management. | ✅ Identity-first ABAC policies, continuous device posture checks, and MFA enforcement. |
+| **Art. 21(2)(j) — Multi-Factor & Secure Comms** | Secured voice, video, and text comms; secured emergency comms systems. | ✅ OIDC / SCIM integration with Okta, Microsoft Entra ID, and Google Workspace. |
+| **Art. 21(2)(d) — Supply-Chain Security** | Risk management for direct suppliers and third-party contractors. | ✅ Time-bounded JIT vendor access; auto-revoked paths without broad subnet bridging. |
+| **Art. 23 — Incident Reporting (24h/72h)** | Rapid forensic notification and incident root-cause analysis. | ✅ Structured real-time SIEM audit stream with user, host, IP, and timestamp telemetry. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│               NIS2 Article 21 Compliant Remote-Access Fabric           │
-│                                                                        │
-│   [Remote Workforce & Supply-Chain Contractors]                        │
-│                         │                                              │
-│                         ▼ (MFA + Continuous Device Posture)            │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Policy Decision Point (PDP) - Deny by Default         │ │
-│   │  └── Evaluates: User Identity + Device Health + Geo + Time       │ │
-│   └─────────────────────────────┬────────────────────────────────────┘ │
-│                                 │ (Encrypted WireGuard Micro-Tunnels)  │
-│                                 ▼                                      │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Segmented Critical EU Infrastructure (Water, Energy, Cloud)     │ │
-│   │  ├── Scada / OT Controller (JIT Elevation Required)              │ │
-│   │  ├── Internal ERP / CRM (Authorized Staff Only)                  │ │
-│   │  └── Production Databases (No Public IP; Dark from Scans)        │ │
-│   └─────────────────────────────┬────────────────────────────────────┘ │
-│                                 ▼                                      │
-│   [Real-Time Audit Telemetry ──► CSIRT Incident Reporting Pipeline]    │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Defense in Depth: EU NIS2 Directive (Article 21) Security Architecture](/images/diagrams/nis2-remote-access-requirements-flow.svg)
+*Figure 1.1: Concentric Defense-in-Depth Layered Security Architecture — EU NIS2 Directive (Article 21) Security Architecture.*
+
+### Concentric Defense-in-Depth Layer Breakdown
+
+The layered security model above outlines concentric defensive controls spanning from the hardware perimeter to the data core for **EU NIS2 Directive (Article 21) Security Architecture**:
+
+- **PILLAR 1: RISK — Endpoint Cyber Hygiene & Device Posture:** Enforces continuous verification of operating system patch level, disk encryption, and firewall status. *Enforced Controls:* Continuous posture evaluation, MDM profile validation, automatic quarantine
+- **PILLAR 2: SUPPLY — Contractor & Vendor Microsegmentation:** Quarantines third-party suppliers to single application ports; strictly blocks lateral LAN reachability. *Enforced Controls:* Just-In-Time access elevation, time-bounded grants (TTL), zero standing privilege
+- **PILLAR 3: CRYPTO — End-to-End Quantum-Safe Encryption:** Mandates state-of-the-art cryptography for all remote connections across public networks. *Enforced Controls:* WireGuard ChaCha20-Poly1305, hybrid post-quantum key exchange readiness
+- **PILLAR 4: INCIDENT — Early Warning Telemetry & Incident Audit:** Generates structured cryptographic event telemetry to satisfy 24-hour early warning obligations. *Enforced Controls:* Tamper-evident WORM logging, per-decision audit export to CSIRTs
 
 ## Who this is for
 
@@ -278,14 +266,14 @@ How each NIS2 requirement maps to a concrete feature in a modern ZTNA product.
 
 | NIS2 requirement | ZTNA feature |
 |---|---|
-| Cryptography (21(2)(h)) | Hybrid post-quantum key exchange, TLS 1.3, ephemeral WireGuard keys |
-| Access control (21(2)(i)) | ABAC/ACL policies, identity-tied peers, least-privilege routing |
-| MFA (21(2)(j)) | OIDC SSO with TOTP MFA, continuous device posture |
-| Supply chain (21(2)(d)) | Vendor audit reports, DPA, SLA incident notification |
-| Incident handling (21(2)(b)) | Per-tunnel audit logs, export to SIEM, kex mode per session |
-| Asset management (21(2)(i)) | Device registration, posture-based admission, auto-quarantine |
-| Vulnerability handling (21(2)(e)) | Automatic client update channel, signed binaries |
-| Cyber hygiene (21(2)(g)) | Security defaults on by default, not opt-in |
+| Cryptography (21(2)(h)) | ✅ Hybrid post-quantum key exchange, TLS 1.3, ephemeral WireGuard keys |
+| Access control (21(2)(i)) | ✅ ABAC/ACL policies, identity-tied peers, least-privilege routing |
+| MFA (21(2)(j)) | ✅ OIDC SSO with TOTP MFA, continuous device posture |
+| Supply chain (21(2)(d)) | ✅ Vendor audit reports, DPA, SLA incident notification |
+| Incident handling (21(2)(b)) | ✅ Per-tunnel audit logs, export to SIEM, kex mode per session |
+| Asset management (21(2)(i)) | ✅ Device registration, posture-based admission, auto-quarantine |
+| Vulnerability handling (21(2)(e)) | ✅ Automatic client update channel, signed binaries |
+| Cyber hygiene (21(2)(g)) | ✅ Security defaults on by default, not opt-in |
 
 The asymmetry is important: a ZTNA product does not make you NIS2-compliant by itself, but a competently deployed one addresses a significant subset of Article 21. The remaining categories — incident handling procedures, risk-analysis policies, business continuity — are organisational rather than technical.
 

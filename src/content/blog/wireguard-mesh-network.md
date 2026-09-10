@@ -65,30 +65,24 @@ A WireGuard mesh is a network where any peer can establish a direct, encrypted t
 
 | Architecture Option | Scaling Complexity | NAT Traversal Mechanism | Key Distribution & Policy |
 |---|---|---|---|
-| **Manual Static WireGuard** | $O(N^2)$ manual configs; unmanageable > 10 peers. | Requires port forwarding or static public IPs. | Manual static file editing on every single host. |
+| **Manual Static WireGuard** | ❌ $O(N^2)$ manual configs; unmanageable > 10 peers. | ❌ Requires port forwarding or static public IPs. | ❌ Manual static file editing on every single host. |
 | **Hub-and-Spoke VPN** | $O(N)$ linear configs; central bottleneck. | Clients connect outbound to fixed central hub IP. | Static firewall ACLs on central concentrator. |
 | **Coordinated WireGuard Mesh** | $O(1)$ per node; auto-discovered via control plane. | Automated STUN / ICE / UDP hole punching + DERP relays. | Dynamic ABAC policy pushed by control plane; direct peer-to-peer data plane. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   WireGuard Coordinated Mesh Architecture              │
-│                                                                        │
-│                    ┌────────────────────────────┐                      │
-│                    │  QuickZTNA Control Plane   │                      │
-│                    │  (Signaling & Policy Only) │                      │
-│                    └──────┬──────────────┬──────┘                      │
-│            1. Peer Discovery & ICE │      │ 1. Ephemeral Keys & ACLs   │
-│                           ▼              ▼                             │
-│                    ┌───────────┐    ┌───────────┐                      │
-│                    │  Peer A   │    │  Peer B   │                      │
-│                    │ (Work-Mac)│    │ (Cloud DB)│                      │
-│                    └─────┬─────┘    └─────▲─────┘                      │
-│                          │                │                            │
-│                          └────────────────┘                            │
-│                       2. Direct WireGuard P2P Pipe                     │
-│                       (ChaCha20-Poly1305 Encrypted)                    │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Mesh Topology: Distributed Peer-to-Peer WireGuard Mesh with STUN/ICE](/images/diagrams/wireguard-mesh-network-flow.svg)
+*Figure 1.1: Distributed Mesh Topology & Multi-Cloud Peering Matrix — Distributed Peer-to-Peer WireGuard Mesh with STUN/ICE.*
+
+### Distributed Mesh Topology & Multi-Cloud Peering Matrix
+
+The network topology above maps the peer-to-peer overlay and encrypted data plane for **Distributed Peer-to-Peer WireGuard Mesh with STUN/ICE**:
+
+- **Coordination Layer (QuickZTNA Ephemeral Coordination Server):** Exchanges Curve25519 public keys and STUN candidate mappings out-of-band; zero payload data decrypted
+- **Distributed Mesh Nodes:**
+  - **Remote Workstation A (Engineer Laptop (Home NAT)):** 100.64.0.10 (ztna0). STUN Discovers Public UDP Port; Direct P2P Punch to Peer B.
+  - **Cloud Microservice B (AWS EC2 API Node):** 100.64.0.20 (ztna0). Encrypted Noise_IK Handshake; Direct Line-Rate Line Speed.
+  - **Production Database C (Internal DB Server):** 100.64.0.30 (ztna0). 100% Dark in Private Subnet; Zero Listening Ports to Internet.
+  - **Encrypted Relay Fallback (Frankfurt DERP Node):** 100.64.0.254 (ztna0). Automated Symmetric NAT Fallback; End-to-End ChaCha20 Preserved.
+- **Direct Point-to-Point Transit:** Endpoints negotiate direct UDP sockets via STUN/DERP hole-punching, entirely bypassing centralized VPN concentrator bottlenecks.
 
 ## Who this is for
 

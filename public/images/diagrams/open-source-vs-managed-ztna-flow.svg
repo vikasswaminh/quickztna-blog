@@ -1,0 +1,146 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 580" width="100%" height="auto" style="background:#0B1120;border-radius:12px;border:1px solid #1E293B;">
+  <defs>
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284C7" />
+      <stop offset="100%" stop-color="#0369A1" />
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10B981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <linearGradient id="roseGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F43F5E" />
+      <stop offset="100%" stop-color="#BE123C" />
+    </linearGradient>
+    <linearGradient id="amberGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F59E0B" />
+      <stop offset="100%" stop-color="#D97706" />
+    </linearGradient>
+    <linearGradient id="indigoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="100%" stop-color="#4F46E5" />
+    </linearGradient>
+    <marker id="arrow-cyan" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#06B6D4" />
+    </marker>
+    <marker id="arrow-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#10B981" />
+    </marker>
+    <marker id="arrow-rose" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F43F5E" />
+    </marker>
+    <marker id="arrow-amber" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#F59E0B" />
+    </marker>
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="115%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.4" />
+    </filter>
+  </defs>
+
+  <!-- Header Banner -->
+  <rect x="0" y="0" width="960" height="68" fill="#0F172A" />
+  <rect x="24" y="18" width="218" height="26" rx="5" fill="#DC2626" />
+  <text x="133" y="35" fill="#FFFFFF" font-size="10.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif" letter-spacing="1">ARCHITECTURAL CONTRAST</text>
+  <text x="268" y="35" fill="#F8FAFC" font-size="16" font-weight="700" font-family="system-ui, sans-serif">Open-Source vs. Managed ZTNA Decision Blueprint</text>
+  <text x="268" y="52" fill="#94A3B8" font-size="11.5" font-family="system-ui, sans-serif">Operational Overhead, Total Cost of Ownership (TCO), and Compliance Trade-offs</text>
+  <line x1="0" y1="68" x2="960" y2="68" stroke="#1E293B" stroke-width="1.5" />
+  
+    <!-- Left Column: Legacy -->
+    <rect x="40" y="95" width="420" height="435" rx="10" fill="#111827" stroke="#374151" stroke-width="1.5" filter="url(#shadow)" />
+    <rect x="40" y="95" width="420" height="42" rx="10" fill="#450A0A" />
+    <rect x="55" y="106" width="70" height="20" rx="4" fill="#EF4444" />
+    <text x="90" y="120" fill="#FFFFFF" font-size="9.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">LEGACY</text>
+    <text x="135" y="121" fill="#FECACA" font-size="13" font-weight="700" font-family="system-ui, sans-serif">Open-Source ZTNA (Self-Hosted)</text>
+    
+      <g transform="translate(60, 150)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">High SRE Engineering Tax</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Requires dedicated SRE hours for DB backups, VM patches.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">Custom deployment of STUN/TURN/DERP relays across regions.</text>
+      </g>
+    
+      <g transform="translate(60, 235)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">DIY Compliance Burden</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Must defend self-hosted architecture during SOC 2 / HIPAA audits.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">No vendor-provided attestation reports or signed BAAs.</text>
+      </g>
+    
+      <g transform="translate(60, 320)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Manual High-Availability</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">Custom clustering of PostgreSQL &amp; control planes required.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">Single-region setups suffer downtime during network cuts.</text>
+      </g>
+    
+      <g transform="translate(60, 405)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#18181B" stroke="#7F1D1D" stroke-width="1.2" />
+        <circle cx="20" cy="22" r="10" fill="#EF4444" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✕</text>
+        <text x="38" y="24" fill="#FCA5A5" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Cost Inversion at Small Scale</text>
+        <text x="38" y="44" fill="#94A3B8" font-size="10" font-family="system-ui, sans-serif">VM + Relay hosting ($100-$300/mo) exceeds SaaS cost for small teams.</text>
+        <text x="38" y="58" fill="#64748B" font-size="9.5" font-family="system-ui, sans-serif">Economical only when engineering hours are discounted.</text>
+      </g>
+    
+
+    <!-- Central VS Badge -->
+    <circle cx="480" cy="312.5" r="22" fill="#0F172A" stroke="#334155" stroke-width="2" filter="url(#shadow)" />
+    <text x="480" y="317.5" fill="#F59E0B" font-size="12" font-weight="900" text-anchor="middle" font-family="system-ui, sans-serif">VS</text>
+
+    <!-- Right Column: Modern Zero Trust -->
+    <rect x="500" y="95" width="420" height="435" rx="10" fill="#0F172A" stroke="#059669" stroke-width="1.5" filter="url(#shadow)" />
+    <rect x="500" y="95" width="420" height="42" rx="10" fill="#064E3B" />
+    <rect x="515" y="106" width="85" height="20" rx="4" fill="#10B981" />
+    <text x="557" y="120" fill="#FFFFFF" font-size="9.5" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">ZERO TRUST</text>
+    <text x="610" y="121" fill="#A7F3D0" font-size="13" font-weight="700" font-family="system-ui, sans-serif">Managed SaaS ZTNA (QuickZTNA)</text>
+    
+      <g transform="translate(520, 150)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Zero Operational Overhead</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">Fully managed control plane with automatic global scaling.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">One-line installation via curl script in under 2 minutes.</text>
+      </g>
+    
+      <g transform="translate(520, 235)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Turnkey Compliance Attestations</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">SOC 2 Type II, ISO 27001, and HIPAA compliance bundled.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Automated cryptographic evidence export ready for auditors.</text>
+      </g>
+    
+      <g transform="translate(520, 320)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Global Relay Infrastructure</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">Multi-region relays ensure instant fallback during UDP blocks.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Active-active high-availability with zero maintenance windows.</text>
+      </g>
+    
+      <g transform="translate(520, 405)">
+        <rect x="0" y="0" width="380" height="72" rx="6" fill="#064E3B" stroke="#059669" stroke-width="1.2" fill-opacity="0.25" />
+        <circle cx="20" cy="22" r="10" fill="#10B981" />
+        <text x="20" y="26" fill="#FFFFFF" font-size="11" font-weight="700" text-anchor="middle" font-family="system-ui, sans-serif">✓</text>
+        <text x="38" y="24" fill="#6EE7B7" font-size="12" font-weight="700" font-family="system-ui, sans-serif">Free Tier for Small Teams</text>
+        <text x="38" y="44" fill="#E2E8F0" font-size="10" font-family="system-ui, sans-serif">Free forever for up to 5 users and 100 devices.</text>
+        <text x="38" y="58" fill="#38BDF8" font-size="9.5" font-family="system-ui, sans-serif">Enterprise governance available without infrastructure costs.</text>
+      </g>
+    
+  
+  <!-- Footer -->
+  <line x1="20" y1="552" x2="940" y2="552" stroke="#1E293B" stroke-width="1" />
+  <text x="24" y="568" fill="#64748B" font-size="10" font-family="system-ui, sans-serif">QuickZTNA Technical Architecture Reference</text>
+  <text x="936" y="568" fill="#38BDF8" font-size="10" font-weight="600" text-anchor="end" font-family="system-ui, sans-serif">Zero Trust Verified Blueprint</text>
+</svg>
+  

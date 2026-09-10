@@ -82,36 +82,23 @@ Manufacturing and industrial environments have unique security requirements that
 
 | Industrial Challenge | Legacy OT VPN Vulnerability | QuickZTNA / OT Zero Trust Architecture |
 |---|---|---|
-| **Purdue Model Violation** | VPN bridges IT network (Level 4) directly into plant cell (Level 2/3). | Protocol-isolated gateway; zero flat routing across Purdue levels. |
-| **Legacy PLC / SCADA Controllers** | Cannot run endpoint agents; vulnerable to unauthenticated commands. | Placed behind dark subnet gateways; reachable only via validated ABAC proxy. |
-| **OEM Vendor Remote Maintenance** | External vendors hold standing VPN accounts to entire factory LAN. | JIT-approved, time-bounded sessions scoped strictly to specific PLC IP/port. |
-| **OT Protocol Handling** | VPN exposes raw Ethernet broadcast domains across plants. | Microsegmentation isolates Modbus, OPC-UA, DNP3, and EtherNet/IP streams. |
-| **Safety & Availability (Uptime)** | Hub VPN outages halt remote monitoring and telemetry. | Resilient distributed WireGuard mesh operating independently of central cloud outages. |
+| **Purdue Model Violation** | ❌ VPN bridges IT network (Level 4) directly into plant cell (Level 2/3). | ✅ Protocol-isolated gateway; zero flat routing across Purdue levels. |
+| **Legacy PLC / SCADA Controllers** | ❌ Cannot run endpoint agents; vulnerable to unauthenticated commands. | ✅ Placed behind dark subnet gateways; reachable only via validated ABAC proxy. |
+| **OEM Vendor Remote Maintenance** | ❌ External vendors hold standing VPN accounts to entire factory LAN. | ✅ JIT-approved, time-bounded sessions scoped strictly to specific PLC IP/port. |
+| **OT Protocol Handling** | ❌ VPN exposes raw Ethernet broadcast domains across plants. | ✅ Microsegmentation isolates Modbus, OPC-UA, DNP3, and EtherNet/IP streams. |
+| **Safety & Availability (Uptime)** | ❌ Hub VPN outages halt remote monitoring and telemetry. | ✅ Resilient distributed WireGuard mesh operating independently of central cloud outages. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│                   Zero Trust OT & Purdue Model Architecture            │
-│                                                                        │
-│   [External OEM Vendor / Remote Plant Engineer]                        │
-│                          │                                             │
-│                          ▼ (MFA + JIT Elevation Grant)                 │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA Decoupled Cloud Control Plane                         │ │
-│   └──────────────────────────────┬───────────────────────────────────┘ │
-│                                  │ (Encrypted WireGuard Mesh Tunnel)   │
-│                                  ▼                                     │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Plant Edge Gateway (Level 3.5 Industrial DMZ - Dark Ingress)    │ │
-│   │  ├── Level 3: SCADA / Historian / MES Web Console                │ │
-│   │  │                                                               │ │
-│   │  ├── Level 2: HMI Operator Workstations (Role-Based RDP Proxy)   │ │
-│   │  │                                                               │ │
-│   │  └── Level 1: PLC / RTU / Field Controllers (Isolated Enclave)  │ │
-│   └──────────────────────────────┬───────────────────────────────────┘ │
-│                                  ▼                                     │
-│   [Audit Telemetry Stream ──► NERC CIP / IEC 62443 Compliance SIEM]    │
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Purdue Model: Purdue Model 5-Level Manufacturing Zero Trust Architecture](/images/diagrams/top-10-ztna-manufacturing-iot-flow.svg)
+*Figure 1.1: Purdue Model Industrial OT/IT Segmentation Architecture — Purdue Model 5-Level Manufacturing Zero Trust Architecture.*
+
+### Purdue Model Industrial OT/IT Segmentation Breakdown
+
+The architecture above enforces ISA-95 / Purdue Model isolation across critical infrastructure for **Purdue Model 5-Level Manufacturing Zero Trust Architecture**:
+
+- **Enterprise & Plant Operations (Levels 3 & 4):** Cloud reporting, central ERP, and plant historians communicate across monitored boundaries with strict attribute-based access controls.
+- **OT/IT DMZ Microsegmentation Barrier:** A strict air-gap boundary prevents Layer 3 cross-subnet routing between corporate IT networks and the physical production floor.
+- **Area Supervisory & Local HMIs (Level 2):** Distributed control systems (DCS) and human-machine interfaces operate behind localized zero trust policy proxies.
+- **Field Devices & Physical Control (Levels 0 & 1):** Programmable logic controllers (PLCs), remote terminal units (RTUs), and actuator drives are kept agentless and completely dark, reachable solely through just-in-time authorized proxies.
 
 ## Why industrial environments are at escalating risk
 
@@ -337,7 +324,7 @@ ZTNA does not guarantee security, but it structurally limits blast radius: acces
 | TeamViewer Tensor | ❌ | Agent-light | ❌ SaaS | ❌ | Vendor remote support |
 | Zscaler ZPA | ❌ (opaque TCP) | ✅ Connector | ❌ SaaS | ❌ | Zscaler-standardised IT+OT |
 | Cyolo | ❌ | ✅ | ✅ | ❌ | Air-gapped OT |
-| PTC Axeda | Partial | ✅ Agent | ❌ | ❌ | OEM connected products |
+| PTC Axeda | ⚠️ Partial | ✅ Agent | ❌ | ❌ | OEM connected products |
 | PA Networks | ✅ | ✅ Connector | ✅ | ✅ | PA-standardised OT |
 | QuickZTNA | ❌ (opaque TCP) | ✅ Connector | ❌ SaaS | ❌ | IT/OT boundary access |
 

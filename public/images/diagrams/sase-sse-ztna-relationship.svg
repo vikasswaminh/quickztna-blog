@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="100%" height="100%">
+  <defs>
+    <linearGradient id="sase-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#1e293b"/>
+    </linearGradient>
+    <linearGradient id="sse-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="960" height="520" rx="14" fill="#090d16" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Outer Layer: SASE (Secure Access Service Edge) -->
+  <g transform="translate(30, 24)">
+    <rect width="900" height="470" rx="12" fill="url(#sase-grad)" stroke="#0284c7" stroke-width="2"/>
+    <rect x="20" y="16" width="260" height="28" rx="6" fill="#0284c7"/>
+    <text x="150" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-size="13" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1">SASE (FULL CONVERGED FABRIC)</text>
+    <text x="295" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+          font-size="12" font-weight="500" fill="#94a3b8">Complete Convergence of Edge Security &amp; WAN Connectivity</text>
+
+    <!-- Inner Layer 1: SSE (Security Service Edge) -->
+    <g transform="translate(20, 60)">
+      <rect width="860" height="270" rx="10" fill="#0b1120" stroke="#7c3aed" stroke-width="2"/>
+      <rect x="18" y="14" width="220" height="24" rx="5" fill="#7c3aed"/>
+      <text x="128" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+            font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1">SSE (SECURITY SERVICE EDGE)</text>
+      <text x="250" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+            font-size="11" font-weight="500" fill="#cbd5e1">The Cloud-Delivered Security Stack Without Physical WAN</text>
+
+      <!-- Component 1: ZTNA (Core Engine) -->
+      <g transform="translate(18, 55)">
+        <rect width="260" height="185" rx="8" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+        <rect x="14" y="14" width="130" height="22" rx="4" fill="#0284c7"/>
+        <text x="79" y="29" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="800" fill="#ffffff" text-anchor="middle">ZTNA (CORE ACCESS)</text>
+        <text x="14" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="14" font-weight="700" fill="#f8fafc">Zero Trust Network Access</text>
+        <text x="14" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="500" fill="#94a3b8">Per-request resource authorization</text>
+        <text x="14" y="104" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="500" fill="#94a3b8">Continuous device posture checks</text>
+        <text x="14" y="122" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="500" fill="#94a3b8">WireGuard dark mesh infrastructure</text>
+        <text x="14" y="152" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="700" fill="#38bdf8">QuickZTNA Foundational Tier ★</text>
+      </g>
+
+      <!-- Component 2: SWG (Secure Web Gateway) -->
+      <g transform="translate(294, 55)">
+        <rect width="260" height="185" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+        <rect x="14" y="14" width="70" height="22" rx="4" fill="#475569"/>
+        <text x="49" y="29" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">SWG</text>
+        <text x="14" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="14" font-weight="700" fill="#f8fafc">Secure Web Gateway</text>
+        <text x="14" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="500" fill="#94a3b8">Outbound web traffic filtering</text>
+        <text x="14" y="104" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="500" fill="#94a3b8">Malware &amp; phishing prevention</text>
+        <text x="14" y="122" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="500" fill="#94a3b8">TLS inspection &amp; policy blocking</text>
+      </g>
+
+      <!-- Component 3: CASB & FWaaS -->
+      <g transform="translate(570, 55)">
+        <rect width="270" height="185" rx="8" fill="#1e293b" stroke="#334155" stroke-width="1.5"/>
+        <rect x="14" y="14" width="120" height="22" rx="4" fill="#475569"/>
+        <text x="74" y="29" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">CASB &amp; FWaaS</text>
+        <text x="14" y="62" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="14" font-weight="700" fill="#f8fafc">SaaS Broker &amp; Firewall</text>
+        <text x="14" y="86" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="500" fill="#94a3b8">Cloud DLP &amp; tenant control</text>
+        <text x="14" y="104" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="500" fill="#94a3b8">Layer 3–7 cloud-delivered firewall</text>
+        <text x="14" y="122" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+              font-size="11" font-weight="500" fill="#94a3b8">Cross-SaaS activity auditing</text>
+      </g>
+    </g>
+
+    <!-- Inner Layer 2: SD-WAN (Transport) -->
+    <g transform="translate(20, 350)">
+      <rect width="860" height="100" rx="10" fill="#0b1120" stroke="#059669" stroke-width="2"/>
+      <rect x="18" y="14" width="140" height="24" rx="5" fill="#059669"/>
+      <text x="88" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+            font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle" letter-spacing="1">SD-WAN NETWORKING</text>
+      <text x="170" y="31" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+            font-size="12" font-weight="600" fill="#f8fafc">Software-Defined Wide Area Network (Transport Plane)</text>
+      <text x="18" y="64" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+            font-size="11" font-weight="400" fill="#94a3b8">Replaces expensive MPLS circuits with dynamic multi-path routing across broadband, 5G, and private fiber.</text>
+      <text x="18" y="82" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" 
+            font-size="11" font-weight="400" fill="#94a3b8">Branch-office physical appliance interconnection and automated carrier failover.</text>
+    </g>
+  </g>
+</svg>

@@ -97,12 +97,12 @@ By implementing core Zero Trust Network Access (ZTNA) principles—specifically 
 
 | Pillar / Dimension | Legacy Tunnel Model (VPN) | Remote Workforce Security OS (QuickZTNA) |
 | :--- | :--- | :--- |
-| **Trust Model** | Implicit perimeter trust (Full L3 subnet access) | Explicit Zero Trust (L4/L7 per-app micro-segmentation) |
-| **Infrastructure Exposure** | Publicly exposed listener ports on firewalls | Cloaked / Dark cloud (Zero open inbound ports, SPA/Outbound) |
-| **Lateral Movement Risk** | Unchecked: compromised endpoint can scan internal network | Zero: endpoints only see explicitly authorized workloads |
-| **Posture & Risk Verification** | One-time auth check during initial login | Continuous real-time posture checks (EDR, disk encryption, OS) |
-| **Traffic Routing & Latency** | Centralized backhauling / hairpinning bottlenecks | Optimized peer-to-peer and localized edge routing (<20ms) |
-| **Access Governance** | Fragmented static ACLs and firewall rulesets | Unified ABAC, JIT requests, and tamper-evident audit logs |
+| **Trust Model** | ❌ Implicit perimeter trust (Full L3 subnet access) | ✅ Explicit Zero Trust (L4/L7 per-app micro-segmentation) |
+| **Infrastructure Exposure** | ❌ Publicly exposed listener ports on firewalls | ✅ Cloaked / Dark cloud (Zero open inbound ports, SPA/Outbound) |
+| **Lateral Movement Risk** | ❌ Unchecked: compromised endpoint can scan internal network | ✅ Zero: endpoints only see explicitly authorized workloads |
+| **Posture & Risk Verification** | ❌ One-time auth check during initial login | ✅ Continuous real-time posture checks (EDR, disk encryption, OS) |
+| **Traffic Routing & Latency** | ❌ Centralized backhauling / hairpinning bottlenecks | ✅ Optimized peer-to-peer and localized edge routing (<20ms) |
+| **Access Governance** | ❌ Fragmented static ACLs and firewall rulesets | ✅ Unified ABAC, JIT requests, and tamper-evident audit logs |
 
 ---
 
@@ -135,23 +135,12 @@ Modern security teams require an access engine that decouples access permissions
 
 To understand why enterprise access architecture requires a dedicated Remote Workforce Security OS, it helps to review how remote access technology has evolved over the past thirty years across four distinct eras.
 
-```
-   ┌───────────────────────┐
-   │ Era 1: Dial-Up & PPP  │ ──► Physical hardware bounds, modem pools (1990s)
-   └───────────┬───────────┘
-               ▼
-   ┌───────────────────────┐
-   │ Era 2: IPSec/SSL VPNs │ ──► Encrypted transport, implicit subnet trust (2000s)
-   └───────────┬───────────┘
-               ▼
-   ┌───────────────────────┐
-   │ Era 3: 1st-Gen ZTNA   │ ──► Reverse proxy, static HTTP/HTTPS only (2010s)
-   └───────────┬───────────┘
-               ▼
-   ┌───────────────────────┐
-   │ Era 4: Security OS    │ ──► Identity-first, continuous posture & SPA (Present)
-   └───────────────────────┘
-```
+| Remote Access Era | Architectural Model | Primary Trust Boundary | Core Limitation |
+|---|---|---|---|
+| **Era 1: Dial-Up & PPP (1990s)** | Dedicated modem pools & physical circuits | Physical phone line verification | Extremely low bandwidth, rigid physical hardware coupling |
+| **Era 2: IPSec & SSL VPNs (2000s)** | Encrypted transport tunnels over public internet | Castle-and-moat: broad internal subnet trust | Broad lateral movement risk, open public listening ports |
+| **Era 3: 1st-Gen ZTNA (2010s)** | Application-level reverse proxies (BeyondCorp) | Per-application HTTP/HTTPS authentication | Proxy latency bottlenecks, limited non-web protocol support |
+| **Era 4: Security OS (Present)** | Direct peer-to-peer WireGuard mesh + SPA | Continuous identity, posture, and zero-trust ABAC | None: Line-rate kernel throughput, 100% dark infrastructure |
 
 ### Era 1: Dial-Up and Direct Physical Access (1990s)
 In the early days of corporate networking, remote access relied on direct physical links established over telephone networks using Point-to-Point Protocol (PPP) and modem pools. Security was controlled primarily through physical limitations: an identity was tied directly to a validated phone number or specific physical hardware line. Bandwidth was low, but the attack surface was physically bounded.
@@ -185,26 +174,6 @@ Unlike a traditional VPN, which simply wraps Layer 3 network packets inside an e
 ## 4. Architecture of QuickZTNA
 
 QuickZTNA separates its architecture into a distinct Control Plane and Data Plane, aligned with Software-Defined Perimeter (SDP) principles to ensure scalability and isolation.
-
-```
-       ┌────────────────────────────────────────────────────────┐
-       │             QuickZTNA Control Plane                    │
-       │    (Policy Decision Point, IdP Sync, Posture Eval)     │
-       └──────────────────────────┬─────────────────────────────┘
-                                  │ Signaling & Keys (No App Data)
-        ┌─────────────────────────┴─────────────────────────┐
-        ▼                                                   ▼
-┌─────────────────────────┐                       ┌─────────────────────────┐
-│  QuickZTNA Client Agent │ ═════════════════════►│ QuickZTNA Resource GW   │
-│  (SPA Frame Generation) │  Encrypted P2P Mesh   │  (Dark Cloud / No IP)   │
-└─────────────────────────┘   (WireGuard / TLS)   └───────────┬─────────────┘
-                                                              │
-                                                              ▼
-                                                  ┌─────────────────────────┐
-                                                  │ Internal Private Workload│
-                                                  │ (K8s, SQL, SSH, Web App)│
-                                                  └─────────────────────────┘
-```
 
 ### Centralized Control Plane (QuickZTNA Orchestrator)
 The Control Plane serves as the central policy decision and management engine. It maintains authorization rules, integrates directly with Identity Providers (IdPs), ingests endpoint risk feeds, and handles security token issuance. The Control Plane manages signaling, authentication flows, and dynamic policy updates without handling raw enterprise app data traffic.
@@ -363,27 +332,28 @@ In rigorous performance evaluations conducted across 1 Gbps testing environments
 
 | Benchmark Metric | Legacy IPSec / SSL VPN | QuickZTNA Security OS | Performance Delta |
 | :--- | :--- | :--- | :--- |
-| **Initial Connection Setup Time** | 4,200 ms – 12,500 ms | 180 ms – 450 ms | **95% Faster** |
-| **Throughput (1 Gbps Link)** | 320 Mbps (encapsulation cap) | 940 Mbps (near line-rate) | **+193% Throughput** |
-| **Added Routing Latency** | +45 ms to +120 ms (hairpin) | +2 ms to +8 ms (direct edge) | **90% Latency Reduction** |
-| **Gateway Memory Footprint** | 2,048 MB – 8,192 MB | ~120 MB per container | **94% Less RAM** |
-| **Max Concurrent Sessions / Node** | ~2,500 active sessions | 100,000+ active connections | **40x Concurrency** |
+| **Initial Connection Setup Time** | ❌ 4,200 ms – 12,500 ms | ✅ 180 ms – 450 ms | **95% Faster** |
+| **Throughput (1 Gbps Link)** | ❌ 320 Mbps (encapsulation cap) | ✅ 940 Mbps (near line-rate) | **+193% Throughput** |
+| **Added Routing Latency** | ❌ +45 ms to +120 ms (hairpin) | ✅ +2 ms to +8 ms (direct edge) | **90% Latency Reduction** |
+| **Gateway Memory Footprint** | ❌ 2,048 MB – 8,192 MB | ✅ ~120 MB per container | **94% Less RAM** |
+| **Max Concurrent Sessions / Node** | ❌ ~2,500 active sessions | ✅ 100,000+ active connections | **40x Concurrency** |
 
 ---
 
 ## 11. Security Posture & Threat Mitigation Analysis
 
-```
-┌──────────────────────────────────────┬────────────────────────────────────────────────────────┐
-│ Threat Vector                        │ QuickZTNA Mitigation Mechanism                         │
-├──────────────────────────────────────┼────────────────────────────────────────────────────────┤
-│ Lateral Ransomware Proliferation     │ Micro-segmentation restricts traffic to single sockets  │
-│ Port Scanning & Network Mapping      │ Single Packet Authorization drops unauthenticated probes│
-│ Credential Theft & Replay Attacks    │ Hardware MFA + continuous posture re-evaluation        │
-│ Man-in-the-Middle (MitM) Attacks     │ WireGuard (ChaCha20-Poly1305) / TLS 1.3 encryption      │
-│ Data Exfiltration on BYOD Endpoints  │ Agentless browser sandbox with clipboard/download lock │
-└──────────────────────────────────────┴────────────────────────────────────────────────────────┘
-```
+![Defense in Depth: Remote Workforce Security OS 4-Tier Architecture](/images/diagrams/remote-workforce-security-os-flow.svg)
+*Figure 1.1: Concentric Defense-in-Depth Layered Security Architecture — Remote Workforce Security OS 4-Tier Architecture.*
+
+### Concentric Defense-in-Depth Layer Breakdown
+
+The layered security model above outlines concentric defensive controls spanning from the hardware perimeter to the data core for **Remote Workforce Security OS 4-Tier Architecture**:
+
+- **TIER 1: KERNEL — Native Linux/macOS/Windows WireGuard Driver:** Operates directly in kernel space (TUN/Wintun) with zero context-switching penalty. *Enforced Controls:* Near line-rate throughput (940 Mbps on 1G link), <2ms added latency, ChaCha20-Poly1305
+- **TIER 2: ENDPOINT — Endpoint Posture & MagicDNS Shield:** Loopback DNS proxy intercepting non-VPN split tunnels, DoH circumvention, and malware domains. *Enforced Controls:* Sub-50ms DNS threat blocking, process attribution (PID + SHA-256), continuous EDR sync
+- **TIER 3: CONTROL — Decoupled Out-of-Band Policy Engine:** Distributes compiled binary ABAC rules and JIT elevation grants without routing user payloads. *Enforced Controls:* SCIM 2.0 sync, multi-IdP federation, automated access-review campaigns
+- **TIER 4: AUDIT — Signed Cryptographic Evidence Fabric:** Generates immutable audit logs with per-decision attribution exportable to any SIEM. *Enforced Controls:* SOC 2 Type II evidence, HIPAA BAA compliance, ISO 27001 verifiable event stream
+
 
 ---
 
@@ -449,17 +419,11 @@ docker logs quickztna-gateway-production --tail 50 -f
 
 ## 15. Alternative Technologies Evaluated
 
-```
-┌─────────────────────────┬───────────────────────────────┬───────────────────────────────┐
-│ Technology              │ Primary Purpose               │ Key Architectural Limitation  │
-├─────────────────────────┼───────────────────────────────┼───────────────────────────────┤
-│ Legacy IPSec/SSL VPN    │ Network-level perimeter bridge│ Implicit trust; lateral risk  │
-│ Cloud Access Brokers    │ SaaS security (M365, SFDC)    │ Cannot secure private apps/DBs│
-│ Secure Web Gateways     │ Outbound web filtering & DLP  │ No inbound zero trust control │
-│ Identity-Aware Proxies  │ Layer 7 HTTP/HTTPS proxying   │ No support for SSH/RDP/DB TCP │
-│ QuickZTNA Security OS   │ Full-stack Zero Trust Access  │ Unified L4-L7 & posture engine│
-└─────────────────────────┴───────────────────────────────┴───────────────────────────────┘
-```
+| Technology | Primary Purpose | Key Architectural Limitation |
+|---|---|---|
+| **Traditional VPN** | Network-level encrypted tunneling | Grants full Layer 3 subnet access; broad lateral attack radius. |
+| **Reverse Proxy (ZTNA 1.0)** | Application-layer HTTP proxying | High latency, requires public DNS resolution, limited non-web protocol support. |
+| **Security OS (QuickZTNA)** | Kernel WireGuard mesh + continuous posture | None: Direct line-rate throughput, 100% dark infrastructure via SPA. |
 
 ---
 
@@ -467,31 +431,24 @@ docker logs quickztna-gateway-production --tail 50 -f
 
 | Evaluation Vector | Legacy VPN (IPSec/SSL) | 1st-Gen ZTNA Proxies | QuickZTNA Security OS |
 | :--- | :--- | :--- | :--- |
-| **Trust Model** | Implicit network-level trust | Static application-level trust | Continuous adaptive Zero Trust |
-| **Network Exposure** | Full Layer 3 subnet exposure | HTTP/HTTPS web app exposure | Granular Layer 4–7 micro-tunnels |
-| **Infrastructure Visibility** | Public listening ports open | Public reverse proxy ports open | Dark Cloud / 100% Invisible via SPA |
-| **Protocol Support** | All network protocols | Limited to HTTP/HTTPS | Native SSH, RDP, SQL, SMB, TCP/UDP |
-| **Posture Verification** | Initial sign-in check only | Basic OS version check | Continuous real-time EDR ingestion |
-| **Operational Model** | Heavy hardware appliances | Complex reverse proxy configs | Lightweight edge container daemons |
+| **Trust Model** | ❌ Implicit network-level trust | ⚠️ Static application-level trust | ✅ Continuous adaptive Zero Trust |
+| **Network Exposure** | ❌ Full Layer 3 subnet exposure | ⚠️ HTTP/HTTPS web app exposure | ✅ Granular Layer 4–7 micro-tunnels |
+| **Infrastructure Visibility** | ❌ Public listening ports open | ⚠️ Public reverse proxy ports open | ✅ Dark Cloud / 100% Invisible via SPA |
+| **Protocol Support** | ❌ All network protocols | ⚠️ Limited to HTTP/HTTPS | ✅ Native SSH, RDP, SQL, SMB, TCP/UDP |
+| **Posture Verification** | ❌ Initial sign-in check only | ⚠️ Basic OS version check | ✅ Continuous real-time EDR ingestion |
+| **Operational Model** | ❌ Heavy hardware appliances | ⚠️ Complex reverse proxy configs | ✅ Lightweight edge container daemons |
 
 ---
 
 ## 17. Enterprise Deployment Strategies
 
-```
-┌───────────────────────────┐      ┌───────────────────────────┐
-│ Phase 1: Discovery & IdP  │ ───► │ Phase 2: Gateway Pilot    │
-│ (Weeks 1 - 2)             │      │ (Weeks 3 - 4)             │
-│ Inventory apps, sync IdP  │      │ Deploy edge GWs & DevOps  │
-└───────────────────────────┘      └─────────────┬─────────────┘
-                                                 │
-                                                 ▼
-┌───────────────────────────┐      ┌───────────────────────────┐
-│ Phase 4: Full VPN Sunset  │ ◄─── │ Phase 3: Contractor Roll  │
-│ (Weeks 9 - 12)            │      │ (Weeks 5 - 8)             │
-│ Roll out agent & kill VPN │      │ Migrate vendors to Web GW │
-└───────────────────────────┘      └───────────────────────────┘
-```
+> [!NOTE]
+> • Phase 1: Discovery & IdP   ►  Phase 2: Gateway Pilot
+> • (Weeks 1  2)                    (Weeks 3  4)
+> • Inventory apps, sync IdP         Deploy edge GWs & DevOps
+> • Phase 4: Full VPN Sunset   ◄  Phase 3: Contractor Roll
+> • (Weeks 9  12)                   (Weeks 5  8)
+> • Roll out agent & kill VPN        Migrate vendors to Web GW
 
 * **Phase 1: Discovery and Identity Integration (Weeks 1 to 2):** Audit existing application inventories across on-premises data centers and cloud VPCs. Connect the QuickZTNA Control Plane to your enterprise Identity Provider (such as Entra ID or Okta).
 * **Phase 2: Gateway Installation and Pilot Testing (Weeks 3 to 4):** Deploy containerized QuickZTNA Gateways into staging subnets and cloud environments. Onboard technical teams—such as IT operations, security, and DevOps—to test application access and refine posture rules.
@@ -543,8 +500,6 @@ Under legacy Layer 3 VPN architectures, merging two enterprise networks with ide
 QuickZTNA accelerates compliance alignment across NIST SP 800-207 (Zero Trust Architecture), SOC 2 Type II, ISO 27001, HIPAA, and PCI-DSS (Requirements 7 and 8 regarding strict least-privilege access and multi-factor authentication).
 
 ---
-
-
 
 ---
 

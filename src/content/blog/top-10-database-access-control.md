@@ -81,35 +81,30 @@ Databases are the last firewall exception standing. Most organisations have buil
 
 | Access Model | Legacy DBA Access | Zero Trust Database Access Broker |
 |---|---|---|
-| **Network Reachability** | Database port (5432/3306) open to corporate VPN/LAN. | Database is 100% Dark in private subnet; reachable only via mesh. |
-| **Credential Type** | Long-lived static root/admin password shared across DBAs. | Ephemeral dynamic credentials issued on-demand via OIDC / Vault. |
-| **Query & DML Auditing** | None or coarse connection-level logs in DBMS. | Full SQL query auditing, table-level masking, and session capture. |
-| **Privilege Lifecycle** | Standing 24/7 superuser access. | Just-in-Time (JIT) access elevation with automatic TTL revocation. |
-| **Data Masking** | PII/Credit card numbers visible in cleartext in SQL client. | Dynamic inline masking of sensitive columns based on user role. |
+| **Network Reachability** | ❌ Database port (5432/3306) open to corporate VPN/LAN. | ✅ Database is 100% Dark in private subnet; reachable only via mesh. |
+| **Credential Type** | ❌ Long-lived static root/admin password shared across DBAs. | ✅ Ephemeral dynamic credentials issued on-demand via OIDC / Vault. |
+| **Query & DML Auditing** | ❌ None or coarse connection-level logs in DBMS. | ✅ Full SQL query auditing, table-level masking, and session capture. |
+| **Privilege Lifecycle** | ❌ Standing 24/7 superuser access. | ✅ Just-in-Time (JIT) access elevation with automatic TTL revocation. |
+| **Data Masking** | ❌ PII/Credit card numbers visible in cleartext in SQL client. | ✅ Dynamic inline masking of sensitive columns based on user role. |
 
-```
-┌────────────────────────────────────────────────────────────────────────┐
-│               Zero Trust Database Access Architecture                  │
-│                                                                        │
-│   [DBA / Engineer Client (DBeaver / psql)]                             │
-│                      │                                                 │
-│                      ▼ (OIDC Login + Device Posture Check)             │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  QuickZTNA / Vault Access Broker                                 │ │
-│   │  ├── 1. Approves JIT Request for `db-prod-replica`               │ │
-│   │  └── 2. Issues Ephemeral 1-Hour Database Credential              │ │
-│   └──────────────────────────┬───────────────────────────────────────┘ │
-│                              │ (Encrypted WireGuard Mesh Pipe)         │
-│                              ▼                                         │
-│   ┌──────────────────────────────────────────────────────────────────┐ │
-│   │  Private Database Host (Postgres / MySQL / MongoDB)              │ │
-│   │  ├── Zero Public Ports Exposed (Dark Private Subnet)             │ │
-│   │  └── Authenticates short-lived token; records SQL query audit    │ │
-│   └──────────────────────────┬───────────────────────────────────────┘ │
-│                              ▼                                         │
-│   [Query Audit Stream ──► SIEM (User Identity bound to every SQL stmt)]│
-└────────────────────────────────────────────────────────────────────────┘
-```
+![Architecture Comparison: Database Access: Legacy Direct DBA vs. Zero Trust Broker](/images/diagrams/top-10-database-access-control-flow.svg)
+*Figure 1.1: Architectural Comparison & Failure Mode Analysis — Database Access: Legacy Direct DBA vs. Zero Trust Broker.*
+
+### Architectural Divergence & Failure Mode Analysis
+
+The architectural contrast above details the structural differences between legacy approaches and modern Zero Trust for **Database Access: Legacy Direct DBA vs. Zero Trust Broker**:
+
+#### 1. Legacy Limitations: Legacy DBA Access (Direct TCP Port)
+- **Exposed Listening Ports:** Port 5432 / 3306 open to corporate VPN or internal LAN. Vulnerable to internal port scans, brute-force, and lateral pivots.
+- **Permanent Static Root Passwords:** Shared database admin credentials stored in local dotfiles. Password changes require coordination and risk breaking services.
+- **Standing 24/7 Superuser Privileges:** DBA accounts hold unconstrained admin rights indefinitely. High blast radius if DBA laptop or credentials are compromised.
+- **Unmasked Cleartext Sensitive Data:** Developers can view credit cards, PII, and customer secrets. Lacks granular column-level or row-level dynamic masking.
+
+#### 2. Modern Zero Trust Guarantees: Zero Trust Database Broker (QuickZTNA)
+- **100% Dark Private Subnet:** Database has zero open listening ports to the public internet. Reachable strictly through cryptographic WireGuard microtunnels.
+- **Dynamic In-Memory Ephemeral Credentials:** Short-lived database tokens issued on-demand via OIDC / SSO. Tokens expire automatically after session TTL; dotfiles stay empty.
+- **Just-In-Time (JIT) Dual Approval:** Elevation granted only upon ticket verification (Slack/PagerDuty). Standing privileges eliminated; zero persistent admin accounts.
+- **Dynamic Column Masking & Full Audit:** Sensitive PII masked inline before transmission to developer client. Every SQL query, DML change, and transaction immutably logged.
 
 ## The production database problem
 
