@@ -18,20 +18,26 @@ const isActive = (href: string) => {
   return cleanHref === "/" ? path === "/" : path === cleanHref || path.startsWith(cleanHref + "/");
 };
 ---
-<!-- Top Royal Blue Announcement Strip -->
-<div class="top-blue-bar">
-  <div class="top-blue-inner">
+<!-- Top Royal Blue Announcement Strip (Above Navigation Bar) -->
+<aside class="relative z-50 w-full bg-[#0047BA] text-white transition-colors hover:bg-[#003EA8]">
+  <div class="mx-auto flex max-w-[1440px] items-center justify-center px-4 py-2 text-center">
     <a
       href="https://quickztna.com/"
       target="_blank"
       rel="noopener noreferrer"
-      class="top-blue-center-link"
+      class="group inline-flex items-center gap-2 text-xs sm:text-[13px] font-medium leading-tight text-white transition-opacity hover:opacity-95"
     >
-      <span class="top-blue-pill">NEW</span>
-      <span class="top-blue-text">Free forever for up to 5 users · 100 devices · WireGuard mesh &amp; ABAC →</span>
+      <span class="inline-flex items-center justify-center rounded-[4px] bg-[#FFB800] px-2 py-0.5 text-[10.5px] font-extrabold uppercase tracking-wide text-slate-950 shadow-sm leading-none">
+        NEW
+      </span>
+      <span class="inline-flex items-center gap-1.5 font-medium tracking-tight">
+        <span class="hidden sm:inline">Free forever for up to 5 users · 100 devices · Kernel WireGuard mesh &amp; ABAC</span>
+        <span class="sm:hidden">Free forever for 5 users · WireGuard mesh &amp; ABAC</span>
+        <span class="inline-block transition-transform duration-150 group-hover:translate-x-0.5">→</span>
+      </span>
     </a>
   </div>
-</div>
+</aside>
 
 <header class="sticky top-0 z-40 w-full border-b border-border bg-background/90 backdrop-blur-md">
   <div class="mx-auto flex h-16 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
