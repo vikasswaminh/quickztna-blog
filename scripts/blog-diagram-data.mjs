@@ -1347,3 +1347,25 @@ blogDiagramConfigs.push({
     { title: "Continuous Per-Connection Posture Check", desc1: "Evaluates identity, EDR health, and posture before every socket open.", desc2: "Any posture violation triggers automated sub-millisecond key revocation." }
   ]
 });
+
+// 51. zero-trust-egress-controls-exit-nodes
+blogDiagramConfigs.push({
+  slug: 'zero-trust-egress-controls-exit-nodes',
+  title: "Zero Trust Exit Nodes vs. Legacy Outbound Egress",
+  subtitle: "Architectural Comparison: Kernel WireGuard Egress Mesh vs. Fragile SWG / Full-Tunnel VPN",
+  type: 'comparison_split',
+  legacyTitle: "Legacy Outbound Breakout & SWGs",
+  legacyItems: [
+    { title: "Synthetic Root CA Decryption", desc1: "Breaks developer tools (Docker, Pip, Cargo, Git).", desc2: "Intercepts and decrypts TLS with high latency." },
+    { title: "Fragile PAC Files & Hairpinning", desc1: "80–150ms backhaul latency through central datacenters.", desc2: "Concentrator saturates under commodity streaming." },
+    { title: "Rotating Residential IPs", desc1: "Developers connect from dynamic, unmonitored home ISPs.", desc2: "Forces security teams to abandon SaaS IP allowlists." },
+    { title: "Heavy User-Space Daemons", desc1: "Continuous socket inspection drains 40%+ laptop battery.", desc2: "Context switching between user space and kernel throttles speed." }
+  ],
+  modernTitle: "QuickZTNA WireGuard Exit Node Mesh",
+  modernItems: [
+    { title: "In-Kernel WireGuard (Layer 3/4)", desc1: "ChaCha20-Poly1305 line-rate throughput (>918 Mbps).", desc2: "Sub-1.5ms overhead; zero synthetic certificate friction." },
+    { title: "Dedicated Corporate Static IPs", desc1: "Regional cloud exit nodes provide stable public IPs.", desc2: "Enforces strict IP allowlisting on GitHub, AWS, and Snowflake." },
+    { title: "Loopback DNS & DoH Blackhole", desc1: "Captures port 53 traffic to private MagicDNS resolver.", desc2: "Blocks public DoH/DoT resolvers to stop DNS exfiltration." },
+    { title: "Dynamic ABAC & Auto-Quarantine", desc1: "Continuous posture checks (disk encryption, firewall).", desc2: "Instantly quarantines non-compliant endpoints in real time." }
+  ]
+});
